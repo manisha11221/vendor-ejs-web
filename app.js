@@ -1,16 +1,36 @@
 
 
 // server.js
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const adminRoutes = require('./routes/adminRoutes');
 const vendorRoutes = require('./routes/vendorRoutes')
 const techRoutes = require('./routes/techRoutes')
 const devroutes = require('./routes/developerRoutes')
+const ejsRoute  =require('./routes/homeEjsRoute')
 
 const app = express();
 const port = 3000;
+
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/view');
+
+
+// Serve static files from the 'public' directory
+app.use(express.static('public'));
+
+
+// Define a simple route
+// app.get('/', (req, res) => {
+//   res.render('index', { title: 'Node.js EJS Template' });
+// });
+
+// app.get('/admin-login', (req, res) => {
+//   res.render('admin-login', { title: 'Node.js EJS Template' });
+// });
+
+app.use(ejsRoute.routes);
 
 // Connect to MongoDB
 const connectDB = require('./db/conn');
