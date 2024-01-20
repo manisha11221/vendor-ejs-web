@@ -20,34 +20,38 @@ exports.adminLogin = async (req, res) => {
       email_id: staticAdminData.email_id,
     });
 
-    if (existingAdmin) {
+    if (!existingAdmin) {
       return res
-        .status(400)
-        .json({ success: false, message: "Admin is already login" });
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
     }
-    const hashedPassword = await bcrypt.hash(staticAdminData.password, 10);
+    console.log("existingAdmin",existingAdmin);
+    const passwordMatch = await bcrypt.compare(
+      staticAdminData.password,
+      existingAdmin.password
+    );
 
-    const newAdmin = new Admin({
-      email_id: staticAdminData.email_id,
-      password: hashedPassword,
-      role: staticAdminData.role
-    });
+    if (!passwordMatch) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
+    }
 
     const token = jwt.sign(
-      { adminId: newAdmin._id, email: newAdmin.email_id },
+      { adminId: existingAdmin._id, email: existingAdmin.email_id },
       "admin-secret-key"
     );
-    newAdmin.token = token;
 
-    await newAdmin.save();
+    existingAdmin.token = token;
+    await existingAdmin.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "Admin registered successfully",
+      message: "Admin logged in successfully",
       token,
     });
   } catch (error) {
-    console.error("Error during admin registration:", error);
+    console.error("Error during admin login:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
