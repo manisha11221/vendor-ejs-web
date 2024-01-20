@@ -21,8 +21,6 @@ const vendorPassword = (req, res ,next) => {
     res.render('vendorPassword');
 }
 
-
-
 const adminDash=(req,res)=>{
     res.render('adminDash')
 }
