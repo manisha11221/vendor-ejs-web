@@ -9,45 +9,68 @@ const Developer = require("../models/developerModel");
 exports.adminLogin = async (req, res) => {
   // Static data for simplicity
   const staticAdminData = {
-    email_id: "admin@example.com",
+    email_id: "admin@g.com",
     password: "admin123",
+    role: "admin",
   };
 
   try {
+    // Find the admin by email
     const existingAdmin = await Admin.findOne({
       email_id: staticAdminData.email_id,
     });
 
-    if (existingAdmin) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Admin is already login" });
+    // Debugging statement
+    console.log("Existing Admin:", existingAdmin);
+
+    // If an admin with the specified email does not exist, return an error
+    if (!existingAdmin) {
+      return res.status(400).json({
+        success: false,
+        message: "Admin does not exist",
+      });
     }
-    const hashedPassword = await bcrypt.hash(staticAdminData.password, 10);
 
-    const newAdmin = new Admin({
-      email_id: staticAdminData.email_id,
-      password: hashedPassword,
-    });
+    // Compare the passwords
+    const passwordMatch = await bcrypt.compare(
+      staticAdminData.password,
+      existingAdmin.password
+    );
 
+    // Debugging statement
+    console.log("Password Match:", passwordMatch);
+
+    if (!passwordMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+
+    // Generate a new token
     const token = jwt.sign(
-      { adminId: newAdmin._id, email: newAdmin.email_id },
+      { adminId: existingAdmin._id, email: existingAdmin.email_id },
       "admin-secret-key"
     );
-    newAdmin.token = token;
 
-    await newAdmin.save();
+    // Update the admin with the new token
+    existingAdmin.token = token;
 
-    res.status(201).json({
+    // Save the updated admin to the database
+    await existingAdmin.save();
+
+    res.status(200).json({
       success: true,
-      message: "Admin registered successfully",
+      message: "Admin logged in successfully",
       token,
+      role: existingAdmin.role,
     });
   } catch (error) {
-    console.error("Error during admin registration:", error);
+    console.error("Error during admin login:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 
 
 // vendor and developer search

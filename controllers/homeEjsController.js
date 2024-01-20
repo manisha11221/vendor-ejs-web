@@ -3,7 +3,7 @@ const indexView = (req, res, next) => {
     res.render('index');
 }
 const adminLogin = (req, res, next) => {
-    res.render('admin-login');
+    res.render('login');
 }
 
 const otpSend=(req,res)=>{
@@ -14,13 +14,20 @@ const otpVerify=(req,res)=>{
     res.render('sendOtp')
 }
 
-const vendorPassword=(req,res)=>{
-    res.render('vendorPassword')
+const vendorPassword = (req, res ,next) => {
+    res.render('vendorPassword');
+}
+
+
+const vendorDashboard = (req, res ,next) => {
+    res.render('vendorDashboard');
 }
 
 module.exports = {
     indexView,
     adminLogin,
     otpSend,
-    otpVerify,vendorPassword
+    otpVerify,
+    vendorPassword,
+    vendorDashboard
 }
