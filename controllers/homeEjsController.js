@@ -43,5 +43,5 @@ module.exports = {
     vendorPassword,
     vendorDashboard,
     adminDash,
-    vendorDash
+    vendorDash,developerDash
 }
