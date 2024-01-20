@@ -249,9 +249,11 @@ exports.editProfile = async (req, res) => {
 //get-all-vendor
 exports.getAllVendors = async (req, res) => {
   try {
+    
     const vendors = await Vendor.find();
 
     console.log("vendor", vendors);
+
     res.status(200).json({ success: true, vendors });
   } catch (error) {
     console.error("Get All Vendors Error:", error);
@@ -275,5 +277,16 @@ exports.getvendorById = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+exports.countVendor = async (req, res) => {
+  try {
+    const count = await Developer.countDocuments({ vendorId: req.user.id });
+    res.send(count);
+  } catch (error) {
+
+    console.error("Get Developer Count Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 
