@@ -14,9 +14,13 @@ const otpVerify=(req,res)=>{
     res.render('sendOtp')
 }
 
+const vendorPassword=(req,res)=>{
+    res.render('vendorPassword')
+}
+
 module.exports = {
     indexView,
     adminLogin,
     otpSend,
-    otpVerify
+    otpVerify,vendorPassword
 }
