@@ -357,17 +357,9 @@ exports.getvendorById = async (req, res) => {
 //count the vendor
 exports.countVendor = async (req, res) => {
   try {
-    const count = await Vendor.countDocuments({ _id: req.user.vendorId }); // Assuming vendorId is present in the decoded token
-    const { authorization } = req.headers;
-
-    if (!authorization || !authorization.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const token = authorization.split(" ")[1];
-    const decodedToken = jwt.verify(token, "your-secret-key");
-
-    res.send(count.toString()); // Convert to string before sending in the response
+    const count = await Vendor.countDocuments();
+    
+    res.send(count.toString()); 
   } catch (error) {
     console.error("Get Vendor Count Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -375,4 +367,24 @@ exports.countVendor = async (req, res) => {
 };
 
 
+
+//with token
+// exports.countVendor = async (req, res) => {
+//   try {
+//     const count = await Vendor.countDocuments({ _id: req.user.vendorId });
+//     const { authorization } = req.headers;
+
+//     if (!authorization || !authorization.startsWith("Bearer ")) {
+//       return res.status(401).json({ message: "Unauthorized" });
+//     }
+
+//     const token = authorization.split(" ")[1];
+//     const decodedToken = jwt.verify(token, "your-secret-key");
+
+//     res.send(count.toString());
+//   } catch (error) {
+//     console.error("Get Vendor Count Error:", error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
 
