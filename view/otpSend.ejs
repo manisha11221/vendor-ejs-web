@@ -1,0 +1,36 @@
+<%- include('layouts/header.ejs') %>
+<form class="forms-sample" id="myForm">
+  <div class="form-group row">
+    <label for="exampleInputUsername2" class="col-sm-3 col-form-label">Email</label>
+    <div class="col-sm-9">
+      <input type="text" class="form-control" id="exampleInputUsername2" placeholder="Username">
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-gradient-primary me-2" onclick="submitForm()">Submit</button>
+  <button type="button" class="btn btn-light">Cancel</button>
+</form>
+
+<script>
+  function submitForm() {
+    var email = document.getElementById("exampleInputUsername2").value;
+
+    fetch('http://localhost:3000/vendor/request-otp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: email }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      // Handle error as needed
+    });
+  }
+</script>
+
+<%- include('layouts/footer.ejs') %>

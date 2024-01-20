@@ -5,10 +5,11 @@ const indexView = (req, res, next) => {
 const adminLogin = (req, res, next) => {
     res.render('admin-login');
 }
-
-
-
+const sendOtp = (req, res, next) => {
+    res.render('otpSend');
+}
 module.exports = {
     indexView,
-    adminLogin
+    adminLogin,
+    sendOtp
 }
