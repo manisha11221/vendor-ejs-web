@@ -24,7 +24,6 @@ exports.addDeveloper = async (req, res) => {
   }
 };
 
-
 //get by id
 exports.getDeveloperById = async (req, res) => {
   try {
@@ -57,12 +56,12 @@ exports.getDeveloperAll = async (req, res) => {
 //view by vendor
 exports.getByVendor = async (req, res) => {
   try {
-   
+
     const vendorId = req.user._id;
-    console.log('vendor',vendorId);
+    console.log('vendor', vendorId);
 
     const developers = await Developer.find({ 'addedByVendor.vendorId': vendorId });
-    console.log("devloper-data",developers);
+    console.log("devloper-data", developers);
     res.json({ developers });
   } catch (error) {
     console.error('Get Developers by Vendor Error:', error);
@@ -106,6 +105,20 @@ exports.deleteDeveloper = async (req, res) => {
     res.json({ message: "Developer deleted successfully", deletedDeveloper });
   } catch (error) {
     console.error("Delete Developer Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
+
+//count devloper
+exports.countDeveloper = async (req, res) => {
+  try {
+    const count = await Developer.countDocuments();
+    res.send(count.toString()); // Convert to string before sending in the response
+  } catch (error) {
+    console.error("Get Developer Count Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

@@ -15,5 +15,6 @@ router.post('/edit-Profile', vendorController.editProfile);
 router.post('/reset-password', vendorController.resetPassword);
 router.get('/get-all-Vendors', vendorController.getAllVendors);
 router.get('/get-Vendors-by-id/:id', vendorController.getvendorById);
+router.get('/count-vendor', vendorController.countVendor);
 
 module.exports = router;
