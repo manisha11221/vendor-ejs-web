@@ -6,7 +6,7 @@ const vendorDashboard = (req, res, next) => {
     res.render('vendor-dashboard');
 }
 const adminLogin = (req, res, next) => {
-    res.render('admin-login');
+    res.render('login');
 }
 
 const otpSend=(req,res)=>{
@@ -17,9 +17,11 @@ const otpVerify=(req,res)=>{
     res.render('sendOtp')
 }
 
-const vendorPassword=(req,res)=>{
-    res.render('vendorPassword')
+const vendorPassword = (req, res ,next) => {
+    res.render('vendorPassword');
 }
+
+
 
 const adminDash=(req,res)=>{
     res.render('adminDash')
@@ -37,5 +39,9 @@ module.exports = {
     adminDashboard,
     adminLogin,
     otpSend,
-    otpVerify,vendorPassword,vendorDashboard,adminDash,vendorDash,developerDash
+    otpVerify,
+    vendorPassword,
+    vendorDashboard,
+    adminDash,
+    vendorDash
 }

@@ -109,14 +109,16 @@ exports.deleteDeveloper = async (req, res) => {
   }
 };
 
-//count developer
+
+
+
+//count devloper
 exports.countDeveloper = async (req, res) => {
   try {
-    const count = await Developer.countDocuments({developerId: req.user.id });
-    res.send(count);
+    const count = await Developer.countDocuments();
+    res.send(count.toString()); // Convert to string before sending in the response
   } catch (error) {
-
     console.error("Get Developer Count Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};

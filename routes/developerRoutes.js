@@ -10,7 +10,6 @@ router.get('/get-devAll/', developerController.getDeveloperAll);
 router.get('/get-by-vendor',auth,developerController.getByVendor);
 router.put('/update-dev/:id',auth, developerController.updateDeveloper);
 router.delete('/delete-dev/:id',auth, developerController.deleteDeveloper);
-router.get("/getDeveloperCount", developerController.countDeveloper);
-
+router.get("/count-developer",developerController.countDeveloper)
 
 module.exports = router;

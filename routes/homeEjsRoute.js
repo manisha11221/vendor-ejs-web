@@ -8,7 +8,8 @@ router.get('/dashboard', vendorDashboard);
 router.get('/login', adminLogin);
 router.get('/vendor-register', otpSend);
 router.get('/vendor-otpVerify',otpVerify);
-router.get('/vendor-password',vendorPassword);
+router.get('/vendor-password/:vendorId', vendorPassword);
+router.get('/vendor-dashboard/', vendorDashboard);
 
 router.get('/adminDash',adminDash);
 router.get('/vendorDash',vendorDash);

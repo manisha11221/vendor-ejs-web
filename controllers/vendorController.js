@@ -14,6 +14,7 @@ const emailConfig = {
   },
 };
 const transporter = nodemailer.createTransport(emailConfig);
+
 exports.requestOTP = async (req, res) => {
   try {
     const { email } = req.body;
@@ -21,12 +22,17 @@ exports.requestOTP = async (req, res) => {
     // Check if the email already exists in the database
     const existingVendor = await Vendor.findOne({ email });
 
-    if (existingVendor) {
-      // Handle the situation where the email already exists (e.g., show an error)
-      return res.status(400).json({ message: "Email already exists" });
-    }
+    // Get the current date and time
+    const currentDate = new Date();
 
-    // Generate a random 6-digit OTP
+    // Add one day to the current date
+    const expirationDate = new Date(currentDate);
+    expirationDate.setDate(currentDate.getDate() + 1);
+
+    // Format the expiration date to use in OTP or store it in the database
+    const formattedExpirationDate = expirationDate.toISOString();
+
+    // Generate the OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     const mailOptions = {
@@ -36,18 +42,27 @@ exports.requestOTP = async (req, res) => {
       text: `Your OTP for vendor registration is: ${otp}`,
     };
 
+    // If the email exists, update the OTP; otherwise, save a new entry
+    if (existingVendor) {
+      // Update the existing vendor's OTP in the database
+      existingVendor.otp = otp;
+      await existingVendor.save();
+    } else {
+      // Save the OTP and email to the database for a new vendor
+      const vendor = new Vendor({
+        email,
+        otp,
+        password: "your-default-password",
+      });
+      await vendor.save();
+    }
+
+    // Send the OTP email
     await transporter.sendMail(mailOptions);
 
-    // Save the OTP and email to the database
-    const vendor = new Vendor({
-      email,
-      otp,
-      password: "your-default-password",
-    });
-
-    await vendor.save();
-
-    res.json({ message: "OTP sent successfully" });
+    // Specify the redirect URL in the response
+    const redirectUrl = "http://yourdomain.com/vendor-otpVerify";
+    res.json({ message: "OTP sent successfully", redirectUrl });
   } catch (error) {
     console.error("Request OTP Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -57,57 +72,73 @@ exports.requestOTP = async (req, res) => {
 //varify with otp
 exports.verifyOTP = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { otp } = req.body;
 
-    // Find the user document in the database
-    const vendor = await Vendor.findOne({ email, otp });
+    const vendor = await Vendor.findOne({ otp });
 
     if (vendor) {
-      // Mark the user as verified or perform any other required action
+      // Save the vendor's ID before updating email_verification
+      const vendorId = vendor._id;
+
+      // Update the vendor's email_verification status
       vendor.email_verification = true;
       await vendor.save();
-
-      res.json({ message: "OTP verification successful" });
+      
+      // Respond with success message and vendorId
+      res.json({ message: "OTP verification successful", vendorId });
     } else {
-      res.status(401).json({ message: "Invalid OTP or email" });
+      // Respond with an error message
+      res.status(401).json({ message: "Invalid OTP" });
     }
   } catch (error) {
+    // Handle unexpected errors
     console.error("OTP Verification Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
+
 //set-password
 exports.setPassword = async (req, res) => {
   try {
-    const { email, password, confirmPassword } = req.body;
+    console.log("backend------------------");
+    const { password, confirmPassword } = req.body;
 
-    const vendor = await Vendor.findOne({ email });
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Hash the password before saving it to the database
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Get the user ID from the route parameter
+    const userId = req.params.id;
+
+    console.log("User ID:", userId);
+
+    // Find the user document in the database based on the user ID
+    const vendor = await Vendor.findById(userId);
+
+    console.log("vendor_id", vendor.id);
 
     if (vendor) {
-      // Check if passwords match
-      if (password !== confirmPassword) {
-        return res.status(400).json({ message: "Passwords do not match" });
-      }
-
-      // Hash the password before saving it to the database
-      const hashedPassword = await bcrypt.hash(password, 10);
-
       // Update the user's password and mark as verified
       vendor.password = hashedPassword;
       vendor.email_verification = true;
 
       await vendor.save();
 
-      res.json({ message: "Password set successfully" });
+      res.json({ message: "Password set successfully after OTP verification" });
     } else {
-      res.status(401).json({ message: "Invalid email" });
+      res.status(401).json({ message: "Invalid user ID" });
     }
   } catch (error) {
-    console.error("Set Password Error:", error);
+    console.error("Set Password After OTP Verification Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 //resetPassword
 exports.resetPassword = async (req, res) => {
@@ -133,12 +164,10 @@ exports.resetPassword = async (req, res) => {
     }
 
     if (new_psw !== confirm_psw) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "New password and confirm password do not match",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "New password and confirm password do not match",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(new_psw, 10);
@@ -156,6 +185,44 @@ exports.resetPassword = async (req, res) => {
 };
 
 //login the vendor
+// exports.loginVendor = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     // Find the vendor with the provided email
+//     const vendor = await Vendor.findOne({ email });
+
+//     if (!vendor) {
+//       return res.status(400).json({ message: "Invalid email or password" });
+//     }
+
+//     // Validate the provided password
+//     const isPasswordValid = await bcrypt.compare(password, vendor.password);
+
+//     if (!isPasswordValid) {
+//       return res.status(400).json({ message: "Invalid email or password" });
+//     }
+
+//     // Generate a token for the user during login
+//     const generatedToken = jwt.sign(
+//       { email: vendor.email , _id: vendor._id },
+//       "vendor-token",
+//       { expiresIn: "1h" }
+//     );
+
+//     // Save the token to the vendor document
+//     vendor.token = generatedToken;
+
+//     // Save the updated document
+//     await vendor.save();
+
+//     res.json({ message: "Login successful", token: generatedToken });
+//   } catch (error) {
+//     console.error("Login Error:", error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
+
 exports.loginVendor = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -176,7 +243,7 @@ exports.loginVendor = async (req, res) => {
 
     // Generate a token for the user during login
     const generatedToken = jwt.sign(
-      { email: vendor.email , _id: vendor._id },
+      { email: vendor.email, _id: vendor._id, role: "vendor" }, // Include the role in the token
       "vendor-token",
       { expiresIn: "1h" }
     );
@@ -184,11 +251,29 @@ exports.loginVendor = async (req, res) => {
     // Save the token to the vendor document
     vendor.token = generatedToken;
 
-    
     // Save the updated document
     await vendor.save();
 
-    res.json({ message: "Login successful", token: generatedToken });
+    // Check if vendor data exists in the database
+    const vendorExists = await Vendor.findOne({ email });
+
+    if (vendorExists) {
+      // Redirect to vendor dashboard if data exists
+      res.json({
+        message: "Login successful",
+        token: generatedToken,
+        role: "vendor",
+        redirectTo: "/vendor/dashboard",
+      });
+    } else {
+      // Redirect to send OTP page if data doesn't exist
+      res.json({
+        message: "Login successful",
+        token: generatedToken,
+        role: "vendor",
+        redirectTo: "/vendor/send-otp",
+      });
+    }
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -198,19 +283,10 @@ exports.loginVendor = async (req, res) => {
 //edit_profile
 exports.editProfile = async (req, res) => {
   try {
-    const { 
-      email, 
-      company_name, 
-      website_link, 
-      contact, 
-      gst_number, 
-      address 
-    } = req.body;
+    const { email, company_name, website_link, contact, gst_number, address } =
+      req.body;
 
-    const 
-    { 
-      authorization 
-    } = req.headers;
+    const { authorization } = req.headers;
 
     if (!authorization || !authorization.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -278,15 +354,25 @@ exports.getvendorById = async (req, res) => {
   }
 };
 
+//count the vendor
 exports.countVendor = async (req, res) => {
   try {
-    const count = await Developer.countDocuments({ vendorId: req.user.id });
-    res.send(count);
-  } catch (error) {
+    const count = await Vendor.countDocuments({ _id: req.user.vendorId }); // Assuming vendorId is present in the decoded token
+    const { authorization } = req.headers;
 
-    console.error("Get Developer Count Error:", error);
+    if (!authorization || !authorization.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const token = authorization.split(" ")[1];
+    const decodedToken = jwt.verify(token, "your-secret-key");
+
+    res.send(count.toString()); // Convert to string before sending in the response
+  } catch (error) {
+    console.error("Get Vendor Count Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
+
 
 

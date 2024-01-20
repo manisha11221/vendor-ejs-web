@@ -6,11 +6,13 @@ const bcrypt = require("bcrypt");
 const Vendor = require("../models/vendorModel");
 const Developer = require("../models/developerModel");
 
+
 exports.adminLogin = async (req, res) => {
   // Static data for simplicity
   const staticAdminData = {
     email_id: "admin@example.com",
     password: "admin123",
+    role: "admin"
   };
 
   try {
@@ -28,6 +30,7 @@ exports.adminLogin = async (req, res) => {
     const newAdmin = new Admin({
       email_id: staticAdminData.email_id,
       password: hashedPassword,
+      role: staticAdminData.role
     });
 
     const token = jwt.sign(

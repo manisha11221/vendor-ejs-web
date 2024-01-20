@@ -1,60 +1,84 @@
 <%- include('layouts/header.ejs') %>
 <div class="container-scroller">
-    <div class="container-fluid page-body-wrapper full-page-wrapper">
-        <div class="content-wrapper d-flex align-items-center auth">
-            <div class="row flex-grow">
-                <div class="col-lg-4 mx-auto">
-                    <div class="auth-form-light text-left p-5">
-                        <div class="brand-logo">
-                            <img src="../../assets/images/logo.svg">
-                        </div>
-                        <h6 class="font-weight-light">Sign Up in to continue.</h6>
-                        <form id="loginForm" class="pt-3">
-                            <div class="form-group">
-                                <input type="email" class="form-control form-control-lg" id="InputEmail1" placeholder="Username" name="email">
-                                <small id="emailError" class="text-danger d-none">Please enter your email.</small>
-                            </div>
-                            <div class="mt-3 d-flex justify-content-between align-items-center">
-                                <button type="button" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" onclick="submitForm()">NEXT</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+  <div class="container-fluid page-body-wrapper full-page-wrapper">
+    <div class="content-wrapper d-flex align-items-center auth">
+      <div class="row flex-grow">
+        <div class="col-lg-4 mx-auto">
+          <div class="auth-form-light text-left p-5">
+            <div class="brand-logo">
+              <img src="../../assets/images/logo.svg" />
             </div>
+            <h6 class="font-weight-light">Sign Up in to continue.</h6>
+            <form id="loginForm" class="pt-3">
+              <div class="form-group">
+                <input
+                  type="email"
+                  class="form-control form-control-lg"
+                  id="InputEmail1"
+                  placeholder="Enter Email"
+                  name="email"
+                />
+                <small id="emailError" class="text-danger d-none"
+                  >Please enter your email.</small
+                >
+              </div>
+              <div
+                class="mt-3 d-flex justify-content-between align-items-center"
+              >
+                <button
+                  type="button"
+                  class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
+                  onclick="submitForm()"
+                >
+                  NEXT
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        <!-- content-wrapper ends -->
+      </div>
     </div>
-    <!-- page-body-wrapper ends -->
+    <!-- content-wrapper ends -->
+  </div>
+  <!-- page-body-wrapper ends -->
 </div>
 
 <script>
-    function submitForm() {
-        var email = document.getElementById("InputEmail1").value;
-        var role = document.getElementById("userRole").value;
+  function submitForm() {
+    console.log("fsdfsdfsdfsddgd");
+    var email = document.getElementById("InputEmail1").value;
 
-        // Validate email
-        if (!email.trim()) {
-            document.getElementById("emailError").classList.remove("d-none");
-            return;
-        }
+    // Validate email
+    if (!email.trim()) {
+        document.getElementById("emailError").classList.remove("d-none");
+        return;
+    }
 
-        document.getElementById("emailError").classList.add("d-none");
+    document.getElementById("emailError").classList.add("d-none");
 
-        fetch('http://localhost:3000/vendor-register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email, role: role }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            
-            console.log('Success:', data);
+    fetch("http://localhost:3000/vendor/request-otp", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("Success:", data);
+
+            // Assuming data.success is a flag indicating success
+            if (data.message === "OTP sent successfully" && data.redirectUrl) {
+                // Redirect to the specified URL
+                window.location.href = "/vendor-otpVerify";
+            } else {
+                // Handle other cases if needed
+            }
         })
         .catch((error) => {
-            console.error('Error:', error);
+            console.error("Error:", error);
             // Handle error as needed
         });
-    }
+}
+
 </script>
