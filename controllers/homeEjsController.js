@@ -41,10 +41,6 @@ module.exports = {
     vendorPassword,
     vendorDashboard,
     adminDash,
-<<<<<<< HEAD
-    vendorDash,developerDash
-=======
     vendorDash,
     developerDash
->>>>>>> 8592d8491805049a826c3f080854efba81dc97ab
 }
