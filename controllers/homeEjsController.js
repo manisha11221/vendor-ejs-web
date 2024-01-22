@@ -1,14 +1,22 @@
 
+//admin Route
+
+const adminDash = (req, res) => {
+    res.render('admin/adminDash');
+  };
+  
+
 const adminDashboard = (req, res, next) => {
     res.render('admin-dashboard');
 }
-const vendorDashboard = (req, res, next) => {
-    res.render('vendor-dashboard');
-}
+
 const adminLogin = (req, res, next) => {
     res.render('login');
 }
 
+
+
+//vendor dashboard
 const otpSend=(req,res)=>{
     res.render('register')
 }
@@ -21,20 +29,26 @@ const vendorPassword = (req, res ,next) => {
     res.render('vendorPassword');
 }
 
-const adminDash=(req,res)=>{
-    res.render('adminDash')
+const vendorDashboard = (req, res, next) => {
+    res.render('vendor-dashboard');
+
 }
 
+
+
+
+
+//devloper Dashboard
 const vendorDash=(req,res)=>{
-    res.render('vendorDash')
+    res.render('developer/vendorDash')
 }
 
 const developerDash=(req,res)=>{
-    res.render('developerDash')
+    res.render('developer/developerDash')
 }
 
 const technologyDash=(req,res)=>{
-    res.render('technologyDash')
+    res.render('developer/technologyDash')
 }
 
 module.exports = {
