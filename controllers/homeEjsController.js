@@ -33,6 +33,10 @@ const developerDash=(req,res)=>{
     res.render('developerDash')
 }
 
+const technologyDash=(req,res)=>{
+    res.render('technologyDash')
+}
+
 module.exports = {
     adminDashboard,
     adminLogin,
@@ -42,5 +46,6 @@ module.exports = {
     vendorDashboard,
     adminDash,
     vendorDash,
-    developerDash
+    developerDash,
+    technologyDash
 }

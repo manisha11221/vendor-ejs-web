@@ -1,0 +1,59 @@
+<%- include('layouts/header.ejs') %>
+<%- include('layouts/sidebar.ejs') %>
+
+<div class="container-scroller">
+  <div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+      <div class="content-wrapper">
+       
+      
+        <div class="row">
+          <div class="col-md-12">
+            <div class="page-header">
+                <h3 class="page-title"> Technology </h3>
+              </div>
+      
+            <div class="card">
+                
+              <div class="card-body">
+                <h4 class="card-title">All Technologies</h4>
+                <div class="table-responsive">
+                  <table class="table table-striped" id="technologyTable">
+                    <thead>
+                      <tr>
+                        <th>Technology Name</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<!-- 
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            fetch("http://localhost:3000/technology/get-all/")
+              .then(response => response.json())
+              .then(data => {
+                displayTechnologies(data.technologies);
+              })
+              .catch(error => {
+                console.error("Error fetching data:", error);
+              });
+        
+            function displayTechnologies(technologies) {
+              const tableBody = document.getElementById("technologyTable").getElementsByTagName('tbody')[0];
+        
+              technologies.forEach(technology => {
+                const row = tableBody.insertRow(-1);
+                const cell = row.insertCell(0);
+        
+                cell.innerHTML = technology.name;
+              });
+            }
+          });
+        </script> -->
+
+<%- include('layouts/footer.ejs') %>
