@@ -28,14 +28,6 @@ const vendorPassword = (req, res ,next) => {
     res.render('vendorPassword');
 }
 
-const vendorDashboard = (req, res, next) => {
-    res.render('vendor-dashboard');
-
-}
-
-
-
-
 
 //devloper Dashboard
 const vendorDash=(req,res)=>{
@@ -50,8 +42,16 @@ const technologyDash=(req,res)=>{
     res.render('developer/technologyDash')
 }
 
+
+// vendor Dashboard
+
+const vendorDashboard = (req, res, next) => {
+    res.render('vendor/vendordashboard');
+
+}
+
 const vendorDeveloper=(req,res)=>{
-    res.render('vendorDeveloper')
+    res.render('vendor/vendorDeveloper')
 }
 module.exports = {
     adminDashboard,
