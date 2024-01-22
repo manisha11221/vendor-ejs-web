@@ -18,7 +18,7 @@ const adminLogin = (req, res, next) => {
 
 //vendor dashboard
 const otpSend=(req,res)=>{
-    res.render('register')
+    res.render('vednor/register')
 }
 
 const otpVerify=(req,res)=>{
@@ -40,15 +40,15 @@ const vendorDashboard = (req, res, next) => {
 
 //devloper Dashboard
 const vendorDash=(req,res)=>{
-    res.render('developer/vendorDash')
+    res.render('admin/developer/vendorDash')
 }
 
 const developerDash=(req,res)=>{
-    res.render('developer/developerDash')
+    res.render('admin/developer/developerDash')
 }
 
 const technologyDash=(req,res)=>{
-    res.render('developer/technologyDash')
+    res.render('admin/developer/technologyDash')
 }
 
 module.exports = {
