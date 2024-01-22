@@ -9,7 +9,6 @@ const adminDash = (req, res) => {
 const adminDashboard = (req, res, next) => {
     res.render('admin-dashboard');
 }
-
 const adminLogin = (req, res, next) => {
     res.render('login');
 }
@@ -51,6 +50,9 @@ const technologyDash=(req,res)=>{
     res.render('admin/developer/technologyDash')
 }
 
+const vendorDeveloper=(req,res)=>{
+    res.render('vendorDeveloper')
+}
 module.exports = {
     adminDashboard,
     adminLogin,
@@ -61,5 +63,6 @@ module.exports = {
     adminDash,
     vendorDash,
     developerDash,
-    technologyDash
+    technologyDash,
+    vendorDeveloper
 }
