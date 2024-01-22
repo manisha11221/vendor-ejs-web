@@ -354,46 +354,17 @@ exports.getvendorById = async (req, res) => {
   }
 };
 
-
-
-//count vendor with token
+//count the vendor
 exports.countVendor = async (req, res) => {
   try {
-    // Get the admin token from the request headers
-    const adminToken = req.headers.authorization;
-
-    // Check if the admin token is provided
-    if (!adminToken) {
-      console.error('Admin token not provided');
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    // Extract the token from "Bearer <token>"
-    const token = adminToken.split(' ')[1];
-
-    // Verify the admin token
-    const decoded = await new Promise((resolve, reject) => {
-      jwt.verify(token, process.env.JWT_SECRET || 'admin-secret-key', (err, decoded) => {
-        if (err) {
-          console.error('Admin token verification failed:', err);
-          reject(err);
-        } else {
-          resolve(decoded);
-        }
-      });
-    });
-
-    // Check if the token is expired
-    if (decoded.exp < Date.now() / 1000) {
-      console.error('Admin token has expired');
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    // Admin token is valid, proceed to count vendors
     const count = await Vendor.countDocuments();
-    res.send(count.toString());
+    
+    res.send(count.toString()); 
   } catch (error) {
-    console.error('Get Vendor Count Error:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Get Vendor Count Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+

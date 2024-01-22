@@ -40,13 +40,10 @@
 <%- include('layouts/footer.ejs') %>
 
 
+<!-- Add this script section in your HTML file or include it in a separate JavaScript file -->
 <script>
     // Fetch and update developer count
-    fetch('/developer/count-developer', {
-      headers: {
-        'Authorization': 'Bearer ' + ,
-      }
-    })
+    fetch('/developer/count-developer')
       .then(response => response.text())
       .then(count => {
         document.getElementById('developerCount').innerText = count;
@@ -54,15 +51,10 @@
       .catch(error => console.error('Error fetching developer count:', error));
   
     // Fetch and update vendor count
-    fetch('/vendor/count-vendor', {
-      headers: {
-        'Authorization': 'Bearer YOUR_ADMIN_TOKEN_HERE'
-      }
-    })
+    fetch('/vendor/count-vendor')
       .then(response => response.text())
       .then(count => {
         document.getElementById('vendorCount').innerText = count;
       })
       .catch(error => console.error('Error fetching vendor count:', error));
   </script>
-  
