@@ -1,0 +1,62 @@
+<%- include('layouts/header.ejs') %>
+<%- include('layouts/vendor-dashboard.ejs') %>
+
+
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title"> Developer Dashboard </h3>
+          </div>
+  
+          <!-- Add your developer data table here -->
+          <div class="row">
+            <!-- Create Developer Form -->
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Create Developer</h4>
+                  <form id="createDeveloperForm">
+                    <!-- Add input fields for developer details (name, experience, technology, resume, etc.) -->
+                    <div class="form-group">
+                      <label for="developerName">Name</label>
+                      <input type="text" class="form-control" id="developerName" placeholder="Enter name" required>
+                    </div>
+                    <!-- Add more input fields for other developer details -->
+                    <button type="submit" class="btn btn-primary">Create Developer</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Developer data table -->
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">All Developers</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="developerTable">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Name</th>
+                          <th>Technology</th>
+                          <th>Experience</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="developerTableBody">
+                        <!-- Table rows will be dynamically populated here -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End of developer data table -->  
+
+
+
+<%- include('layouts/footer.ejs') %>
