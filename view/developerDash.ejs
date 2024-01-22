@@ -22,6 +22,7 @@
                   <table class="table table-striped" id="developerTable">
                     <thead>
                       <tr>
+                        <th>Sr.No</th>
                         <th>ID</th>
                         <th>Name</th>
                         <th>Technology</th>
@@ -42,7 +43,6 @@
             fetch("http://localhost:3000/developer/get-devAll/")
               .then(response => response.json())
               .then(data => {
-                
                 displayDevelopers(data.developers);
               })
               .catch(error => {
@@ -50,24 +50,29 @@
               });
         
             function displayDevelopers(developers) {
-
               const tableBody = document.getElementById("developerTable").getElementsByTagName('tbody')[0];
         
-              developers.forEach(developer => {
+              developers.forEach((developer, index) => {
                 const row = tableBody.insertRow(-1);
-                const cell1 = row.insertCell(0);
-                const cell2 = row.insertCell(1);
-                const cell3 = row.insertCell(2);
-                const cell4 = row.insertCell(3);
+        
+                // Add a cell for serial number
+                const serialCell = row.insertCell(0);
+                serialCell.innerHTML = index + 1;
+        
+                // Add cells for developer details
+                const cell1 = row.insertCell(1);
+                const cell2 = row.insertCell(2);
+                const cell3 = row.insertCell(3);
+                const cell4 = row.insertCell(4);
         
                 cell1.innerHTML = developer._id;
                 cell2.innerHTML = developer.name;
                 cell3.innerHTML = developer.technology;
                 cell4.innerHTML = developer.experience;
-
               });
             }
           });
         </script>
+        
 
 <%- include('layouts/footer.ejs') %>

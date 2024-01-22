@@ -1,28 +1,26 @@
 <!-- vendorDash.ejs -->
-<%- include('layouts/header.ejs') %>
+<%- include('layouts/header.ejs') %> 
 <%- include('layouts/sidebar.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
       <div class="content-wrapper">
-       
         <!-- Add your vendor data table here -->
         <div class="row">
           <div class="col-md-12">
-
             <div class="page-header">
-              <h3 class="page-title"> Vendor Dashboard </h3>
+              <h3 class="page-title">Vendor Dashboard</h3>
             </div>
-    
+
             <div class="card">
-              
               <div class="card-body">
                 <h4 class="card-title">All Vendors</h4>
                 <div class="table-responsive">
                   <table class="table table-striped">
                     <thead>
                       <tr>
+                        <th>Sr.No</th>
                         <th>ID</th>
                         <th>Email</th>
                         <!-- Add more columns based on your vendor model -->
@@ -38,35 +36,46 @@
           </div>
         </div>
         <!-- End of vendor data table -->
-
+      </div>
+      <!-- content-wrapper ends -->
+    </div>
+  </div>
+</div>
+        <%- include('layouts/footer.ejs') %>
         <!-- Inline script to fetch and populate data -->
         <script>
-          document.addEventListener('DOMContentLoaded', function() {
+          document.addEventListener("DOMContentLoaded", function () {
             // Fetch data from the API
-            fetch('http://localhost:3000/vendor/get-all-Vendors')
-              .then(response => response.json())
-              .then(data => {
+            fetch("http://localhost:3000/vendor/get-all-Vendors")
+              .then((response) => response.json())
+              .then((data) => {
                 if (data.success) {
                   // Populate the table with the received data
-                  var vendorTableBody = document.getElementById('vendorTableBody');
+                  var vendorTableBody =
+                    document.getElementById("vendorTableBody");
 
-                  data.vendors.forEach(function(vendor) {
-                    var row = '<tr>' +
-                      '<td>' + vendor._id + '</td>' +
-                      '<td>' + vendor.email + '</td>' +
-                      '</tr>';
+                  data.vendors.forEach(function (vendor, index) {
+                    var row =
+                      "<tr>" +
+                      "<td>" +
+                      (index + 1) +
+                      "</td>" + // Add serial number
+                      "<td>" +
+                      vendor._id +
+                      "</td>" +
+                      "<td>" +
+                      vendor.email +
+                      "</td>" +
+                      "</tr>";
                     vendorTableBody.innerHTML += row;
                   });
                 } else {
-                  console.error('Failed to fetch vendors.');
+                  console.error("Failed to fetch vendors.");
                 }
               })
-              .catch(error => {
-                console.error('Error fetching vendors:', error);
+              .catch((error) => {
+                console.error("Error fetching vendors:", error);
               });
           });
         </script>
-      </div>
-      <!-- content-wrapper ends -->
-
-<%- include('layouts/footer.ejs') %>
+      
