@@ -31,13 +31,14 @@
             </div>
           </div>
         </div>
-<!-- 
+
         <script>
           document.addEventListener("DOMContentLoaded", function () {
-            fetch("http://localhost:3000/technology/get-all/")
+            fetch("http://localhost:3000/technology/get-technology")
               .then(response => response.json())
               .then(data => {
-                displayTechnologies(data.technologies);
+                displayTechnologies(data.technology);
+                console.log("data::::",data.technology)
               })
               .catch(error => {
                 console.error("Error fetching data:", error);
@@ -54,6 +55,6 @@
               });
             }
           });
-        </script> -->
+        </script>
 
 <%- include('layouts/footer.ejs') %>
