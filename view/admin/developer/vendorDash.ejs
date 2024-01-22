@@ -1,6 +1,6 @@
 <!-- vendorDash.ejs -->
-<%- include('../../layouts/header.ejs') %> 
-<%- include('../../layouts/sidebar.ejs') %>
+<%- include('../layouts/header.ejs') %>
+ <%- include('../layouts/sidebar.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
@@ -41,41 +41,44 @@
     </div>
   </div>
 </div>
-        <%- include('../../layouts/footer.ejs') %>
-        <!-- Inline script to fetch and populate data -->
-        <script>
-          document.addEventListener("DOMContentLoaded", function () {
-            // Fetch data from the API
-            fetch("http://localhost:3000/vendor/get-all-Vendors")
-              .then((response) => response.json())
-              .then((data) => {
-                if (data.success) {
-                  // Populate the table with the received data
-                  var vendorTableBody =
-                    document.getElementById("vendorTableBody");
+<%- include('../../layouts/footer.ejs') %>
+<!-- Inline script to fetch and populate data -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Fetch data from the API
+    fetch("http://localhost:3000/vendor/get-all-Vendors")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          // Populate the table with the received data
+          var vendorTableBody = document.getElementById("vendorTableBody");
 
-                  data.vendors.forEach(function (vendor, index) {
-                    var row =
-                      "<tr>" +
-                      "<td>" +
-                      (index + 1) +
-                      "</td>" + // Add serial number
-                      "<td>" +
-                      vendor._id +
-                      "</td>" +
-                      "<td>" +
-                      vendor.email +
-                      "</td>" +
-                      "</tr>";
-                    vendorTableBody.innerHTML += row;
-                  });
-                } else {
-                  console.error("Failed to fetch vendors.");
-                }
-              })
-              .catch((error) => {
-                console.error("Error fetching vendors:", error);
-              });
+          data.vendors.forEach(function (vendor, index) {
+            var row =
+              "<tr>" +
+              "<td>" +
+              (index + 1) +
+              "</td>" + // Add serial number
+              "<td>" +
+              vendor._id +
+              "</td>" +
+              "<td>" +
+              vendor.email +
+              "</td>" +
+              "</tr>";
+            vendorTableBody.innerHTML += row;
           });
-        </script>
-      
+        } else {
+          console.error("API response indicates failure:", data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching vendors:", error);
+      });
+  });
+</script>

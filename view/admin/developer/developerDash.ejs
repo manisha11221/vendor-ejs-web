@@ -1,21 +1,17 @@
 <!-- developerDash.ejs -->
-<%- include('../../layouts/header.ejs') %>
-<%- include('../../layouts/sidebar.ejs') %>
+<%- include('../layouts/header.ejs') %> <%- include('../layouts/sidebar.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
       <div class="content-wrapper">
-       
-
         <!-- Developer data table -->
         <div class="row">
           <div class="col-md-12">
             <div class="page-header">
-              <h3 class="page-title"> Developer Dashboard </h3>
+              <h3 class="page-title">Developer Dashboard</h3>
             </div>
             <div class="card">
-              
               <div class="card-body">
                 <h4 class="card-title">All Developers</h4>
                 <div class="table-responsive">
@@ -41,30 +37,32 @@
         <script>
           document.addEventListener("DOMContentLoaded", function () {
             fetch("http://localhost:3000/developer/get-devAll/")
-              .then(response => response.json())
-              .then(data => {
+              .then((response) => response.json())
+              .then((data) => {
                 displayDevelopers(data.developers);
               })
-              .catch(error => {
+              .catch((error) => {
                 console.error("Error fetching data:", error);
               });
-        
+
             function displayDevelopers(developers) {
-              const tableBody = document.getElementById("developerTable").getElementsByTagName('tbody')[0];
-        
+              const tableBody = document
+                .getElementById("developerTable")
+                .getElementsByTagName("tbody")[0];
+
               developers.forEach((developer, index) => {
                 const row = tableBody.insertRow(-1);
-        
+
                 // Add a cell for serial number
                 const serialCell = row.insertCell(0);
                 serialCell.innerHTML = index + 1;
-        
+
                 // Add cells for developer details
                 const cell1 = row.insertCell(1);
                 const cell2 = row.insertCell(2);
                 const cell3 = row.insertCell(3);
                 const cell4 = row.insertCell(4);
-        
+
                 cell1.innerHTML = developer._id;
                 cell2.innerHTML = developer.name;
                 cell3.innerHTML = developer.technology;
@@ -73,6 +71,9 @@
             }
           });
         </script>
-        
 
-<%- include('../../layouts/footer.ejs') %>
+        <%- include('../layouts/footer.ejs') %>
+      </div>
+    </div>
+  </div>
+</div>

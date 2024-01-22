@@ -1,17 +1,30 @@
 
-//admin Route
-
+//admin Dashboard
 const adminDash = (req, res) => {
-    res.render('admin/adminDash');
+    res.render('admin/developer/adminDash');
   };
   
+// const adminDashboard = (req, res, next) => {
+//     res.render('admin-dashboard');
+// }
 
-const adminDashboard = (req, res, next) => {
-    res.render('admin-dashboard');
-}
 const adminLogin = (req, res, next) => {
     res.render('login');
 }
+
+const vendorDash=(req,res)=>{
+    res.render('admin/developer/vendorDash')
+}
+
+const developerDash=(req,res)=>{
+    res.render('admin/developer/developerDash')
+}
+
+const technologyDash=(req,res)=>{
+    res.render('admin/developer/technologyDash')
+}
+
+
 
 
 
@@ -33,28 +46,21 @@ const vendorDashboard = (req, res, next) => {
 
 }
 
+const vendorTech = (req, res, next) => {
+    res.render('vendor/vendorTech');
+}
+
 
 
 
 
 //devloper Dashboard
-const vendorDash=(req,res)=>{
-    res.render('admin/developer/vendorDash')
-}
 
-const developerDash=(req,res)=>{
-    res.render('admin/developer/developerDash')
-}
-
-const technologyDash=(req,res)=>{
-    res.render('admin/developer/technologyDash')
-}
 
 const vendorDeveloper=(req,res)=>{
-    res.render('vendorDeveloper')
+    res.render('vendor/vendorDeveloper')
 }
 module.exports = {
-    adminDashboard,
     adminLogin,
     otpSend,
     otpVerify,
@@ -64,5 +70,6 @@ module.exports = {
     vendorDash,
     developerDash,
     technologyDash,
-    vendorDeveloper
+    vendorDeveloper,
+    vendorTech
 }

@@ -8,9 +8,13 @@ const vendorRoutes = require('./routes/vendorRoutes')
 const techRoutes = require('./routes/techRoutes')
 const devroutes = require('./routes/developerRoutes')
 const ejsRoute  =require('./routes/homeEjsRoute')
+const cors = require('cors');
+
 
 const app = express();
 const port = 3000;
+// Use cors middleware
+app.use(cors());
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
