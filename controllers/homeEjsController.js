@@ -18,19 +18,19 @@ const adminLogin = (req, res, next) => {
 
 //vendor dashboard
 const otpSend=(req,res)=>{
-    res.render('vednor/register')
+    res.render('vendor/register')
 }
 
 const otpVerify=(req,res)=>{
-    res.render('sendOtp')
+    res.render('vendor/sendOtp')
 }
 
 const vendorPassword = (req, res ,next) => {
-    res.render('vendorPassword');
+    res.render('vendor/vendorPassword');
 }
 
 const vendorDashboard = (req, res, next) => {
-    res.render('vendor-dashboard');
+    res.render('vendor/vendor-dashboard');
 
 }
 
