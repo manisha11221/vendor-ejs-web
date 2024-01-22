@@ -21,7 +21,6 @@ const vendorPassword = (req, res ,next) => {
     res.render('vendorPassword');
 }
 
-
 const adminDash=(req,res)=>{
     res.render('adminDash')
 }
@@ -34,6 +33,10 @@ const developerDash=(req,res)=>{
     res.render('developerDash')
 }
 
+const technologyDash=(req,res)=>{
+    res.render('technologyDash')
+}
+
 module.exports = {
     adminDashboard,
     adminLogin,
@@ -42,5 +45,7 @@ module.exports = {
     vendorPassword,
     vendorDashboard,
     adminDash,
-    vendorDash,developerDash
+    vendorDash,
+    developerDash,
+    technologyDash
 }

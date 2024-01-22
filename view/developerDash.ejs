@@ -6,37 +6,68 @@
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
       <div class="content-wrapper">
-        <div class="page-header">
-          <h3 class="page-title"> Developer Dashboard </h3>
-        </div>
+       
 
         <!-- Developer data table -->
         <div class="row">
           <div class="col-md-12">
+            <div class="page-header">
+              <h3 class="page-title"> Developer Dashboard </h3>
+            </div>
             <div class="card">
+              
               <div class="card-body">
                 <h4 class="card-title">All Developers</h4>
                 <div class="table-responsive">
-                  <table class="table table-striped">
+                  <table class="table table-striped" id="developerTable">
                     <thead>
                       <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Position</th>
+                        <th>Technology</th>
                         <th>Experience</th>
                         <!-- Add more columns based on your developer model -->
                       </tr>
                     </thead>
-              
+                    <tbody></tbody>
                   </table>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <!-- End of developer data table -->
 
-      </div>
-      <!-- content-wrapper ends -->
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            fetch("http://localhost:3000/developer/get-devAll/")
+              .then(response => response.json())
+              .then(data => {
+                
+                displayDevelopers(data.developers);
+              })
+              .catch(error => {
+                console.error("Error fetching data:", error);
+              });
+        
+            function displayDevelopers(developers) {
+
+              const tableBody = document.getElementById("developerTable").getElementsByTagName('tbody')[0];
+        
+              developers.forEach(developer => {
+                const row = tableBody.insertRow(-1);
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
+        
+                cell1.innerHTML = developer._id;
+                cell2.innerHTML = developer.name;
+                cell3.innerHTML = developer.technology;
+                cell4.innerHTML = developer.experience;
+
+              });
+            }
+          });
+        </script>
 
 <%- include('layouts/footer.ejs') %>
