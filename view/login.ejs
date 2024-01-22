@@ -75,11 +75,11 @@
 <script>
 function signIn() {
   var formData = {
-    email: document.getElementById("InputEmail1").value,
+    email_id: document.getElementById("InputEmail1").value,
     password: document.getElementById("InputPassword1").value,
     role: document.getElementById("role").value,
   };
-  console.log("Email:", formData.email);
+  console.log("Email:", formData.email_id);
   console.log("Password:", formData.password);
   console.log("Role:", formData.role);
 
@@ -92,6 +92,8 @@ function signIn() {
 }
 
 function signInAdmin(formData) {
+
+  console.log("admin============");
   fetch("http://localhost:3000/admin/login", {
     method: "POST",
     headers: {
@@ -99,7 +101,12 @@ function signInAdmin(formData) {
     },
     body: JSON.stringify(formData),
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then((data) => {
       if (data.success) {
         if (formData.role === "admin" && data.role === "admin") {
@@ -107,7 +114,6 @@ function signInAdmin(formData) {
         } else if (formData.role === "vendor" && data.role === "vendor") {
           window.location.href = data.redirectTo;
         } else {
-          // Role mismatch
           console.log("Role mismatch, handle accordingly");
           displayErrorMessage("Role mismatch. Please select the correct role.");
         }
@@ -118,11 +124,10 @@ function signInAdmin(formData) {
       }
     })
     .catch((error) => {
-      console.error("Error:", error);
-      displayErrorMessage("An error occurred during authentication. Please try again.");
+      console.error("Error during authentication:", error);
+      displayErrorMessage(`An error occurred during authentication: ${error.message}`);
     });
 }
-
 
 
 function signInVendor(formData) {
