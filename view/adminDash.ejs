@@ -40,21 +40,28 @@
 <%- include('layouts/footer.ejs') %>
 
 
-<!-- Add this script section in your HTML file or include it in a separate JavaScript file -->
 <script>
-    // Fetch developer count
-    fetch('http://localhost:3000/developer/count-developer')
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('developerCount').textContent = data;
+    // Fetch and update developer count
+    fetch('/developer/count-developer', {
+      headers: {
+        'Authorization': 'Bearer ' + ,
+      }
+    })
+      .then(response => response.text())
+      .then(count => {
+        document.getElementById('developerCount').innerText = count;
       })
       .catch(error => console.error('Error fetching developer count:', error));
   
-    // Fetch vendor count
-    fetch('http://localhost:3000/vendor/count-vendor')
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('vendorCount').textContent = data;
+    // Fetch and update vendor count
+    fetch('/vendor/count-vendor', {
+      headers: {
+        'Authorization': 'Bearer YOUR_ADMIN_TOKEN_HERE'
+      }
+    })
+      .then(response => response.text())
+      .then(count => {
+        document.getElementById('vendorCount').innerText = count;
       })
       .catch(error => console.error('Error fetching vendor count:', error));
   </script>

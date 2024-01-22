@@ -7,48 +7,80 @@ const Vendor = require("../models/vendorModel");
 const Developer = require("../models/developerModel");
 
 
+// exports.adminLogin = (req, res) => {
+//   try {
+//     const staticAdminData = {
+//       email_id: "admin@g.com",
+//       password: "admin",
+//       role: "admin",
+//     };
+
+//     if (req.body.email_id !== staticAdminData.email_id || req.body.password !== staticAdminData.password) {
+//       return res.status(401).json({ success: false, message: "Invalid credentials" });
+//     }
+
+//     const token = jwt.sign(
+//       { adminId: "admin-secret-key", email_id: staticAdminData.email_id },
+//       process.env.JWT_SECRET || "admin-secret-key"
+//     );
+
+    
+//     res.status(200).json({
+//       success: true,
+//       message: "Admin login successful",
+//       role: staticAdminData.role,
+//       token,
+//     });
+//   } catch (error) {
+//     console.error("Error during admin login:", error);
+//     res.status(500).json({ success: false, message: "Internal server error", error });
+//   }
+// };
+
+
 exports.adminLogin = async (req, res) => {
-  // Static data for simplicity
-  const staticAdminData = {
-    email_id: "admin@example.com",
-    password: "admin123",
-    role: "admin"
-  };
-
   try {
-    const existingAdmin = await Admin.findOne({
-      email_id: staticAdminData.email_id,
-    });
+    const staticAdminData = {
+      email_id: "admin@g.com",
+      password: "admin",
+      role: "admin",
+    };
 
-    if (existingAdmin) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Admin is already login" });
+    // Check if the provided credentials match the static admin data
+    if (req.body.email_id !== staticAdminData.email_id || req.body.password !== staticAdminData.password) {
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
-    const hashedPassword = await bcrypt.hash(staticAdminData.password, 10);
 
-    const newAdmin = new Admin({
-      email_id: staticAdminData.email_id,
-      password: hashedPassword,
-      role: staticAdminData.role
-    });
+    // Find or create the admin user
+    let adminUser = await Admin.findOne({ email_id: staticAdminData.email_id });
 
+    if (!adminUser) {
+      adminUser = new Admin({
+        email_id: staticAdminData.email_id,
+        password: staticAdminData.password,
+        role: staticAdminData.role,
+      });
+    }
+
+    // Generate a JWT token for authentication
     const token = jwt.sign(
-      { adminId: newAdmin._id, email: newAdmin.email_id },
-      "admin-secret-key"
+      { adminId: adminUser._id, email_id: adminUser.email_id },
+      process.env.JWT_SECRET || "admin-secret-key"
     );
-    newAdmin.token = token;
 
-    await newAdmin.save();
+    // Update the admin user with the new token
+    adminUser.token = token;
+    await adminUser.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "Admin registered successfully",
+      message: "Admin login successful",
+      role: adminUser.role,
       token,
     });
   } catch (error) {
-    console.error("Error during admin registration:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Error during admin login:", error);
+    res.status(500).json({ success: false, message: "Internal server error", error });
   }
 };
 
@@ -90,5 +122,3 @@ exports.searchData = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
