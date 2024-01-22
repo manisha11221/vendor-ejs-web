@@ -46,24 +46,6 @@ exports.adminLogin = async (req, res) => {
       role: "admin",
     };
 
-<<<<<<< HEAD
-    if (!existingAdmin) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid credentials" });
-    }
-    console.log("existingAdmin",existingAdmin);
-    const passwordMatch = await bcrypt.compare(
-      staticAdminData.password,
-      existingAdmin.password
-    );
-
-    if (!passwordMatch) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid credentials" });
-    }
-=======
     // Check if the provided credentials match the static admin data
     if (req.body.email_id !== staticAdminData.email_id || req.body.password !== staticAdminData.password) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
@@ -71,7 +53,6 @@ exports.adminLogin = async (req, res) => {
 
     // Find or create the admin user
     let adminUser = await Admin.findOne({ email_id: staticAdminData.email_id });
->>>>>>> 7144cd0ad4852a5ccc41e33cf30dfec19bfbb9be
 
     if (!adminUser) {
       adminUser = new Admin({
@@ -83,18 +64,6 @@ exports.adminLogin = async (req, res) => {
 
     // Generate a JWT token for authentication
     const token = jwt.sign(
-<<<<<<< HEAD
-      { adminId: existingAdmin._id, email: existingAdmin.email_id },
-      "admin-secret-key"
-    );
-
-    existingAdmin.token = token;
-    await existingAdmin.save();
-
-    res.status(200).json({
-      success: true,
-      message: "Admin logged in successfully",
-=======
       { adminId: adminUser._id, email_id: adminUser.email_id },
       process.env.JWT_SECRET || "admin-secret-key"
     );
@@ -107,16 +76,11 @@ exports.adminLogin = async (req, res) => {
       success: true,
       message: "Admin login successful",
       role: adminUser.role,
->>>>>>> 7144cd0ad4852a5ccc41e33cf30dfec19bfbb9be
       token,
     });
   } catch (error) {
     console.error("Error during admin login:", error);
-<<<<<<< HEAD
-    res.status(500).json({ success: false, message: "Internal server error" });
-=======
     res.status(500).json({ success: false, message: "Internal server error", error });
->>>>>>> 7144cd0ad4852a5ccc41e33cf30dfec19bfbb9be
   }
 };
 
