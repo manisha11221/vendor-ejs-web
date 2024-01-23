@@ -70,109 +70,111 @@
   <!-- page-body-wrapper ends -->
 </div>
 
-
-
 <script>
-function signIn() {
-  var formData = {
-    email_id: document.getElementById("InputEmail1").value,
-    password: document.getElementById("InputPassword1").value,
-    role: document.getElementById("role").value,
-  };
-  console.log("Email:", formData.email_id);
-  console.log("Password:", formData.password);
-  console.log("Role:", formData.role);
+  function signIn() {
+    var formData = {
+      email_id: document.getElementById("InputEmail1").value,
+      password: document.getElementById("InputPassword1").value,
+      role: document.getElementById("role").value,
+    };
+    console.log("Email:", formData.email_id);
+    console.log("Password:", formData.password);
+    console.log("Role:", formData.role);
 
-  // You can call either signInAdmin or signInVendor based on the role
-  if (formData.role === "admin") {
-    signInAdmin(formData);
-  } else if (formData.role === "vendor") {
-    signInVendor(formData);
+    // You can call either signInAdmin or signInVendor based on the role
+    if (formData.role === "admin") {
+      signInAdmin(formData);
+    } else if (formData.role === "vendor") {
+      signInVendor(formData);
+    }
   }
-}
 
-function signInAdmin(formData) {
-
-  console.log("admin============");
-  fetch("http://localhost:3000/admin/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
+  function signInAdmin(formData) {
+    console.log("admin============");
+    fetch("http://localhost:3000/admin/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
     })
-    .then((data) => {
-      if (data.success) {
-        if (formData.role === "admin" && data.role === "admin") {
-          window.location.href = "adminDash";
-        } else if (formData.role === "vendor" && data.role === "vendor") {
-          window.location.href = data.redirectTo;
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          if (formData.role === "admin" && data.role === "admin") {
+            window.location.href = "adminDash";
+          } else if (formData.role === "vendor" && data.role === "vendor") {
+            window.location.href = data.redirectTo;
+          } else {
+            console.log("Role mismatch, handle accordingly");
+            displayErrorMessage(
+              "Role mismatch. Please select the correct role."
+            );
+          }
+          alert(data.message);
         } else {
-          console.log("Role mismatch, handle accordingly");
-          displayErrorMessage("Role mismatch. Please select the correct role.");
+          console.error("Authentication failed:", data.message);
+          displayErrorMessage(data.message);
         }
-        alert(data.message);
-      } else {
-        console.error("Authentication failed:", data.message);
-        displayErrorMessage(data.message);
-      }
-    })
-    .catch((error) => {
-      console.error("Error during authentication:", error);
-      displayErrorMessage(`An error occurred during authentication: ${error.message}`);
-    });
-}
-
-
-function signInVendor(formData) {
-  fetch("http://localhost:3000/vendor/login-vendor", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        if (formData.role === "vendor") {
-          window.location.href = data.redirectTo;
-        } else if (formData.role === "admin") {
-          // Role mismatch for admin
-          console.log("Role mismatch for admin, handle accordingly");
-          displayErrorMessage("Role mismatch for admin. Please select the correct role.");
-        }
-        alert(data.message);
-      } else {
-        console.error("Authentication failed:", data.message);
-        displayErrorMessage(data.message);
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      displayErrorMessage("An error occurred during authentication. Please try again.");
-    });
-}
-
-function displayErrorMessage(message) {
-  // Display the error message on the screen
-  var errorMessageElement = document.getElementById("errorMessage");
-
-  if (!errorMessageElement) {
-    errorMessageElement = document.createElement("div");
-    errorMessageElement.id = "errorMessage";
-    errorMessageElement.className = "alert alert-danger mt-3";
-    document.getElementById("loginForm").appendChild(errorMessageElement);
+      })
+      .catch((error) => {
+        console.error("Error during authentication:", error);
+        displayErrorMessage(
+          `An error occurred during authentication: ${error.message}`
+        );
+      });
   }
 
-  errorMessageElement.textContent = message;
-}
+  function signInVendor(formData) {
+    fetch("http://localhost:3000/vendor/login-vendor", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          if (formData.role === "vendor") {
+            window.location.href = data.redirectTo;
+          } else if (formData.role === "admin") {
+            // Role mismatch for admin
+            console.log("Role mismatch for admin, handle accordingly");
+            displayErrorMessage(
+              "Role mismatch for admin. Please select the correct role."
+            );
+          }
+          alert(data.message);
+        } else {
+          console.error("Authentication failed:", data.message);
+          displayErrorMessage(data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        displayErrorMessage(
+          "An error occurred during authentication. Please try again."
+        );
+      });
+  }
 
+  function displayErrorMessage(message) {
+    // Display the error message on the screen
+    var errorMessageElement = document.getElementById("errorMessage");
+
+    if (!errorMessageElement) {
+      errorMessageElement = document.createElement("div");
+      errorMessageElement.id = "errorMessage";
+      errorMessageElement.className = "alert alert-danger mt-3";
+      document.getElementById("loginForm").appendChild(errorMessageElement);
+    }
+
+    errorMessageElement.textContent = message;
+  }
 </script>
-

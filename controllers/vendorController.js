@@ -141,48 +141,83 @@ exports.setPassword = async (req, res) => {
 
 
 //resetPassword
+// exports.resetPassword = async (req, res) => {
+//   try {
+//     const { email, old_psw, new_psw, confirm_psw } = req.body;
+
+//     const vendor = await Vendor.findOne({ email });
+
+//     if (!vendor) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Vendor not found" });
+//     }
+
+//     const isPasswordValid = await bcrypt.compare(old_psw, vendor.password);
+
+//     console.log("data", isPasswordValid);
+
+//     if (!isPasswordValid) {
+//       return res
+//         .status(401)
+//         .json({ success: false, message: "Invalid old password" });
+//     }
+
+//     if (new_psw !== confirm_psw) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "New password and confirm password do not match",
+//       });
+//     }
+
+//     const hashedPassword = await bcrypt.hash(new_psw, 10);
+//     vendor.password = hashedPassword;
+
+//     await vendor.save();
+
+//     res
+//       .status(200)
+//       .json({ success: true, message: "Password reset successfully" });
+//   } catch (error) {
+//     console.error("Reset Password Error:", error);
+//     res.status(500).json({ success: false, message: "Internal Server Error" });
+//   }
+// };
+
+
 exports.resetPassword = async (req, res) => {
   try {
-    const { email, old_psw, new_psw, confirm_psw } = req.body;
+    const { newPassword, confirmPassword } = req.body;
 
-    const vendor = await Vendor.findOne({ email });
+    // Assuming you have a userId in the request body
+    const userId = req.params.userId;
+
+    const vendor = await Vendor.findById(userId);
 
     if (!vendor) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Vendor not found" });
+      return res.status(404).json({ success: false, message: "Vendor not found" });
     }
 
-    const isPasswordValid = await bcrypt.compare(old_psw, vendor.password);
+    // Generate a reset token (you may want to use a library for this)
+    const resetToken = generateResetToken();
 
-    console.log("data", isPasswordValid);
+    // Store the reset token in the database
+    vendor.resetToken = resetToken;
 
-    if (!isPasswordValid) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid old password" });
-    }
-
-    if (new_psw !== confirm_psw) {
-      return res.status(400).json({
-        success: false,
-        message: "New password and confirm password do not match",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(new_psw, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     vendor.password = hashedPassword;
 
     await vendor.save();
 
-    res
-      .status(200)
-      .json({ success: true, message: "Password reset successfully" });
+    // Include the reset token in the response
+    res.status(200).json({ success: true, message: "Password reset successfully", resetToken });
   } catch (error) {
     console.error("Reset Password Error:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+
 
 //login the vendor
 // exports.loginVendor = async (req, res) => {
@@ -245,7 +280,6 @@ exports.loginVendor = async (req, res) => {
     const generatedToken = jwt.sign(
       { email: vendor.email, _id: vendor._id, role: "vendor" }, // Include the role in the token
       "vendor-token",
-      { expiresIn: "1h" }
     );
 
     // Save the token to the vendor document

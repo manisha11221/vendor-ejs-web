@@ -41,21 +41,19 @@ const vendorPassword = (req, res ,next) => {
     res.render('vendor/vendorPassword');
 }
 
-const vendorDashboard = (req, res, next) => {
-    res.render('vendor/vendor-dashboard');
-
-}
-
 const vendorTech = (req, res, next) => {
     res.render('vendor/vendorTech');
 }
-
-
-
-
-
 //devloper Dashboard
 
+
+
+// vendor Dashboard
+
+const vendorDashboard = (req, res, next) => {
+    res.render('vendor/vendordashboard');
+
+}
 
 const vendorDeveloper=(req,res)=>{
     res.render('vendor/vendorDeveloper')
