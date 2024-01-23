@@ -51,7 +51,7 @@ const vendorTech = (req, res, next) => {
 // vendor Dashboard
 
 const vendorDashboard = (req, res, next) => {
-    res.render('vendor/vendordashboard');
+    res.render('vendor/vendorDashboard');
 
 }
 
