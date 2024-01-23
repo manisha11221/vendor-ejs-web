@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
+
 // Define email configuration
 const emailConfig = {
   service: "gmail",
@@ -141,81 +142,50 @@ exports.setPassword = async (req, res) => {
 
 
 //resetPassword
-// exports.resetPassword = async (req, res) => {
-//   try {
-//     const { email, old_psw, new_psw, confirm_psw } = req.body;
-
-//     const vendor = await Vendor.findOne({ email });
-
-//     if (!vendor) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Vendor not found" });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(old_psw, vendor.password);
-
-//     console.log("data", isPasswordValid);
-
-//     if (!isPasswordValid) {
-//       return res
-//         .status(401)
-//         .json({ success: false, message: "Invalid old password" });
-//     }
-
-//     if (new_psw !== confirm_psw) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "New password and confirm password do not match",
-//       });
-//     }
-
-//     const hashedPassword = await bcrypt.hash(new_psw, 10);
-//     vendor.password = hashedPassword;
-
-//     await vendor.save();
-
-//     res
-//       .status(200)
-//       .json({ success: true, message: "Password reset successfully" });
-//   } catch (error) {
-//     console.error("Reset Password Error:", error);
-//     res.status(500).json({ success: false, message: "Internal Server Error" });
-//   }
-// };
-
-
 exports.resetPassword = async (req, res) => {
   try {
-    const { newPassword, confirmPassword } = req.body;
+    const { email, old_psw, new_psw, confirm_psw } = req.body;
 
-    // Assuming you have a userId in the request body
-    const userId = req.params.userId;
-
-    const vendor = await Vendor.findById(userId);
+    const vendor = await Vendor.findOne({ email });
 
     if (!vendor) {
-      return res.status(404).json({ success: false, message: "Vendor not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Vendor not found" });
     }
 
-    // Generate a reset token (you may want to use a library for this)
-    const resetToken = generateResetToken();
+    const isPasswordValid = await bcrypt.compare(old_psw, vendor.password);
 
-    // Store the reset token in the database
-    vendor.resetToken = resetToken;
+    console.log("data", isPasswordValid);
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    if (!isPasswordValid) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid old password" });
+    }
+
+    if (new_psw !== confirm_psw) {
+      return res.status(400).json({
+        success: false,
+        message: "New password and confirm password do not match",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(new_psw, 10);
     vendor.password = hashedPassword;
 
     await vendor.save();
 
-    // Include the reset token in the response
-    res.status(200).json({ success: true, message: "Password reset successfully", resetToken });
+    res
+      .status(200)
+      .json({ success: true, message: "Password reset successfully" });
   } catch (error) {
     console.error("Reset Password Error:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+
 
 
 
@@ -266,14 +236,14 @@ exports.loginVendor = async (req, res) => {
     const vendor = await Vendor.findOne({ email });
 
     if (!vendor) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
 
     // Validate the provided password
     const isPasswordValid = await bcrypt.compare(password, vendor.password);
 
     if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
 
     // Generate a token for the user during login
@@ -288,31 +258,20 @@ exports.loginVendor = async (req, res) => {
     // Save the updated document
     await vendor.save();
 
-    // Check if vendor data exists in the database
-    const vendorExists = await Vendor.findOne({ email });
-
-    if (vendorExists) {
-      // Redirect to vendor dashboard if data exists
-      res.json({
-        message: "Login successful",
-        token: generatedToken,
-        role: "vendor",
-        redirectTo: "/vendor/dashboard",
-      });
-    } else {
-      // Redirect to send OTP page if data doesn't exist
-      res.json({
-        message: "Login successful",
-        token: generatedToken,
-        role: "vendor",
-        redirectTo: "/vendor/send-otp",
-      });
-    }
+    // Redirect to the vendor dashboard
+    res.json({
+      success: true,
+      message: "Login successful",
+      token: generatedToken,
+      role: "vendor",
+      redirectTo: "/vendor-dashboard", 
+    });
   } catch (error) {
     console.error("Login Error:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
 
 //edit_profile
 exports.editProfile = async (req, res) => {
@@ -391,9 +350,8 @@ exports.getvendorById = async (req, res) => {
 //count the vendor
 exports.countVendor = async (req, res) => {
   try {
-    const count = await Vendor.countDocuments();
-    
-    res.send(count.toString()); 
+      const count = await Vendor.countDocuments();
+      res.send(count.toString());
   } catch (error) {
     console.error("Get Vendor Count Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -401,4 +359,40 @@ exports.countVendor = async (req, res) => {
 };
 
 
+
+
+
+//vendor logout
+exports.logoutVendor = async (req, res, next) => {
+  try {
+    // Get the token from the request headers
+    const tokenFromRequest = req.header("Authorization");
+
+    console.log("---",tokenFromRequest);
+    // Handle missing or undefined token
+    if (!tokenFromRequest) {
+      return res.status(401).json({ success: false, message: "Token missing" });
+    }
+
+    const token = tokenFromRequest.replace("Bearer ", "").trim();
+
+    // Find the vendor with the provided token
+    const vendorUser = await Vendor.findOne({ token });
+
+
+    if (!vendorUser) {
+      return res.status(401).json({ success: false, message: "Invalid token" });
+    }
+
+    // Clear the token in the database
+    vendorUser.token = null;
+    await vendorUser.save();
+
+    res.json({ success: true, message: "Vendor logout successful" });
+    //login
+  } catch (error) {
+    console.error("Error during vendor logout:", error);
+    res.status(500).json({ success: false, message: "Internal server error", error });
+  }
+};
 

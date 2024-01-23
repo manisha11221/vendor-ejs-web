@@ -1,8 +1,9 @@
-<%- include('../../layouts/header.ejs') %> 
-<%- include('../../layouts/sidebar.ejs') %>
+<%- include('../../layouts/header.ejs') %> <%-
+include('../../layouts/sidebar.ejs') %>
 <div class="container-scroller">
+  <!-- Your EJS template -->
+  <button id="logoutButton" type="button">Logout</button>
   <!-- Other parts of the code remain unchanged -->
-
   <!-- content-wrapper starts -->
   <div class="main-panel">
     <div class="content-wrapper">
@@ -38,27 +39,76 @@
       <!-- End of your content -->
     </div>
     <!-- content-wrapper ends -->
-
-    <%- include('../../layouts/footer.ejs') %>
-
-    <script>
-      // Fetch and update developer count
-      fetch("/developer/count-developer")
-        .then((response) => response.text())
-        .then((count) => {
-          document.getElementById("developerCount").innerText = count;
-        })
-        .catch((error) =>
-          console.error("Error fetching developer count:", error)
-        );
-
-      // Fetch and update vendor count
-      fetch("/vendor/count-vendor")
-        .then((response) => response.text())
-        .then((count) => {
-          document.getElementById("vendorCount").innerText = count;
-        })
-        .catch((error) => console.error("Error fetching vendor count:", error));
-    </script>
   </div>
 </div>
+
+<%- include('../../layouts/footer.ejs') %>
+<script>
+  const token = localStorage.getItem("adminToken");
+
+  fetch("/developer/count-developer", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.text())
+    .then((count) => {
+      document.getElementById("developerCount").innerText = count;
+    })
+    .catch((error) => console.error("Error fetching developer count:", error));
+
+  // Function to fetch and update vendor count
+  fetch("/vendor/count-vendor", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.text())
+    .then((count) => {
+      document.getElementById("vendorCount").innerText = count;
+    })
+    .catch((error) => console.error("Error fetching vendor count:", error));
+
+  //logout admin
+  document.addEventListener("DOMContentLoaded", function () {
+    const logoutButton = document.getElementById("logoutButton");
+
+    logoutButton.addEventListener("click", async function () {
+      try {
+        console.log("reddyyyyyyyyyy");
+        const response = await fetch("/admin/logout", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.ok) {
+          const responseData = await response.json();
+          window.location.href = "/login";
+          localStorage.removeItem("adminToken");
+        } else {
+          // Handle error responses
+          const errorData = await response.json();
+          console.error("Logout failed:", errorData);
+        }
+      } catch (error) {
+        console.error("Error during logout:", error);
+      }
+    });
+  });
+</script>
+
+
+<script>
+  const tokens = localStorage.getItem("adminToken");
+
+  if (!tokens) {
+    // Redirect to the login page if the token is not present
+    window.location.href = "/login";
+  }
+</script>

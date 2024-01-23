@@ -7,37 +7,10 @@ const Vendor = require("../models/vendorModel");
 const Developer = require("../models/developerModel");
 
 
-// exports.adminLogin = (req, res) => {
-//   try {
-//     const staticAdminData = {
-//       email_id: "admin@g.com",
-//       password: "admin",
-//       role: "admin",
-//     };
-
-//     if (req.body.email_id !== staticAdminData.email_id || req.body.password !== staticAdminData.password) {
-//       return res.status(401).json({ success: false, message: "Invalid credentials" });
-//     }
-
-//     const token = jwt.sign(
-//       { adminId: "admin-secret-key", email_id: staticAdminData.email_id },
-//       process.env.JWT_SECRET || "admin-secret-key"
-//     );
-
-    
-//     res.status(200).json({
-//       success: true,
-//       message: "Admin login successful",
-//       role: staticAdminData.role,
-//       token,
-//     });
-//   } catch (error) {
-//     console.error("Error during admin login:", error);
-//     res.status(500).json({ success: false, message: "Internal server error", error });
-//   }
-// };
 
 
+
+//admin Login
 exports.adminLogin = async (req, res) => {
   try {
     const staticAdminData = {
@@ -80,6 +53,40 @@ exports.adminLogin = async (req, res) => {
     });
   } catch (error) {
     console.error("Error during admin login:", error);
+    res.status(500).json({ success: false, message: "Internal server error", error });
+  }
+};
+
+
+//admin Logout
+exports.logoutAdmin = async (req, res, next) => {
+  try {
+    // Get the token from the request headers
+    const tokenFromRequest = req.header("Authorization");
+
+    console.log("---",tokenFromRequest);
+    // Handle missing or undefined token
+    if (!tokenFromRequest) {
+      return res.status(401).json({ success: false, message: "Token missing" });
+    }
+
+    const token = tokenFromRequest.replace("Bearer ", "").trim();
+
+    // Find the vendor with the provided token
+    const adminUser = await Admin.findOne({ token });
+
+    if (!adminUser) {
+      return res.status(401).json({ success: false, message: "Invalid token" });
+    }
+
+    // Clear the token in the database
+    adminUser.token = null;
+    await adminUser.save();
+    
+
+    res.json({ success: true, message: "Admin logout successful" });
+  } catch (error) {
+    console.error("Error during Admin logout:", error);
     res.status(500).json({ success: false, message: "Internal server error", error });
   }
 };

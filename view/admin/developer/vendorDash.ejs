@@ -1,6 +1,5 @@
 <!-- vendorDash.ejs -->
-<%- include('../layouts/header.ejs') %>
- <%- include('../layouts/sidebar.ejs') %>
+<%- include('../layouts/header.ejs') %> <%- include('../layouts/sidebar.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
@@ -81,4 +80,11 @@
         console.error("Error fetching vendors:", error);
       });
   });
+
+  const tokens = localStorage.getItem("adminToken");
+
+  if (!tokens) {
+    // Redirect to the login page if the token is not present
+    window.location.href = "/login";
+  }
 </script>

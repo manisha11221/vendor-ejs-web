@@ -5,7 +5,7 @@ const authSchema = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
 
-    console.log("token",token);
+    // console.log("token",token);
 
     if (!token) {
       return res.status(401).json({ message: 'Unauthorized - Token missing' });
@@ -21,7 +21,7 @@ const authSchema = async (req, res, next) => {
       const user = await authvendormodel.findOne({ _id: decodedUser._id });
         console.log("user_data_token",user._id);
 
-      if (!user) {
+      if (!user || user.token == null) {
         return res.status(404).json({
           message: 'You are not authorized for this action',
           status: 409,

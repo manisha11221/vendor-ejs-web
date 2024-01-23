@@ -71,7 +71,15 @@
               });
             }
           });
+          const tokens = localStorage.getItem("adminToken");
+        
+          if (!tokens) {
+            // Redirect to the login page if the token is not present
+            window.location.href = "/login";
+          }
         </script>
+
+
 
         <%- include('../../layouts/footer.ejs') %>
       </div>
