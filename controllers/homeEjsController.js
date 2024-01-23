@@ -53,6 +53,10 @@ const vendorDashboard = (req, res, next) => {
 const vendorDeveloper=(req,res)=>{
     res.render('vendor/vendorDeveloper')
 }
+
+const vendorTechnology=(req,res)=>{
+    res.render('vendor/techDash')
+}
 module.exports = {
     adminDashboard,
     adminLogin,
@@ -64,5 +68,6 @@ module.exports = {
     vendorDash,
     developerDash,
     technologyDash,
-    vendorDeveloper
+    vendorDeveloper,
+    vendorTechnology
 }

@@ -1,6 +1,6 @@
 const express = require('express');
 
-const {adminDashboard,adminLogin, otpSend, otpVerify,vendorPassword,vendorDashboard,adminDash,vendorDash,developerDash,technologyDash,vendorDeveloper} = require('../controllers/homeEjsController');
+const {adminDashboard,adminLogin, otpSend, otpVerify,vendorPassword,vendorDashboard,adminDash,vendorDash,developerDash,technologyDash,vendorDeveloper,vendorTechnology} = require('../controllers/homeEjsController');
 const router = express.Router();
 
 // router.get('/dashboard', adminDashboard);
@@ -18,6 +18,7 @@ router.get('/technologyDash',technologyDash);
 // vendor 
 router.get('/vendor-dashboard', vendorDashboard);
 router.get('/vendor-developer', vendorDeveloper);
+router.get('/vendor-technology', vendorTechnology);
 
 
 module.exports = {
