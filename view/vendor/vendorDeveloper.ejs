@@ -1,5 +1,6 @@
-<%- include('../vendor/layouts/header.ejs') %>
-<%- include('../vendor/vendor-dashboard.ejs') %>
+<%- include('../layouts/header.ejs') %>
+
+<%- include('../layouts/vendor-dashboard.ejs') %>
 
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper">
@@ -82,59 +83,12 @@
       </div>
     </div>
 
-    <%- include('../vendor/layouts/footer.ejs') %>
+<%- include('../layouts/footer.ejs') %>
 
       <!-- ... Your existing HTML code ... -->
 
       <script>
-        //  document.addEventListener('DOMContentLoaded', function () {
-        //     const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
-        //     const developerFormContainer = document.getElementById('developerFormContainer');
-        //     const createDeveloperForm = document.getElementById('createDeveloperForm');
-
-        //     toggleDeveloperFormButton.addEventListener('click', function () {
-        //       developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
-        //     });
-
-        //     createDeveloperForm.addEventListener('submit', function (event) {
-        //       event.preventDefault();
-
-        //       const developerName = document.getElementById('developerName').value;
-        //       const technology = document.getElementById('technology').value;
-        //       const experience = document.getElementById('experience').value;
-
-        //       // Prepare data for the API request
-        //       const requestData = {
-        //         name: developerName,
-        //         technology: technology,
-        //         experience: experience,
-        //       };
-
-        //       // Make the API request without an authentication token
-        //       fetch('http://localhost:3000/developer/add-dev', {
-        //         method: 'POST',
-        //         headers: {
-        //           'Content-Type': 'application/json',
-
-        //         },
-        //         body: JSON.stringify(requestData),
-        //       })
-        //       .then(response => response.json())
-        //       .then(data => {
-        //         // Handle the API response here
-        //         console.log(data);
-        //         // You can update the UI or perform additional actions based on the response
-        //       })
-        //       .catch(error => {
-        //         console.error('API Request Error:', error);
-        //         // Handle errors here
-        //       });
-        //     });
-        //   });
-
-
-
-        document.addEventListener('DOMContentLoaded', function () {
+      document.addEventListener('DOMContentLoaded', function () {
           const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
           const developerFormContainer = document.getElementById('developerFormContainer');
           const createDeveloperForm = document.getElementById('createDeveloperForm');
