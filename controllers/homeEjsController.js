@@ -70,6 +70,9 @@ const vendorTechnology=(req,res)=>{
 const editProfile=(req,res)=>{
     res.render('vendor/editProfile')
 }
+
+
+
 module.exports = {
     adminLogin,
     otpSend,
@@ -82,5 +85,5 @@ module.exports = {
     technologyDash,
     vendorDeveloper,
     vendorTechnology,
-    editProfile
+    editProfile,
 }

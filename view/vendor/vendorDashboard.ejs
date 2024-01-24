@@ -42,6 +42,10 @@ include('../layouts/vendor-dashboard.ejs') %>
     <%- include('../layouts/footer.ejs') %>
 
     <script>
+      //get allVendor
+
+      //vendor logout
+
       const token = localStorage.getItem("vendorToken");
 
       document.addEventListener("DOMContentLoaded", function () {
@@ -84,6 +88,38 @@ include('../layouts/vendor-dashboard.ejs') %>
         // Redirect to the login page if the token is not present
         window.location.href = "/login";
       }
+
+      const tokenss = localStorage.getItem("vendorToken");
+
+      fetch("http://localhost:3000/vendor/developer-count", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenss}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.text())
+        .then((count) => {
+          document.getElementById("developerCount").innerText = count;
+        })
+        .catch((error) =>
+          console.error("Error fetching developer count:", error)
+        );
+
+      fetch("http://localhost:3000/vendor/count-Tech", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenss}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.text())
+        .then((count) => {
+          document.getElementById("technologyCount").innerText = count;
+        })
+        .catch((error) =>
+          console.error("Error fetching developer count:", error)
+        );
     </script>
   </div>
 </div>

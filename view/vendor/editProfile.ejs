@@ -1,6 +1,5 @@
-<%- include('../layouts/header.ejs') %> 
-<%- include('../layouts/vendor-dashboard.ejs') %>
-
+<%- include('../layouts/header.ejs') %> <%-
+include('../layouts/vendor-dashboard.ejs') %>
 
 <div class="main">
   <div class="container mb-5 col-md-6">
@@ -8,7 +7,12 @@
       <div class="card-body">
         <h2 class="card-title mb-4">Edit Profile</h2>
         <form
+<<<<<<< HEAD
+          action="/vendor-dashboard"
+          method="get"
+=======
           method="post"
+>>>>>>> 80bf565863e448dae25d92033c5e5f32ba1bed4a
           enctype="multipart/form-data"
         >
           <!-- Email -->
@@ -83,20 +87,9 @@
             ></textarea>
           </div>
 
-          <!-- Upload Resume -->
-          <div class="mb-3">
-            <label for="resume" class="form-label">Upload Resume:</label>
-            <input
-              type="file"
-              class="form-control"
-              id="resume"
-              name="resume"
-              accept=".pdf, .doc, .docx"
-              required
-            />
-          </div>
-
-          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="submit" class="btn btn-primary" id="saveChangesBtn">
+            Save Changes
+          </button>
         </form>
       </div>
     </div>
@@ -107,24 +100,57 @@
 
 <script>
   const token = localStorage.getItem("vendorToken");
-
+  const VendorId = localStorage.getItem("vendorId");
   const form = document.querySelector("form");
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(form);
-    console.log("formData::",formData)
-
-    console.log("readu to edit");
+  const fetchVendorData = async () => {
     try {
+      const response = await fetch(
+        `http://localhost:3000/vendor/get-Vendors-by-id/${VendorId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error fetching data:", errorData.message);
+      } else {
+        const responseData = await response.json();
+        console.log("Fetched Data:", responseData);
+
+        // Set input field values with existing data
+        document.getElementById("email").value = responseData.vendor.email;
+        document.getElementById("companyName").value =
+          responseData.vendor.company_name;
+        document.getElementById("websiteLink").value =
+          responseData.vendor.website_link;
+        document.getElementById("contact").value = responseData.vendor.contact;
+        document.getElementById("gstNumber").value =
+          responseData.vendor.gst_number;
+        document.getElementById("address").value = responseData.vendor.address;
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  fetchVendorData(); // Call the function to fetch and pre-fill data
+
+  // Inside the form submit event listener
+  saveChangesBtn.addEventListener("click", async () => {
+    try {
+      const formData = new FormData(form);
+      formData.append("vendorId", VendorId);
+
       const response = await fetch(
         "http://localhost:3000/vendor/edit-Profile",
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
           },
           body: formData,
         }
@@ -136,6 +162,7 @@
       } else {
         const responseData = await response.json();
         console.log("Success:", responseData.message);
+        // Redirect to the dashboard or handle success as needed
       }
     } catch (error) {
       console.error("Error:", error.message);
