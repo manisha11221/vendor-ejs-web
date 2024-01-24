@@ -62,6 +62,9 @@ const vendorDeveloper=(req,res)=>{
 const vendorTechnology=(req,res)=>{
     res.render('vendor/techDash')
 }
+const editProfile=(req,res)=>{
+    res.render('vendor/editProfile')
+}
 module.exports = {
     adminLogin,
     otpSend,
@@ -73,5 +76,6 @@ module.exports = {
     developerDash,
     technologyDash,
     vendorDeveloper,
-    vendorTechnology
+    vendorTechnology,
+    editProfile
 }
