@@ -1,146 +1,162 @@
-<%- include('../layouts/header.ejs') %>
+<%- include('../layouts/header.ejs') %> <%-
+include('../layouts/vendor-dashboard.ejs') %>
 
-<%- include('../layouts/vendor-dashboard.ejs') %>
+<div class="container-scroller">
+  <div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+      <div class="content-wrapperrr">
+        <div class="page-header">
+          <h3 class="page-title">Developer Dashboard</h3>
+        </div>
 
-    <div class="container-scroller">
-      <div class="container-fluid page-body-wrapper">
-        <div class="main-panel">
-          <div class="content-wrapperrr">
-            <div class="page-header">
-              <h3 class="page-title"> Developer Dashboard </h3>
-            </div>
+        <!-- Add button to toggle developer form -->
+        <div class="mb-3">
+          <button id="toggleDeveloperForm" class="btn btn-primary">
+            Add Developer
+          </button>
+        </div>
 
-            <!-- Add button to toggle developer form -->
-            <div class="mb-3">
-              <button id="toggleDeveloperForm" class="btn btn-primary">Add Developer</button>
-            </div>
-
-            <!-- Developer form initially hidden -->
-            <div id="developerFormContainer" style="display: none;">
-              <div class="card col-md-12">
-                <div class="card-body">
-                  <h4 class="card-title">Create Developer</h4>
-                  <form id="createDeveloperForm">
-                    <div class="row">
-
-
-                      <!-- Add input fields for developer details (name, technology, experience) -->
-                      <div class="col-md-6">
-
-                        <div class="form-group">
-                          <label for="developerName">Name</label>
-                          <input type="text" class="form-control" id="developerName" placeholder="Enter name" required>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-
-                        <div class="form-group">
-                          <label for="technology">Technology</label>
-                          <input type="text" class="form-control" id="technology" placeholder="Enter technology"
-                            required>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-
-                        <div class="form-group">
-                          <label for="experience">Experience</label>
-                          <input type="text" class="form-control" id="experience" placeholder="Enter experience"
-                            required>
-                        </div>
-                      </div>
-
-
+        <!-- Developer form initially hidden -->
+        <div id="developerFormContainer" style="display: none">
+          <div class="card col-md-12">
+            <div class="card-body">
+              <h4 class="card-title">Create Developer</h4>
+              <form id="createDeveloperForm">
+                <div class="row">
+                  <!-- Add input fields for developer details (name, technology, experience) -->
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="developerName">Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="developerName"
+                        placeholder="Enter name"
+                        required
+                      />
                     </div>
-                    <button type="submit" class="btn btn-primary">Create Developer</button>
-                  </form>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="technology">Technology</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="technology"
+                        placeholder="Enter technology"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="experience">Experience</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="experience"
+                        placeholder="Enter experience"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
+                <button type="submit" class="btn btn-primary">
+                  Create Developer
+                </button>
+              </form>
             </div>
+          </div>
+        </div>
 
-            <div class="card mt-3">
-              <div class="card-body">
-                <h4 class="card-title">All Developers</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped" id="developerTable">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Technology</th>
-                        <th>Experience</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody id="developerTableBody">
-                      <!-- Table rows will be dynamically populated here -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+        <div class="card mt-3">
+          <div class="card-body">
+            <h4 class="card-title">All Developers</h4>
+            <div class="table-responsive">
+              <table class="table table-striped" id="developerTable">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Technology</th>
+                    <th>Experience</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="developerTableBody">
+                  <!-- Table rows will be dynamically populated here -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
 <%- include('../layouts/footer.ejs') %>
 
-      <!-- ... Your existing HTML code ... -->
+<!-- ... Your existing HTML code ... -->
 
-      <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
-          const developerFormContainer = document.getElementById('developerFormContainer');
-          const createDeveloperForm = document.getElementById('createDeveloperForm');
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleDeveloperFormButton = document.getElementById(
+      "toggleDeveloperForm"
+    );
+    const developerFormContainer = document.getElementById(
+      "developerFormContainer"
+    );
+    const createDeveloperForm = document.getElementById("createDeveloperForm");
 
-          toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
+    toggleDeveloperFormButton.addEventListener("click", toggleDeveloperForm);
 
-          createDeveloperForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            addDeveloper();
-          });
+    createDeveloperForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      addDeveloper();
+    });
 
-          function toggleDeveloperForm() {
-            developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
-          }
+    function toggleDeveloperForm() {
+      developerFormContainer.style.display =
+        developerFormContainer.style.display === "none" ? "block" : "none";
+    }
 
-          function addDeveloper() {
-            const developerName = document.getElementById('developerName').value;
-            const technology = document.getElementById('technology').value;
-            const experience = document.getElementById('experience').value;
+    function addDeveloper() {
+      const developerName = document.getElementById("developerName").value;
+      const technology = document.getElementById("technology").value;
+      const experience = document.getElementById("experience").value;
 
-            const requestData = {
-              name: developerName,
-              technology: technology,
-              experience: experience,
-            };
+      const requestData = {
+        name: developerName,
+        technology: technology,
+        experience: experience,
+      };
 
-            fetch('http://localhost:3000/developer/add-dev', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(requestData),
-            })
-              .then(response => response.json())
-              .then(data => {
-                handleApiResponse(data);
-              })
-              .catch(error => {
-                handleApiError(error);
-              });
-          }
-
-          function handleApiResponse(data) {
-            // Handle the API response here
-            console.log(data);
-            // You can update the UI or perform additional actions based on the response
-          }
-
-          function handleApiError(error) {
-            console.error('API Request Error:', error);
-            // Handle errors here
-          }
+      fetch("http://localhost:3000/developer/add-dev", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          handleApiResponse(data);
+        })
+        .catch((error) => {
+          handleApiError(error);
         });
+    }
 
-      </script>
+    function handleApiResponse(data) {
+      // Handle the API response here
+      console.log(data);
+      // You can update the UI or perform additional actions based on the response
+    }
+
+    function handleApiError(error) {
+      console.error("API Request Error:", error);
+      // Handle errors here
+    }
+  });
+</script>
