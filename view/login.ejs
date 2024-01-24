@@ -133,12 +133,14 @@
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Vendor Login Response:", data); // Log the response for debugging
+      console.log("Vendor Login Response:", data.vendor._id); // Log the response for debugging
 
       if (data.success) {
         // Set the token in local storage
         localStorage.setItem("vendorToken", data.token);
-
+        localStorage.setItem("vendorId", data.vendor._id);
+     
+        
         setTimeout(() => {
           window.location.href = data.redirectTo;
         }, 1000);

@@ -4,7 +4,8 @@ const Vendor = require("../models/vendorModel");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-
+const Tech = require("../models/techModel");
+const Developer = require("../models/developerModel");
 
 // Define email configuration
 const emailConfig = {
@@ -228,6 +229,7 @@ exports.resetPassword = async (req, res) => {
 //   }
 // };
 
+
 exports.loginVendor = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -258,18 +260,22 @@ exports.loginVendor = async (req, res) => {
     // Save the updated document
     await vendor.save();
 
-    // Redirect to the vendor dashboard
+    //Redirect to the vendor dashboard
     res.json({
       success: true,
       message: "Login successful",
       token: generatedToken,
       role: "vendor",
-      redirectTo: "/vendor-dashboard", 
+      redirectTo: "/vendor-dashboard",
+      vendor: vendor, 
     });
 
-    res.render('vendor/editProfile.ejs', { vendor });
+
+    // res.render('vendor/editProfile.ejs', { vendor, redirectTo: "/vendor-dashboard" });
+
+    // res.render('vendor/editProfile.ejs', { vendor });
     console.log("-----------",vendor);
-    
+
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -321,7 +327,7 @@ exports.loginVendor = async (req, res) => {
 
 exports.editProfile = async (req, res) => {
   try {
-
+    
     const { email, company_name, website_link, contact, gst_number, address } = req.body;
     
     const { authorization } = req.headers;
@@ -334,23 +340,25 @@ exports.editProfile = async (req, res) => {
       return res.status(404).json({ message: "Vendor not found" });
     }
     console.log("============");
-
+    
     // Update only if the new value is provided, otherwise keep the existing value
     vendor.company_name = company_name || vendor.company_name;
     vendor.website_link = website_link || vendor.website_link;
     vendor.contact = contact || vendor.contact;
     vendor.gst_number = gst_number || vendor.gst_number;
     vendor.address = address || vendor.address;
-
+    
     if (req.file) {
       // Assuming you're using multer to handle file uploads
       vendor.resume = req.file.path; // Save the file path in the 'resume' field
     }
-
+    
     await vendor.save();
-
+    
     
     res.json({ message: "Profile updated successfully", data: vendor });
+    console.log("465555555455445545454");
+    // res.redirect('/vendor-dashboard');
   } catch (error) {
     console.error(error); // Log the error for debugging
     res.status(500).json({ message: "Internal Server Error" }); // Handle the error gracefully in the response
@@ -363,8 +371,6 @@ exports.getAllVendors = async (req, res) => {
     
     const vendors = await Vendor.find();
 
-    console.log("vendor", vendors);
-
     res.status(200).json({ success: true, vendors });
   } catch (error) {
     console.error("Get All Vendors Error:", error);
@@ -376,18 +382,21 @@ exports.getAllVendors = async (req, res) => {
 exports.getvendorById = async (req, res) => {
   try {
     const vendorId = req.params.id;
-    const vendor = await Vendor.findById(vendorId);
 
+    console.log("vendorId------",vendorId);
+    const vendor = await Vendor.findById(vendorId);
+    
+    
     if (!vendor) {
       return res.status(404).json({ message: "Vendor not found" });
     }
-
-    res.json({ vendor });
+    res.status(200).json({ success: true, vendor });
   } catch (error) {
     console.error("Get vendor by ID Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 //count the vendor
 exports.countVendor = async (req, res) => {
@@ -440,3 +449,34 @@ exports.logoutVendor = async (req, res, next) => {
   }
 };
 
+
+
+
+
+
+//developer count and admi count api
+
+exports.countTech = async (req, res) => {
+
+  console.log("===Techhhhhhhhhhhhhh");
+  try {
+      const count = await Tech.countDocuments();
+      res.send(count.toString());
+  } catch (error) {
+    console.error("Get Vendor Count Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+exports.developerCount = async (req, res) => {
+
+  console.log("================apideveloper");
+  try {
+      const developer = await Developer.countDocuments();
+      res.send(developer.toString());
+  } catch (error) {
+    console.error("Get Vendor developer Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
