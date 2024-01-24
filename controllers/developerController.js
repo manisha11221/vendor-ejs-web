@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Developer = require("../models/developerModel");
 const vendor = require("../models/vendorModel");
 
@@ -27,7 +28,7 @@ exports.addDeveloper = async (req, res) => {
 //get by id
 exports.getDeveloperById = async (req, res) => {
   try {
-    const developerId = req.params.id;
+    const developerId = new mongoose.Types.ObjectId(req.params.id);
     const developer = await Developer.findById(developerId);
 
     if (!developer) {

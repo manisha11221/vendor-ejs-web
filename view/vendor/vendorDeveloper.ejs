@@ -142,121 +142,51 @@
     </div>
 
     <%- include('../layouts/footer.ejs') %>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
-        const developerFormContainer = document.getElementById('developerFormContainer');
-        const createDeveloperForm = document.getElementById('createDeveloperForm');
-        const developerTableBody = document.getElementById('developerTableBody');
-    
-        toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
-    
-        createDeveloperForm.addEventListener('submit', function (event) {
-          event.preventDefault();
-          addDeveloper();
-        });
-    
-        fetchDevelopers();
-    
-        function toggleDeveloperForm() {
-          developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
+      <script>
+
+        const tokens = localStorage.getItem("vendorToken");
+
+        function handleError(error) {
+          console.error('Error:', error);
         }
-    
-        function fetchDevelopers() {
-          fetch('http://localhost:3000/developer/get-devAll')
-            .then(response => response.json())
-            .then(data => {
-              displayDevelopers(data.developers);
-            })
-            .catch(handleError);
-        }
-    
-        function displayDevelopers(developers) {
-          developerTableBody.innerHTML = '';
-    
-          developers.forEach(developer => {
-            const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
-            newRow.id = `developerRow_${developer._id}`;
-    
-            const cells = [
-              developer._id,
-              developer.name,
-              developer.experience,
-              developer.technology.join(', '),
-              developer.resume,
-              developer.available ? 'Yes' : 'No',
-              developer.rate
-            ];
-    
-            cells.forEach((cell, index) => {
-              const newCell = newRow.insertCell(index);
-              newCell.innerHTML = cell;
-            });
-    
-            const actionCell = newRow.insertCell(cells.length);
-            actionCell.innerHTML = `<button class="btn btn-warning" onclick="updateDeveloper('${developer._id}')">Update</button>` +
-              `<button class="btn btn-danger ml-2" onclick="deleteDeveloper('${developer._id}')">Delete</button>`;
-          });
-        }
-    
-        function addDeveloper() {
-          const developerName = document.getElementById('developerName').value;
-          const experience = document.getElementById('experience').value;
-          const technology = document.getElementById('technology').value.split(',').map(item => item.trim());
-          const resume = document.getElementById('resume').value;
-          const available = document.getElementById('available').checked;
-          const rate = document.getElementById('rate').value;
-    
-          const requestData = {
-            name: developerName,
-            experience: experience,
-            technology: technology,
-            resume: resume,
-            available: available,
-            rate: rate
-          };
-    
-          fetch('http://localhost:3000/developer/add-dev', {
-            method: 'POST',
+
+        function updateDeveloper(developerId) {
+          console.log(developerId)
+          fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
             headers: {
-              'Content-Type': 'application/json',
+              Authorization: `Bearer ${tokens}`,
             },
-            body: JSON.stringify(requestData),
           })
             .then(response => response.json())
             .then(data => {
-              handleApiResponse(data);
-              fetchDevelopers();
-              toggleDeveloperForm();
-            })
-            .catch(handleApiError);
-        }
-    
-        function updateDeveloper(developerId) {
-          fetch(`http://localhost:3000/developer/get-dev/${developerId}`)
-            .then(response => response.json())
-            .then(data => {
-              document.getElementById('updatedDeveloperName').value = data.developer.name;
-              document.getElementById('updatedExperience').value = data.developer.experience;
-              document.getElementById('updatedTechnology').value = data.developer.technology.join(', ');
-              document.getElementById('updatedResume').value = data.developer.resume;
-              document.getElementById('updatedAvailable').checked = data.developer.available;
-              document.getElementById('updatedRate').value = data.developer.rate;
-    
+              const updatedDeveloperNameInput = document.getElementById('updatedDeveloperName');
+              const updatedExperienceInput = document.getElementById('updatedExperience');
+              const updatedTechnologyInput = document.getElementById('updatedTechnology');
+              const updatedResumeInput = document.getElementById('updatedResume');
+              const updatedAvailableInput = document.getElementById('updatedAvailable');
+              const updatedRateInput = document.getElementById('updatedRate');
+
+              updatedDeveloperNameInput.value = data.developer.name;
+              updatedExperienceInput.value = data.developer.experience;
+              updatedTechnologyInput.value = data.developer.technology.join(', ');
+              updatedResumeInput.value = data.developer.resume;
+              updatedAvailableInput.checked = data.developer.available;
+              updatedRateInput.value = data.developer.rate;
+
               $('#updateDeveloperModal').modal('show');
             })
             .catch(handleError);
-    
+
           document.getElementById('updateDeveloperForm').addEventListener('submit', function (event) {
             event.preventDefault();
-    
+
             const updatedDeveloperName = document.getElementById('updatedDeveloperName').value;
             const updatedExperience = document.getElementById('updatedExperience').value;
             const updatedTechnology = document.getElementById('updatedTechnology').value.split(',').map(item => item.trim());
             const updatedResume = document.getElementById('updatedResume').value;
             const updatedAvailable = document.getElementById('updatedAvailable').checked;
             const updatedRate = document.getElementById('updatedRate').value;
-    
+
             const requestData = {
               name: updatedDeveloperName,
               experience: updatedExperience,
@@ -265,10 +195,11 @@
               available: updatedAvailable,
               rate: updatedRate
             };
-    
+            console.log("requestData", requestData);
             fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
               method: 'PUT',
               headers: {
+                Authorization: `Bearer ${tokens}`,
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify(requestData),
@@ -276,63 +207,52 @@
               .then(response => response.json())
               .then(data => {
                 handleApiResponse(data);
-                fetchDevelopers();
+                // fetchDevelopers();
                 $('#updateDeveloperModal').modal('hide');
               })
               .catch(handleApiError);
           });
+
         }
-    
+
+        function handleApiResponse(data) {
+          console.log(data);
+        }
+
+        function handleApiError(error) {
+          console.error('API Request Error:', error);
+        }
+
         function deleteDeveloper(developerId) {
           fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
             method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${tokens}`,
+              'Content-Type': 'application/json',
+            },
           })
             .then(response => response.json())
             .then(data => {
               handleApiResponse(data);
-              fetchDevelopers();
+              // fetchDevelopers();
             })
             .catch(handleError);
         }
-    
-        function handleApiResponse(data) {
-          console.log(data);
-        }
-    
-        function handleApiError(error) {
-          console.error('API Request Error:', error);
-        }
-    
-        function handleError(error) {
-          console.error('Error:', error);
-        }
-      });
-
-      const tokens = localStorage.getItem("vendorToken");
-        
-        if (!tokens) {
-          // Redirect to the login page if the token is not present
-          window.location.href = "/login";
-        }
-
-    </script>
-    
-      <!-- <script>
 
         document.addEventListener('DOMContentLoaded', function () {
+          const token = localStorage.getItem("vendorToken");
           const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
           const developerFormContainer = document.getElementById('developerFormContainer');
           const createDeveloperForm = document.getElementById('createDeveloperForm');
           const developerTableBody = document.getElementById('developerTableBody');
 
           toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
-
           createDeveloperForm.addEventListener('submit', function (event) {
             event.preventDefault();
             addDeveloper();
           });
 
-          // Fetch all developers and populate the table
+
           fetchDevelopers();
 
           function toggleDeveloperForm() {
@@ -340,14 +260,16 @@
           }
 
           function fetchDevelopers() {
-            fetch('http://localhost:3000/developer/get-devAll')
+            fetch('http://localhost:3000/developer/get-devAll', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
               .then(response => response.json())
               .then(data => {
                 displayDevelopers(data.developers);
               })
-              .catch(error => {
-                console.error('Error fetching developers:', error);
-              });
+              .catch(handleError);
           }
 
           function displayDevelopers(developers) {
@@ -355,12 +277,13 @@
 
             developers.forEach(developer => {
               const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
+              newRow.id = `developerRow_${developer._id}`;
 
               const cells = [
                 developer._id,
                 developer.name,
                 developer.experience,
-                developer.technology.join(', '), // Display technologies as a comma-separated list
+                developer.technology.join(', '),
                 developer.resume,
                 developer.available ? 'Yes' : 'No',
                 developer.rate
@@ -372,47 +295,11 @@
               });
 
               const actionCell = newRow.insertCell(cells.length);
-              actionCell.innerHTML = '<button class="btn btn-warning" onclick="updateDeveloper(\'' + developer._id + '\')">Update</button>' +
-                '<button class="btn btn-danger ml-2" onclick="deleteDeveloper(\'' + developer._id + '\')">Delete</button>';
+              actionCell.innerHTML = `<button class="btn btn-warning mx-3" onclick="updateDeveloper('${developer._id}')">Update</button>` +
+                `<button class="btn btn-danger ml-2" onclick="deleteDeveloper('${developer._id}')">Delete</button>`;
             });
           }
 
-          // function addDeveloper() {
-          //   const developerName = document.getElementById('developerName').value;
-          //   const experience = document.getElementById('experience').value;
-          //   const technology = document.getElementById('technology').value.split(',').map(item => item.trim()); 
-          //   const resume = document.getElementById('resume').value;
-          //   const available = document.getElementById('available').checked;
-          //   const rate = document.getElementById('rate').value;
-
-          //   const requestData = {
-          //     name: developerName,
-          //     experience: experience,
-          //     technology: technology,
-          //     resume: resume,
-          //     available: available,
-          //     rate: rate
-          //   };
-
-          //   fetch('http://localhost:3000/developer/add-dev', {
-          //     method: 'POST',
-          //     headers: {
-          //       'Content-Type': 'application/json',
-          //     },
-          //     body: JSON.stringify(requestData),
-          //   })
-          //     .then(response => response.json())
-          //     .then(data => {
-          //       handleApiResponse(data);
-          //       // Fetch and display updated developers after adding
-          //       fetchDevelopers();
-          //       // Hide the form after submission
-          //       toggleDeveloperForm();
-          //     })
-          //     .catch(error => {
-          //       handleApiError(error);
-          //     });
-          // }
           function addDeveloper() {
             const developerName = document.getElementById('developerName').value;
             const experience = document.getElementById('experience').value;
@@ -430,11 +317,10 @@
               rate: rate
             };
 
-            console.log('Request Data:', requestData);
-
             fetch('http://localhost:3000/developer/add-dev', {
               method: 'POST',
               headers: {
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify(requestData),
@@ -442,99 +328,16 @@
               .then(response => response.json())
               .then(data => {
                 handleApiResponse(data);
-                // Fetch and display updated developers after adding
                 fetchDevelopers();
-                // Hide the form after submission
                 toggleDeveloperForm();
               })
-              .catch(error => {
-                handleApiError(error);
-              });
+              .catch(handleApiError);
           }
 
-          function updateDeveloper(developerId) {
-            fetch(`http://localhost:3000/developer/get-dev/${developerId}`)
-              .then(response => response.json())
-              .then(data => {
-                document.getElementById('updatedDeveloperName').value = data.developer.name;
-                document.getElementById('updatedExperience').value = data.developer.experience;
-                document.getElementById('updatedTechnology').value = data.developer.technology.join(', '); // Convert array to comma-separated string
-                document.getElementById('updatedResume').value = data.developer.resume;
-                document.getElementById('updatedAvailable').checked = data.developer.available;
-                document.getElementById('updatedRate').value = data.developer.rate;
+          const tokens = localStorage.getItem("vendorToken");
 
-                // Show the updateDeveloperModal
-                $('#updateDeveloperModal').modal('show');
-              })
-              .catch(error => {
-                console.error('Error fetching developer details:', error);
-              });
-
-            // Handle form submission
-            document.getElementById('updateDeveloperForm').addEventListener('submit', function (event) {
-              event.preventDefault();
-
-              const updatedDeveloperName = document.getElementById('updatedDeveloperName').value;
-              const updatedExperience = document.getElementById('updatedExperience').value;
-              const updatedTechnology = document.getElementById('updatedTechnology').value.split(',').map(item => item.trim()); // Convert comma-separated string to array
-              const updatedResume = document.getElementById('updatedResume').value;
-              const updatedAvailable = document.getElementById('updatedAvailable').checked;
-              const updatedRate = document.getElementById('updatedRate').value;
-
-              const requestData = {
-                name: updatedDeveloperName,
-                experience: updatedExperience,
-                technology: updatedTechnology,
-                resume: updatedResume,
-                available: updatedAvailable,
-                rate: updatedRate
-              };
-
-              fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
-              })
-                .then(response => response.json())
-                .then(data => {
-                  handleApiResponse(data);
-                  // Fetch and display updated developers after updating
-                  fetchDevelopers();
-                  // Hide the modal after submission
-                  $('#updateDeveloperModal').modal('hide');
-                })
-                .catch(error => {
-                  handleApiError(error);
-                });
-            });
-          }
-
-          function deleteDeveloper(developerId) {
-            fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
-              method: 'DELETE',
-            })
-              .then(response => response.json())
-              .then(data => {
-                handleApiResponse(data);
-                // Fetch and display updated developers after deletion
-                fetchDevelopers();
-              })
-              .catch(error => {
-                handleApiError(error);
-              });
-          }
-
-          function handleApiResponse(data) {
-            // Handle the API response here
-            console.log(data);
-            // You can update the UI or perform additional actions based on the response
-          }
-
-          function handleApiError(error) {
-            console.error('API Request Error:', error);
-            // Handle errors here
+          if (!tokens) {
+            window.location.href = "/login";
           }
         });
-      </script> -->
+      </script>
