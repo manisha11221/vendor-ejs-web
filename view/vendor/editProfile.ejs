@@ -8,7 +8,6 @@
       <div class="card-body">
         <h2 class="card-title mb-4">Edit Profile</h2>
         <form
-          action="/edit-profile"
           method="post"
           enctype="multipart/form-data"
         >
@@ -20,7 +19,6 @@
               class="form-control"
               id="email"
               name="email"
-              value="<%= vendor.email %>"
               required
             />
           </div>
@@ -116,11 +114,12 @@
     event.preventDefault();
 
     const formData = new FormData(form);
+    console.log("formData::",formData)
 
     console.log("readu to edit");
     try {
       const response = await fetch(
-        "http://localhost:3000/vendor/edit-profile",
+        "http://localhost:3000/vendor/edit-Profile",
         {
           method: "POST",
           headers: {

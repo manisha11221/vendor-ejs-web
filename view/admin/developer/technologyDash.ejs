@@ -185,7 +185,7 @@
         function updateTechnology(button) {
           var row = button.parentNode.parentNode;
           var techId = row.cells[0].innerHTML;
-          console.log("techIdtechIdtechIdtechId", techId)
+          // console.log("techIdtechIdtechIdtechId", techId)
           var techName = row.cells[1].innerHTML;
 
           // Set the current technology name in the modal input field
@@ -210,8 +210,8 @@
             })
               .then(response => response.json())
               .then(data => {
-                console.log("techcccc", techId);
-                console.log('Update response:', data);
+                // console.log("techcccc", techId);
+                // console.log('Update response:', data);
                 if (data.success) {
                   // Update the table with the updated technology
                   row.cells[1].innerHTML = newTechName;
@@ -231,7 +231,6 @@
             $('#updateTechnologyModal').modal('hide');
           });
         }
-
 
         // Function to delete technology
         function deleteTechnology(button) {
@@ -255,4 +254,5 @@
               console.error('Error deleting technology:', error);
             });
         }
-      </script>
+     
+     </script>
