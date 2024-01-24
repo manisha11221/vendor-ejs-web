@@ -1,44 +1,89 @@
-<%- include('../layouts/header.ejs') %>
-<%- include('../layouts/vendor-dashboard.ejs') %>
+<%- include('../layouts/header.ejs') %> <%-
+include('../layouts/vendor-dashboard.ejs') %>
 
 <div class="container-scroller">
-    <!-- Other parts of the code remain unchanged -->
-  
-    <!-- content-wrapper starts -->
-    <div class="main-panel">
-      <div class="content-wrapper">
-        <!-- Add your content here -->
-        <div class="row">
-          <div class="page-header">
-            <h3 class="page-title">Vendor Dashboard</h3>
-          </div>
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Developer Count</h4>
-                <!-- Add logic to fetch and display developer count -->
-                <p class="card-text">
-                  Total Developers: <span id="developerCount">0</span>
-                </p>
-              </div>
-            </div>
-          </div>
-  
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Technology Count</h4>
-                <!-- Add logic to fetch and display technology count -->
-                <p class="card-text">
-                  Total Technologies: <span id="technologyCount">0</span>
-                </p>
-              </div>
+  <!-- Other parts of the code remain unchanged -->
+
+  <!-- content-wrapper starts -->
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <!-- Add your content here -->
+      <div class="row">
+        <div class="page-header">
+          <h3 class="page-title">Vendor Dashboard</h3>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Developer Count</h4>
+              <!-- Add logic to fetch and display developer count -->
+              <p class="card-text">
+                Total Developers: <span id="developerCount">0</span>
+              </p>
             </div>
           </div>
         </div>
-        <!-- End of your content -->
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Technology Count</h4>
+              <!-- Add logic to fetch and display technology count -->
+              <p class="card-text">
+                Total Technologies: <span id="technologyCount">0</span>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
+      <!-- End of your content -->
+    </div>
 
-      <%- include('../layouts/footer.ejs') %>
+    <%- include('../layouts/footer.ejs') %>
 
+    <script>
+      const token = localStorage.getItem("vendorToken");
 
+      document.addEventListener("DOMContentLoaded", function () {
+        const logoutButton = document.getElementById("logoutButton");
+
+        logoutButton.addEventListener("click", async function (event) {
+          event.preventDefault();
+
+          try {
+            console.log("Ready to logout");
+            const response = await fetch(
+              "http://localhost:3000/vendor/logout-vendor",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`, // Make sure 'token' is defined
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (response.ok) {
+              const responseData = await response.json();
+              window.location.href = "/login";
+              localStorage.removeItem("vendorToken");
+            } else {
+              // Handle error responses
+              const errorData = await response.json();
+              console.error("Logout failed:", errorData);
+            }
+          } catch (error) {
+            console.error("Error during logout:", error);
+          }
+        });
+      });
+
+      const tokens = localStorage.getItem("vendorToken");
+
+      if (!tokens) {
+        // Redirect to the login page if the token is not present
+        window.location.href = "/login";
+      }
+    </script>
+  </div>
+</div>

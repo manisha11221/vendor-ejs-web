@@ -35,6 +35,10 @@ const vendorSchema = new mongoose.Schema({
   address: {
     type: String,
   },
+  resume: {
+    type: String, 
+    require: true,
+  },
 });
 
 const Vendor = mongoose.model("Vendor", vendorSchema);

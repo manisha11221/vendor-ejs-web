@@ -12,20 +12,17 @@ const authSchema = async (req, res, next) => {
     }
 
     const tokenWithoutPrefix = token.split(' ')[1];
-    console.log("token:--", tokenWithoutPrefix);
+    // console.log("token:--", tokenWithoutPrefix);
 
     try {
       const decodedadmin = jwt.verify(tokenWithoutPrefix, 'admin-secret-key');
-      console.log("decodedadmin", decodedadmin);
+      // console.log("decodedadmin", decodedadmin);
 
       const admin = await authadminmodel.findOne({ adminId: decodedadmin._Id });
-      console.log("admin_data_token", admin._id);
+      // console.log("admin_data_token", admin);
 
-      if (!admin) {
-        return res.status(404).json({
-          message: 'You are not authorized for this action',
-          status: 409,
-        });
+      if (!admin || admin.token == null) {
+        res.render('/login');
       }
 
       req.token = tokenWithoutPrefix;

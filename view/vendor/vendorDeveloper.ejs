@@ -1,5 +1,5 @@
 <%- include('../layouts/header.ejs') %>
-  <%- include('../layouts/vendor-dashboard.ejs') %>
+<%- include('../layouts/vendor-dashboard.ejs') %>
 
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper">
@@ -62,11 +62,39 @@
                         </div>
                       </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Create Developer</button>
-                  </form>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="technology">Technology</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="technology"
+                        placeholder="Enter technology"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="experience">Experience</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="experience"
+                        placeholder="Enter experience"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
+                <button type="submit" class="btn btn-primary">
+                  Create Developer
+                </button>
+              </form>
             </div>
+          </div>
+        </div>
 
             <div class="card mt-3">
               <div class="card-body">
@@ -96,6 +124,8 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- Modal for updating developer -->
     <div class="modal fade" id="updateDeveloperModal" tabindex="-1" role="dialog"
@@ -325,12 +355,12 @@
           const createDeveloperForm = document.getElementById('createDeveloperForm');
           const developerTableBody = document.getElementById('developerTableBody');
 
-          toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
+    toggleDeveloperFormButton.addEventListener("click", toggleDeveloperForm);
 
-          createDeveloperForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            addDeveloper();
-          });
+    createDeveloperForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      addDeveloper();
+    });
 
           // Fetch all developers and populate the table
           fetchDevelopers();

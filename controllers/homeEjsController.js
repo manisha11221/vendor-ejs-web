@@ -1,12 +1,17 @@
 
+//add authentication here 
+
 //admin Dashboard
-const adminDash = (req, res) => {
-    res.render('admin/developer/adminDash');
-  };
+
   
 // const adminDashboard = (req, res, next) => {
 //     res.render('admin-dashboard');
 // }
+
+
+const adminDash = (req, res) => {
+    res.render('admin/developer/adminDash');
+  };
 
 const adminLogin = (req, res, next) => {
     res.render('login');
