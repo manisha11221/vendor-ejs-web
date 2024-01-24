@@ -266,6 +266,10 @@ exports.loginVendor = async (req, res) => {
       role: "vendor",
       redirectTo: "/vendor-dashboard", 
     });
+
+    res.render('vendor/editProfile.ejs', { vendor });
+    console.log("-----------",vendor);
+    
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -345,8 +349,7 @@ exports.editProfile = async (req, res) => {
 
     await vendor.save();
 
-    res.render('vendor/editProfile.ejs', { vendor });
-
+    
     res.json({ message: "Profile updated successfully", data: vendor });
   } catch (error) {
     console.error(error); // Log the error for debugging
