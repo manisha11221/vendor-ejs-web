@@ -2,7 +2,7 @@
 include('../../layouts/sidebar.ejs') %>
 <div class="container-scroller">
   <!-- Your EJS template -->
-  <button id="logoutButton" type="button">Logout</button>
+  <!-- <button id="logoutButton" type="button">Logout</button> -->
   <!-- Other parts of the code remain unchanged -->
   <!-- content-wrapper starts -->
   <div class="main-panel">
@@ -75,32 +75,36 @@ include('../../layouts/sidebar.ejs') %>
 
   //logout admin
   document.addEventListener("DOMContentLoaded", function () {
-    const logoutButton = document.getElementById("logoutButton");
+  const logoutButton = document.getElementById("logoutButton");
 
-    logoutButton.addEventListener("click", async function () {
-      try {
-        console.log("reddyyyyyyyyyy");
-        const response = await fetch("/admin/logout", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.ok) {
-          const responseData = await response.json();
-          window.location.href = "/login";
-          localStorage.removeItem("adminToken");
-        } else {
-          // Handle error responses
-          const errorData = await response.json();
-          console.error("Logout failed:", errorData);
-        }
-      } catch (error) {
-        console.error("Error during logout:", error);
+  logoutButton.addEventListener("click", async function (event) {
+    event.preventDefault(); // Prevent the default anchor tag behavior
+
+    try {
+      console.log("Ready to logout");
+      const response = await fetch("/admin/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, // Make sure 'token' is defined
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        window.location.href = "/login";
+        localStorage.removeItem("adminToken");
+      } else {
+        // Handle error responses
+        const errorData = await response.json();
+        console.error("Logout failed:", errorData);
       }
-    });
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   });
+});
+
 </script>
 
 

@@ -14,22 +14,22 @@ const Developer = require("../models/developerModel");
 exports.adminLogin = async (req, res) => {
   try {
     const staticAdminData = {
-      email_id: "admin@g.com",
+      email: "admin@g.com",
       password: "admin",
       role: "admin",
     };
 
     // Check if the provided credentials match the static admin data
-    if (req.body.email_id !== staticAdminData.email_id || req.body.password !== staticAdminData.password) {
+    if (req.body.email !== staticAdminData.email || req.body.password !== staticAdminData.password) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 
     // Find or create the admin user
-    let adminUser = await Admin.findOne({ email_id: staticAdminData.email_id });
+    let adminUser = await Admin.findOne({ email: staticAdminData.email });
 
     if (!adminUser) {
       adminUser = new Admin({
-        email_id: staticAdminData.email_id,
+        email: staticAdminData.email,
         password: staticAdminData.password,
         role: staticAdminData.role,
       });
@@ -37,7 +37,7 @@ exports.adminLogin = async (req, res) => {
 
     // Generate a JWT token for authentication
     const token = jwt.sign(
-      { adminId: adminUser._id, email_id: adminUser.email_id },
+      { adminId: adminUser._id, email: adminUser.email },
       process.env.JWT_SECRET || "admin-secret-key"
     );
 

@@ -73,13 +73,13 @@
 <script>
   function signIn() {
     var formData = {
-      email_id: document.getElementById("InputEmail1").value,
+      email: document.getElementById("InputEmail1").value,
       password: document.getElementById("InputPassword1").value,
       role: document.getElementById("role").value,
     };
 
     // Add validation for empty fields
-    if (!formData.email_id || !formData.password || !formData.role) {
+    if (!formData.email || !formData.password || !formData.role) {
       displayErrorMessage("Please fill in all fields");
       return;
     }
@@ -123,33 +123,36 @@
   }
 
   function signInVendor(formData) {
-    fetch("http://localhost:3000/vendor/login-vendor", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Vendor Login Response:", data); // Log the response for debugging
+  console.log("=============================");
+  fetch("http://localhost:3000/vendor/login-vendor", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Vendor Login Response:", data); // Log the response for debugging
 
-        if (data.success) {
-          // Set the token in local storage
-          localStorage.setItem("vendorToken--", data.token);
+      if (data.success) {
+        // Set the token in local storage
+        localStorage.setItem("vendorToken", data.token);
 
-
+        setTimeout(() => {
           window.location.href = data.redirectTo;
-        } else {
-          console.error("Vendor Authentication failed:", data.message);
-          displayErrorMessage(data.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error during vendor authentication:", error);
-        displayErrorMessage("An error occurred during vendor authentication. Please try again.");
-      });
-  }
+        }, 1000);
+      } else {
+        console.error("Vendor Authentication failed:", data.message);
+        displayErrorMessage(data.message);
+      }
+    })
+    .catch((error) => {
+      console.error("Error during vendor authentication:", error);
+      displayErrorMessage("An error occurred during vendor authentication. Please try again.");
+    });
+}
+
 
   function displayErrorMessage(message) {
     var errorMessageElement = document.getElementById("errorMessage");
