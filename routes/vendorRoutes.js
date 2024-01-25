@@ -42,7 +42,6 @@ router.post('/edit-Profile', upload.single('resume'), vendorController.editProfi
 router.post('/reset-password', vendorController.resetPassword);
 router.get('/get-all-Vendors', vendorController.getAllVendors);
 router.get('/get-Vendors-by-id/:id', vendorController.getvendorById);
-router.get('/count-vendor', authentication,vendorController.countVendor);
 router.post('/logout-vendor',auth,vendorController.logoutVendor);
 router.get('/count-Tech',auth,vendorController.countTech);
 router.get('/developer-count',auth,vendorController.developerCount);

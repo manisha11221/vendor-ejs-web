@@ -50,7 +50,11 @@ exports.adminLogin = async (req, res) => {
       message: "Admin login successful",
       role: adminUser.role,
       token,
+      adminUser: adminUser,
     });
+    
+    console.log("adminUser", adminUser);
+    
   } catch (error) {
     console.error("Error during admin login:", error);
     res.status(500).json({ success: false, message: "Internal server error", error });
@@ -64,7 +68,7 @@ exports.logoutAdmin = async (req, res, next) => {
     // Get the token from the request headers
     const tokenFromRequest = req.header("Authorization");
 
-    console.log("---",tokenFromRequest);
+    // console.log("---",tokenFromRequest);
     // Handle missing or undefined token
     if (!tokenFromRequest) {
       return res.status(401).json({ success: false, message: "Token missing" });
@@ -74,6 +78,7 @@ exports.logoutAdmin = async (req, res, next) => {
 
     // Find the vendor with the provided token
     const adminUser = await Admin.findOne({ token });
+
 
     if (!adminUser) {
       return res.status(401).json({ success: false, message: "Invalid token" });
@@ -126,6 +131,35 @@ exports.searchData = async (req, res) => {
     res.json({ vendors, developers });
   } catch (error) {
     console.error("Search Data Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+// vendor count
+//count the vendor
+exports.countVendor = async (req, res) => {
+  try {
+    
+      const count = await Vendor.countDocuments();
+      res.send(count.toString());
+  } catch (error) {
+    console.error("Get Vendor Count Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
+
+//devoper count
+exports.countDeveloper = async (req, res) => {
+  try {
+    
+      const count = await Developer.countDocuments();
+      res.send(count.toString());
+  } catch (error) {
+    console.error("Get Develoerp Count Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

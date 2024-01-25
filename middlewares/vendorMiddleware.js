@@ -19,7 +19,7 @@ const authSchema = async (req, res, next) => {
     //   console.log("decodedUser",decodedUser);
 
       const user = await authvendormodel.findOne({ _id: decodedUser._id });
-        console.log("user_data_token",user._id);
+        // console.log("user_data_token",user._id);
 
       if (!user || user.token == null) {
         return res.status(404).json({

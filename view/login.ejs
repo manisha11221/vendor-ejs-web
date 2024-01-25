@@ -9,6 +9,7 @@
               <img src="../../assets/images/logo.svg" />
             </div>
             <h6 class="font-weight-light">Sign in to continue.</h6>
+            
             <form id="loginForm" class="pt-3">
               <div class="form-group">
                 <input
@@ -84,6 +85,19 @@
       return;
     }
 
+     // Add validation for valid email format
+  if (!validateEmail(formData.email)) {
+    displayErrorMessage("Please enter a valid email address");
+    return;
+  }
+
+  // Add validation for password criteria
+  // if (!validatePassword(formData.password)) {
+  //   displayErrorMessage("Password must have at least 7 characters with at least one uppercase letter and one digit");
+  //   return;
+  // }
+
+
     // You can call either signInAdmin or signInVendor based on the role
     if (formData.role === "admin") {
       signInAdmin(formData);
@@ -92,38 +106,57 @@
     }
   }
 
-  function signInAdmin(formData) {
-    fetch("http://localhost:3000/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Admin Login Response:", data); // Log the response for debugging
+  function validateEmail(email) {
+  // Use a simple regular expression for basic email format validation
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
-        if (data.success) {
-          // Set the token in local storage
-          localStorage.setItem("adminToken", data.token);
+// function validatePassword(password) {
+//   // Use a regular expression to enforce password criteria
+//   // At least 7 characters, at least one uppercase letter, and at least one digit
+//   return /^(?=.*[A-Z])(?=.*\d).{7,}$/.test(password);
+// }
 
-          setTimeout(() => {
+function signInAdmin(formData) {
+  fetch("http://localhost:3000/admin/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+
+      console.log("Admin Login Response:", data);
+
+      if (data.success) {
+        // Set the token and email in local storage
+        localStorage.setItem("adminToken", data.token);
+        localStorage.setItem("adminEmail", data.adminUser.email);
+
+        // Assuming adminUser is an object, you can store it in local storage as well
+        // localStorage.setItem("adminUser", JSON.stringify(data.adminUser));
+
+        // Redirect to the admin dashboard after successful login
+        setTimeout(() => {
           window.location.href = "adminDash";
         }, 1000);
-        } else {
-          console.error("Admin Authentication failed:", data.message);
-          displayErrorMessage(data.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error during admin authentication:", error);
-        displayErrorMessage("An error occurred during admin authentication. Please try again.");
-      });
-  }
+      } else {
+        console.error("Admin Authentication failed:", data.message);
+        displayErrorMessage(data.message);
+      }
+    })
+    .catch((error) => {
+      console.error("Error during admin authentication:", error);
+      displayErrorMessage("An error occurred during admin authentication. Please try again.");
+    });
+}
+
 
   function signInVendor(formData) {
-  console.log("=============================");
+
+
   fetch("http://localhost:3000/vendor/login-vendor", {
     method: "POST",
     headers: {
@@ -133,12 +166,13 @@
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Vendor Login Response:", data.vendor._id); // Log the response for debugging
+      console.log("Vendor Login Response:", data.vendor.email); 
 
       if (data.success) {
         // Set the token in local storage
         localStorage.setItem("vendorToken", data.token);
         localStorage.setItem("vendorId", data.vendor._id);
+        localStorage.setItem("vendorEmail", data.vendor.email);
      
         
         setTimeout(() => {

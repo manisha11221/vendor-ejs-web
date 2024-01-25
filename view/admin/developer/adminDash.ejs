@@ -1,13 +1,8 @@
 <%- include('../../layouts/header.ejs') %> <%-
 include('../../layouts/sidebar.ejs') %>
 <div class="container-scroller">
-  <!-- Your EJS template -->
-  <!-- <button id="logoutButton" type="button">Logout</button> -->
-  <!-- Other parts of the code remain unchanged -->
-  <!-- content-wrapper starts -->
   <div class="main-panel">
     <div class="content-wrapper">
-      <!-- Add your content here -->
       <div class="row">
         <div class="page-header">
           <h3 class="page-title">Admin Dashboard</h3>
@@ -16,7 +11,6 @@ include('../../layouts/sidebar.ejs') %>
           <div class="card">
             <div class="card-body">
               <h4 class="card-title">Developer Count</h4>
-              <!-- Add logic to fetch and display developer count -->
               <p class="card-text">
                 Total Developers: <span id="developerCount">0</span>
               </p>
@@ -28,7 +22,6 @@ include('../../layouts/sidebar.ejs') %>
           <div class="card">
             <div class="card-body">
               <h4 class="card-title">Vendor Count</h4>
-              <!-- Add logic to fetch and display vendor count -->
               <p class="card-text">
                 Total Vendors: <span id="vendorCount">0</span>
               </p>
@@ -36,17 +29,16 @@ include('../../layouts/sidebar.ejs') %>
           </div>
         </div>
       </div>
-      <!-- End of your content -->
     </div>
-    <!-- content-wrapper ends -->
   </div>
 </div>
-
 <%- include('../../layouts/footer.ejs') %>
 <script>
-  const token = localStorage.getItem("adminToken");
+  // const token = localStorage.getItem("adminToken");
 
-  fetch("/developer/count-developer", {
+  // Fetch and update developer count
+
+  fetch("/admin/count-developer", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -59,8 +51,8 @@ include('../../layouts/sidebar.ejs') %>
     })
     .catch((error) => console.error("Error fetching developer count:", error));
 
-  // Function to fetch and update vendor count
-  fetch("/vendor/count-vendor", {
+  // Fetch and update vendor count
+  fetch("/admin/count-vendor", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -73,46 +65,8 @@ include('../../layouts/sidebar.ejs') %>
     })
     .catch((error) => console.error("Error fetching vendor count:", error));
 
-  //logout admin
-  document.addEventListener("DOMContentLoaded", function () {
-  const logoutButton = document.getElementById("logoutButton");
-
-  logoutButton.addEventListener("click", async function (event) {
-    event.preventDefault(); // Prevent the default anchor tag behavior
-
-    try {
-      console.log("Ready to logout");
-      const response = await fetch("/admin/logout", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`, // Make sure 'token' is defined
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        window.location.href = "/login";
-        localStorage.removeItem("adminToken");
-      } else {
-        // Handle error responses
-        const errorData = await response.json();
-        console.error("Logout failed:", errorData);
-      }
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  });
-});
-
-</script>
-
-
-<script>
-  const tokens = localStorage.getItem("adminToken");
-
-  if (!tokens) {
-    // Redirect to the login page if the token is not present
+  // Redirect to login page if token is not present
+  if (!token) {
     window.location.href = "/login";
   }
 </script>

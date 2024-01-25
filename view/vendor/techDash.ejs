@@ -61,11 +61,23 @@
               });
             }
           });
+
+
+
+          const tokens = localStorage.getItem("vendorToken");
+        
+        if (!tokens) {
+          // Redirect to the login page if the token is not present
+          window.location.href = "/login";
+        }
+        
         </script>
       </div>
     </div>
   </div>
 </div>
+
+
 
 
 <%- include('../layouts/footer.ejs') %>
