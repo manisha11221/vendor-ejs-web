@@ -35,9 +35,11 @@ const vendorSchema = new mongoose.Schema({
   address: {
     type: String,
   },
+  team_size: {
+    type: Number, 
+  },
   resume: {
     type: String, 
-    require: true,
   },
 });
 

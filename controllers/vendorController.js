@@ -287,7 +287,7 @@ exports.loginVendor = async (req, res) => {
 
 exports.editProfile = async (req, res) => {
   try {
-    const { email, company_name, website_link, contact, gst_number, address } = req.body;
+    const { email, company_name, website_link, contact, gst_number, address ,team_size} = req.body;
     const { authorization } = req.headers;
 
     // ... your existing authorization code
@@ -304,6 +304,7 @@ exports.editProfile = async (req, res) => {
     vendor.contact = contact || vendor.contact;
     vendor.gst_number = gst_number || vendor.gst_number;
     vendor.address = address || vendor.address;
+    vendor.team_size = team_size || vendor.team_size;
 
     if (req.file) {
       // Assuming you're using multer to handle file uploads

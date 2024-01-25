@@ -46,29 +46,50 @@ exports.getDeveloperById = async (req, res) => {
 exports.getDeveloperAll = async (req, res) => {
   try {
     const developers = await Developer.find();
-    const vendorInDev = await vendor.find();
+    let dataArr = [];
 
-    console.log("vendor data in devloper",vendorInDev);
-    res.json({ developers });
+    for (const findDeveloper of developers) {
+      let findVendorData = await vendor.findOne({ _id: findDeveloper.vendorId });
+      // console.log("findVendorData", findVendorData);
+
+      // Check if vendor data is found
+      if (findVendorData) {
+
+        // Combine developer and vendor details
+        let combinedData = {
+          developer: findDeveloper.toObject(),
+          vendor: findVendorData.toObject()
+        };
+
+        dataArr.push(combinedData);
+      } else {
+        // If no vendor data is found, include only developer details
+        dataArr.push({ developer: findDeveloper.toObject(), vendor: null });
+      }
+    }
+
+    res.json({ dataArr });
   } catch (error) {
     console.error("Get All Developers Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
+
 //view by vendor
 exports.getByVendor = async (req, res) => {
   try {
-
     const vendorId = req.user._id;
-    console.log('vendor', vendorId);
+    console.log("vendor", vendorId);
 
-    const developers = await Developer.find({ 'addedByVendor.vendorId': vendorId });
+    const developers = await Developer.find({
+      "addedByVendor.vendorId": vendorId,
+    });
     console.log("devloper-data", developers);
     res.json({ developers });
   } catch (error) {
-    console.error('Get Developers by Vendor Error:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Get Developers by Vendor Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -112,19 +133,13 @@ exports.deleteDeveloper = async (req, res) => {
   }
 };
 
-
-
-
 //count devloper
 exports.countDeveloper = async (req, res) => {
   try {
     const count = await Developer.countDocuments();
-    res.send(count.toString());  // Convert to string before sending in the response
+    res.send(count.toString()); // Convert to string before sending in the response
   } catch (error) {
     console.error("Get Developer Count Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
-
