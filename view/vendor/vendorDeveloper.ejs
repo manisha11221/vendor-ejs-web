@@ -1,6 +1,7 @@
 <%- include('../layouts/header.ejs') %>
   <%- include('../layouts/vendor-dashboard.ejs') %>
 
+
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper">
         <div class="main-panel">
@@ -86,7 +87,8 @@
                       </tr>
                     </thead>
                     <tbody id="developerTableBody">
-                      <!-- Table rows will be dynamically populated here -->
+
+
                     </tbody>
                   </table>
                 </div>
@@ -142,9 +144,8 @@
     </div>
 
     <%- include('../layouts/footer.ejs') %>
-    
-      <script>
 
+      <script>
         const tokens = localStorage.getItem("vendorToken");
 
         function handleError(error) {
@@ -253,7 +254,6 @@
             addDeveloper();
           });
 
-
           fetchDevelopers();
 
           function toggleDeveloperForm() {
@@ -269,6 +269,8 @@
               .then(response => response.json())
               .then(data => {
                 displayDevelopers(data.developers);
+                // Initialize DataTable after populating the table
+                $('#developerTable').DataTable();
               })
               .catch(handleError);
           }
@@ -334,8 +336,6 @@
               })
               .catch(handleApiError);
           }
-
-          const tokens = localStorage.getItem("vendorToken");
 
           if (!tokens) {
             window.location.href = "/login";

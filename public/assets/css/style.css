@@ -21368,3 +21368,7 @@ dl li {
   width: 100%!important;
   justify-content: end;
 }
+div.dataTables_wrapper div.dataTables_length select {
+  width: 50px;
+  display: inline-block;
+}
