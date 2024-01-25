@@ -9,6 +9,7 @@
               <img src="../../assets/images/logo.svg" />
             </div>
             <h6 class="font-weight-light">Sign Up in to continue.</h6>
+            <div id="errorMessage" class="alert alert-danger mt-3 d-none"></div>
             <form id="loginForm" class="pt-3">
               <div class="form-group">
                 <input
@@ -44,41 +45,65 @@
 </div>
 
 <script>
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function displayErrorMessage(message) {
+    var errorMessageElement = document.getElementById("errorMessage");
+
+    // If the element doesn't exist, create it
+    if (!errorMessageElement) {
+      errorMessageElement = document.createElement("div");
+      errorMessageElement.id = "errorMessage";
+      errorMessageElement.className = "alert alert-danger mt-3";
+      document.getElementById("loginForm").prepend(errorMessageElement);
+    }
+
+    errorMessageElement.textContent = message;
+    errorMessageElement.classList.remove("d-none");
+  }
+
+  function hideErrorMessage() {
+    var errorMessageElement = document.getElementById("errorMessage");
+    if (errorMessageElement) {
+      errorMessageElement.classList.add("d-none");
+    }
+  }
+
   function submitForm() {
-    console.log("fsdfsdfsdfsddgd");
     var email = document.getElementById("InputEmail1").value;
 
     // Validate email
-    if (!email.trim()) {
-        document.getElementById("emailError").classList.remove("d-none");
-        return;
+    if (!email.trim() || !validateEmail(email)) {
+      hideErrorMessage(); 
+      displayErrorMessage("Please enter a valid email.");
+      return;
     }
 
-    document.getElementById("emailError").classList.add("d-none");
-
+    // Continue with fetch request
     fetch("http://localhost:3000/vendor/request-otp", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email }),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email }),
     })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("Success:", data);
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
 
-            // Assuming data.success is a flag indicating success
-            if (data.message === "OTP sent successfully" && data.redirectUrl) {
-                // Redirect to the specified URL
-                window.location.href = "/vendor-otpVerify";
-            } else {
-                // Handle other cases if needed
-            }
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            // Handle error as needed
-        });
-}
-
+        // Assuming data.success is a flag indicating success
+        if (data.message === "OTP sent successfully" && data.redirectUrl) {
+          // Redirect to the specified URL
+          window.location.href = "/vendor-otpVerify";
+        } else {
+          // Handle other cases if needed
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // Handle error as needed
+      });
+  }
 </script>

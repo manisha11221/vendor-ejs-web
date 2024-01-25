@@ -5,7 +5,7 @@ const authSchema = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
 
-    console.log("token", token);
+    // console.log("token", token);
 
     if (!token) {
       return res.status(401).json({ message: 'Unauthorized - Token missing' });

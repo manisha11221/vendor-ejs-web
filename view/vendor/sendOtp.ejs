@@ -9,6 +9,7 @@
                             <img src="../../assets/images/logo.svg">
                         </div>
                         <h6 class="font-weight-light">Sign Up in to continue.</h6>
+                        <div id="errorContainer" class="alert alert-danger mt-3 d-none"></div>
                         <form id="loginForm" class="pt-3">
                             <div class="form-group">
                               <input type="number" class="form-control form-control-lg" id="InputOTP" placeholder="Enter OTP" name="otp" required>
@@ -28,8 +29,28 @@
 </div>
 
 <script>
+    function validateOTP(otp) {
+        // Validate if the OTP is a 6-digit number
+        return /^\d{6}$/.test(otp);
+    }
+
     async function verifyOTP() {
         const otp = document.getElementById('InputOTP').value;
+        const errorContainer = document.getElementById('errorContainer');
+
+        // Validate OTP
+        if (!validateOTP(otp)) {
+            const errorMessage = "Invalid OTP. Please enter a 6-digit number.";
+            console.error(errorMessage);
+
+            // Display an error message above the form
+            errorContainer.textContent = errorMessage;
+            errorContainer.classList.remove("d-none");
+            return;
+        }
+
+        // Clear any existing error message
+        errorContainer.classList.add("d-none");
 
         try {
             const response = await fetch('http://localhost:3000/vendor/register', {
@@ -45,14 +66,22 @@
             const data = await response.json();
 
             if (response.ok) {
-                console.log("res:::::;",data.vendorId);
+                console.log("res:::::;", data.vendorId);
                 window.location.href = "/vendor-password/" + data.vendorId;
             } else {
                 // Handle verification failure
                 console.error(data.message);
+                // You can display an error message above the form if needed
+                errorContainer.textContent = data.message;
+                errorContainer.classList.remove("d-none");
             }
         } catch (error) {
             console.error('Error during OTP verification:', error);
+            // Display an error message above the form
+            errorContainer.textContent = "An error occurred. Please try again.";
+            errorContainer.classList.remove("d-none");
         }
     }
 </script>
+
+

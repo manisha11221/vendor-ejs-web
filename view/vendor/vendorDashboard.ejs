@@ -46,41 +46,7 @@ include('../layouts/vendor-dashboard.ejs') %>
 
       //vendor logout
 
-      const token = localStorage.getItem("vendorToken");
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const logoutButton = document.getElementById("logoutButton");
-
-        logoutButton.addEventListener("click", async function (event) {
-          event.preventDefault();
-
-          try {
-            console.log("Ready to logout");
-            const response = await fetch(
-              "http://localhost:3000/vendor/logout-vendor",
-              {
-                method: "POST",
-                headers: {
-                  Authorization: `Bearer ${token}`, // Make sure 'token' is defined
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-
-            if (response.ok) {
-              const responseData = await response.json();
-              window.location.href = "/login";
-              localStorage.removeItem("vendorToken");
-            } else {
-              // Handle error responses
-              const errorData = await response.json();
-              console.error("Logout failed:", errorData);
-            }
-          } catch (error) {
-            console.error("Error during logout:", error);
-          }
-        });
-      });
+      
 
       const tokens = localStorage.getItem("vendorToken");
 

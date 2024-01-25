@@ -46,7 +46,9 @@ exports.getDeveloperById = async (req, res) => {
 exports.getDeveloperAll = async (req, res) => {
   try {
     const developers = await Developer.find();
+    const vendorInDev = await vendor.find();
 
+    console.log("vendor data in devloper",vendorInDev);
     res.json({ developers });
   } catch (error) {
     console.error("Get All Developers Error:", error);
