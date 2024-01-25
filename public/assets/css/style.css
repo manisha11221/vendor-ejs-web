@@ -21368,3 +21368,12 @@ dl li {
   width: 100%!important;
   justify-content: end;
 }
+div.dataTables_wrapper div.dataTables_length select{
+  width: 50px !important;
+  display: inline-block;
+} 
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+  background-color: none !important;
+  background: none !important;
+  border: none !important;
+}

@@ -1,40 +1,32 @@
+<<<<<<< HEAD
+<%- include('../layouts/header.ejs') %>
+<%- include('../layouts/vendor-dashboard.ejs') %>
+
+=======
 <%- include('../../layouts/header.ejs') %> <%-
 include('../../layouts/sidebar.ejs') %>
+>>>>>>> 6ac743904d615d6510c27389ccf68042f956a8d0
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
       <div class="content-wrapperrr">
         <div class="page-header">
-          <h3 class="page-title">Technology Dashboard</h3>
+          <h3 class="page-title"> Developer Dashboard </h3>
         </div>
 
-        <!-- Add button to toggle technology form -->
+        <!-- Add button to toggle developer form -->
         <div class="mb-3">
-          <button id="toggleTechnologyForm" class="btn btn-primary">
-            Add Technology
-          </button>
+          <button id="toggleDeveloperForm" class="btn btn-primary">Add Developer</button>
         </div>
 
-        <!-- Technology form initially hidden -->
-        <div id="technologyFormContainer" style="display: none">
-          <div class="card col-md-6">
+        <!-- Developer form initially hidden -->
+        <div id="developerFormContainer" style="display: none;">
+          <div class="card">
             <div class="card-body">
-              <h4 class="card-title">Add Technology</h4>
-              <form id="addTechnologyForm">
-                <div class="form-group">
-                  <label for="technologyName">Technology Name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="technologyName"
-                    placeholder="Enter technology name"
-                    required
-                  />
-                </div>
-                <button type="submit" class="btn btn-primary">
-                  Create Technology
-                </button>
+              <h4 class="card-title">Create Developer</h4>
+              <form id="createDeveloperForm">
+                <!-- ... (existing code) -->
               </form>
             </div>
           </div>
@@ -42,18 +34,24 @@ include('../../layouts/sidebar.ejs') %>
 
         <div class="card mt-3">
           <div class="card-body">
-            <h4 class="card-title">All Technologies</h4>
+            <h4 class="card-title">All Developers</h4>
             <div class="table-responsive">
-              <table class="table table-striped" id="technologyTable">
+              <table class="table table-striped" id="developerTable">
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Technology Name</th>
+                    <th>Name</th>
+                    <th>Experience</th>
+                    <th>Technology</th>
+                    <th>Resume</th>
+                    <th>Available</th>
+                    <th>Rate</th>
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody id="technologyTableBody">
-                  <!-- Table rows will be dynamically populated here -->
+                <tbody id="developerTableBody">
+                 
+
                 </tbody>
               </table>
             </div>
@@ -64,6 +62,9 @@ include('../../layouts/sidebar.ejs') %>
   </div>
 </div>
 
+<<<<<<< HEAD
+<!-- Modal for updating developer -->
+=======
 <!-- Modal for updating technology -->
 <div class="modal mt-4" id="updateTechnologyModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
@@ -99,15 +100,23 @@ include('../../layouts/sidebar.ejs') %>
     </div>
   </div>
 </div>
+>>>>>>> 6ac743904d615d6510c27389ccf68042f956a8d0
 
-<%- include('../../layouts/footer.ejs') %>
+
+<%- include('../layouts/footer.ejs') %>
 
 <script>
-  // Function to get all technologies and populate the table
-  document.addEventListener("DOMContentLoaded", function () {
-    getAllTechnologies();
-  });
+  document.addEventListener('DOMContentLoaded', function () {
+    const token = localStorage.getItem("vendorToken");
+    const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
+    const developerFormContainer = document.getElementById('developerFormContainer');
+    const createDeveloperForm = document.getElementById('createDeveloperForm');
+    const developerTableBody = document.getElementById('developerTableBody');
 
+<<<<<<< HEAD
+    toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
+    createDeveloperForm.addEventListener('submit', function (event) {
+=======
   function getAllTechnologies() {
     fetch("http://localhost:3000/technology/get-technology")
       .then((response) => response.json())
@@ -152,32 +161,61 @@ include('../../layouts/sidebar.ejs') %>
   document
     .getElementById("addTechnologyForm")
     .addEventListener("submit", function (event) {
+>>>>>>> 6ac743904d615d6510c27389ccf68042f956a8d0
       event.preventDefault();
-
-      var technologyName = document.getElementById("technologyName").value;
-
-      // Add the new technology to the server
-      addTechnologyToServer(technologyName);
+      addDeveloper();
     });
 
-  // Function to add technology to the server
-  function addTechnologyToServer(techName) {
-    fetch("http://localhost:3000/technology/add-technology", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: techName }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          // If the technology is added successfully, update the table
-          addTechnologyToTable(data.technology._id, techName); // Assuming the server sends back the ID
-        } else {
-          console.error("Failed to add technology:", data.message);
-        }
+    fetchDevelopers();
+
+    function toggleDeveloperForm() {
+      developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function fetchDevelopers() {
+      fetch('http://localhost:3000/developer/get-devAll', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
+<<<<<<< HEAD
+        .then(response => response.json())
+        .then(data => {
+          displayDevelopers(data.developers);
+          // Initialize DataTable after populating the table
+          $('#developerTable').DataTable();
+        })
+        .catch(handleError);
+    }
+
+    function displayDevelopers(developers) {
+      developerTableBody.innerHTML = '';
+
+      developers.forEach(developer => {
+        const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
+        newRow.id = `developerRow_${developer._id}`;
+
+        const cells = [
+          developer._id,
+          developer.name,
+          developer.experience,
+          developer.technology.join(', '),
+          developer.resume,
+          developer.available ? 'Yes' : 'No',
+          developer.rate
+        ];
+
+        cells.forEach((cell, index) => {
+          const newCell = newRow.insertCell(index);
+          newCell.innerHTML = cell;
+        });
+
+        const actionCell = newRow.insertCell(cells.length);
+        actionCell.innerHTML = `<button class="btn btn-warning mx-3" onclick="updateDeveloper('${developer._id}')">Update</button>` +
+          `<button class="btn btn-danger ml-2" onclick="deleteDeveloper('${developer._id}')">Delete</button>`;
+      });
+    }
+=======
       .catch((error) => {
         console.error("Error adding technology:", error);
       })
@@ -264,12 +302,409 @@ include('../../layouts/sidebar.ejs') %>
         $("#updateTechnologyModal").modal("hide");
       });
   }
+>>>>>>> 6ac743904d615d6510c27389ccf68042f956a8d0
 
-  // Function to delete technology
-  function deleteTechnology(button) {
-    var row = button.parentNode.parentNode;
-    var techId = row.cells[0].innerHTML;
+    function addDeveloper() {
+      // ... (existing code)
+    }
 
+<<<<<<< HEAD
+    function updateDeveloper(developerId) {
+      // ... (existing code)
+    }
+
+    function deleteDeveloper(developerId) {
+      // ... (existing code)
+    }
+
+    function handleApiResponse(data) {
+      console.log(data);
+    }
+
+    function handleApiError(error) {
+      console.error('API Request Error:', error);
+    }
+
+    if (!tokens) {
+      window.location.href = "/login";
+    }
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+KEVAL BHAI CODEEEEEEEEEEEEEEEEEEEEEE
+
+
+<%- include('../layouts/header.ejs') %>
+  <%- include('../layouts/vendor-dashboard.ejs') %>
+
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper">
+        <div class="main-panel">
+          <div class="content-wrapperrr">
+            <div class="page-header">
+              <h3 class="page-title"> Developer Dashboard </h3>
+            </div>
+
+            <!-- Add button to toggle developer form -->
+            <div class="mb-3">
+              <button id="toggleDeveloperForm" class="btn btn-primary">Add Developer</button>
+            </div>
+
+            <!-- Developer form initially hidden -->
+            <div id="developerFormContainer" style="display: none;">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Create Developer</h4>
+                  <form id="createDeveloperForm">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="developerName">Name</label>
+                          <input type="text" class="form-control" id="developerName" placeholder="Enter name" required>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="experience">Experience</label>
+                          <input type="number" class="form-control" id="experience" placeholder="Enter experience"
+                            required>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="technology">Technology</label>
+                          <input type="text" class="form-control" id="technology" placeholder="Enter technology"
+                            required>
+                          <small class="form-text text-muted">Enter technologies as a comma-separated list (e.g.,
+                            Node.js, Laravel)</small>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="resume">Resume URL</label>
+                          <input type="url" class="form-control" id="resume" placeholder="Enter resume URL">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check">
+                          <input type="checkbox" class="form-check-input" id="available">
+                          <label class="form-check-label" for="available">Available</label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="rate">Rate</label>
+                          <input type="number" class="form-control" id="rate" placeholder="Enter hourly rate">
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Developer</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mt-3">
+              <div class="card-body">
+                <h4 class="card-title">All Developers</h4>
+                <div class="table-responsive">
+                  <table class="table table-striped" id="developerTable">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Experience</th>
+                        <th>Technology</th>
+                        <th>Resume</th>
+                        <th>Available</th>
+                        <th>Rate</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="developerTableBody">
+                      <!-- Table rows will be dynamically populated here -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for updating developer -->
+    <div class="modal fade" id="updateDeveloperModal" tabindex="-1" role="dialog"
+      aria-labelledby="updateDeveloperModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateDeveloperModalLabel">Update Developer</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="updateDeveloperForm">
+              <div class="form-group">
+                <label for="updatedDeveloperName">Name</label>
+                <input type="text" class="form-control" id="updatedDeveloperName" required>
+              </div>
+              <div class="form-group">
+                <label for="updatedExperience">Experience</label>
+                <input type="number" class="form-control" id="updatedExperience" required>
+              </div>
+              <div class="form-group">
+                <label for="updatedTechnology">Technology</label>
+                <input type="text" class="form-control" id="updatedTechnology" required>
+              </div>
+              <div class="form-group">
+                <label for="updatedResume">Resume URL</label>
+                <input type="url" class="form-control" id="updatedResume">
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="updatedAvailable">
+                <label class="form-check-label" for="updatedAvailable">Available</label>
+              </div>
+              <div class="form-group">
+                <label for="updatedRate">Rate</label>
+                <input type="number" class="form-control" id="updatedRate">
+              </div>
+              <button type="submit" class="btn btn-primary">Update Developer</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../layouts/footer.ejs') %>
+    
+      <script>
+
+        const tokens = localStorage.getItem("vendorToken");
+
+       
+        function updateDeveloper(developerId) {
+          console.log(developerId)
+          fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
+            headers: {
+              Authorization: `Bearer ${tokens}`,
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              const updatedDeveloperNameInput = document.getElementById('updatedDeveloperName');
+              const updatedExperienceInput = document.getElementById('updatedExperience');
+              const updatedTechnologyInput = document.getElementById('updatedTechnology');
+              const updatedResumeInput = document.getElementById('updatedResume');
+              const updatedAvailableInput = document.getElementById('updatedAvailable');
+              const updatedRateInput = document.getElementById('updatedRate');
+
+              updatedDeveloperNameInput.value = data.developer.name;
+              updatedExperienceInput.value = data.developer.experience;
+              updatedTechnologyInput.value = data.developer.technology.join(', ');
+              updatedResumeInput.value = data.developer.resume;
+              updatedAvailableInput.checked = data.developer.available;
+              updatedRateInput.value = data.developer.rate;
+
+              $('#updateDeveloperModal').modal('show');
+            })
+            .catch(handleError);
+
+          document.getElementById('updateDeveloperForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const updatedDeveloperName = document.getElementById('updatedDeveloperName').value;
+            const updatedExperience = document.getElementById('updatedExperience').value;
+            const updatedTechnology = document.getElementById('updatedTechnology').value.split(',').map(item => item.trim());
+            const updatedResume = document.getElementById('updatedResume').value;
+            const updatedAvailable = document.getElementById('updatedAvailable').checked;
+            const updatedRate = document.getElementById('updatedRate').value;
+
+            const requestData = {
+              name: updatedDeveloperName,
+              experience: updatedExperience,
+              technology: updatedTechnology,
+              resume: updatedResume,
+              available: updatedAvailable,
+              rate: updatedRate
+            };
+            console.log("requestData", requestData);
+            fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
+              method: 'PUT',
+              headers: {
+                Authorization: `Bearer ${tokens}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestData),
+            })
+              .then(response => response.json())
+              .then(data => {
+                handleApiResponse(data);
+                // fetchDevelopers();
+                $('#updateDeveloperModal').modal('hide');
+              })
+              .catch(handleApiError);
+          });
+
+        }
+
+        function handleApiResponse(data) {
+          console.log(data);
+        }
+
+        function handleApiError(error) {
+          console.error('API Request Error:', error);
+        }
+
+        function deleteDeveloper(developerId) {
+          fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${tokens}`,
+              'Content-Type': 'application/json',
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              handleApiResponse(data);
+              // fetchDevelopers();
+            })
+            .catch(handleError);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+          const token = localStorage.getItem("vendorToken");
+          const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
+          const developerFormContainer = document.getElementById('developerFormContainer');
+          const createDeveloperForm = document.getElementById('createDeveloperForm');
+          const developerTableBody = document.getElementById('developerTableBody');
+
+          toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
+          createDeveloperForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            addDeveloper();
+          });
+
+
+          fetchDevelopers();
+
+          function toggleDeveloperForm() {
+            developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
+          }
+
+          function fetchDevelopers() {
+            fetch('http://localhost:3000/developer/get-devAll', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+              .then(response => response.json())
+              .then(data => {
+                displayDevelopers(data.developers);
+              })
+              .catch(handleError);
+          }
+
+          function displayDevelopers(developers) {
+            developerTableBody.innerHTML = '';
+
+            developers.forEach(developer => {
+              const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
+              newRow.id = `developerRow_${developer._id}`;
+
+              const cells = [
+                developer._id,
+                developer.name,
+                developer.experience,
+                developer.technology.join(', '),
+                developer.resume,
+                developer.available ? 'Yes' : 'No',
+                developer.rate
+              ];
+
+              cells.forEach((cell, index) => {
+                const newCell = newRow.insertCell(index);
+                newCell.innerHTML = cell;
+              });
+
+              const actionCell = newRow.insertCell(cells.length);
+              actionCell.innerHTML = `<button class="btn btn-warning mx-3" onclick="updateDeveloper('${developer._id}')">Update</button>` +
+                `<button class="btn btn-danger ml-2" onclick="deleteDeveloper('${developer._id}')">Delete</button>`;
+            });
+          }
+
+          function addDeveloper() {
+            const developerName = document.getElementById('developerName').value;
+            const experience = document.getElementById('experience').value;
+            const technology = document.getElementById('technology').value.split(',').map(item => item.trim());
+            const resume = document.getElementById('resume').value;
+            const available = document.getElementById('available').checked;
+            const rate = document.getElementById('rate').value;
+
+            const requestData = {
+              name: developerName,
+              experience: experience,
+              technology: technology,
+              resume: resume,
+              available: available,
+              rate: rate
+            };
+
+            fetch('http://localhost:3000/developer/add-dev', {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestData),
+            })
+              .then(response => response.json())
+              .then(data => {
+                handleApiResponse(data);
+                fetchDevelopers();
+                toggleDeveloperForm();
+              })
+              .catch(handleApiError);
+          }
+
+          const tokens = localStorage.getItem("vendorToken");
+
+          if (!tokens) {
+            window.location.href = "/login";
+          }
+        });
+      </script>
+=======
     // Send AJAX request to delete technology in the server
     fetch(`http://localhost:3000/technology/delete-technology/${techId}`, {
       method: "DELETE",
@@ -288,3 +723,4 @@ include('../../layouts/sidebar.ejs') %>
       });
   }
 </script>
+>>>>>>> 6ac743904d615d6510c27389ccf68042f956a8d0

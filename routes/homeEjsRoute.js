@@ -21,7 +21,7 @@ router.get('/vendorDash',vendorDash);
 router.get('/developerDash',developerDash);
 router.get('/technologyDash',technologyDash);
 
-// vendor 
+//vendor 
 router.get('/vendor-dashboard',vendorDashboard);
 router.get('/vendor-developer', vendorDeveloper);
 router.get('/vendor-technology', vendorTechnology);

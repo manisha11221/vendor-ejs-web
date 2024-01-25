@@ -1,6 +1,6 @@
 <!-- developerDash.ejs -->
-<%- include('../../layouts/header.ejs') %> <%-
-include('../../layouts/sidebar.ejs') %>
+<%- include('../../layouts/header.ejs') %> 
+<%- include('../../layouts/sidebar.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
@@ -12,7 +12,7 @@ include('../../layouts/sidebar.ejs') %>
             <div class="page-header">
               <h3 class="page-title">Developer Dashboard</h3>
             </div>
-            <div class="card">
+            <div class="card mb-5">
               <div class="card-body">
                 <h4 class="card-title">All Developers</h4>
                 <div class="table-responsive">
@@ -39,7 +39,7 @@ include('../../layouts/sidebar.ejs') %>
         <!-- Inline script to fetch and populate data -->
         <script>
           document.addEventListener("DOMContentLoaded", function () {
-            // Fetch data from the API
+           
             fetch("http://localhost:3000/developer/get-devAll/")
               .then((response) => response.json())
               .then((data) => {
