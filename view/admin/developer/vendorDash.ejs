@@ -1,6 +1,6 @@
 <!-- vendorDash.ejs -->
-<%- include('../../layouts/header.ejs') %>
-<%- include('../../layouts/sidebar.ejs') %>
+<%- include('../../layouts/header.ejs') %> <%-
+include('../../layouts/sidebar.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
@@ -25,11 +25,12 @@
                         <th>Address</th>
                         <th>Company Name</th>
                         <th>GST Number</th>
-                        <th>Developer Name</th>
-                        <th>Developer Company Name</th>
+                        <th>Developer Count</th>
+                        
                         <!-- Add more columns based on your vendor model -->
                       </tr>
                     </thead>
+
                     <tbody id="vendorTableBody">
                       <!-- Table rows will be dynamically populated here -->
                     </tbody>
@@ -39,50 +40,40 @@
             </div>
           </div>
         </div>
-        <!-- End of vendor data table -->
+       
       </div>
-      <!-- content-wrapper ends -->
+    
     </div>
   </div>
 </div>
 <%- include('../../layouts/footer.ejs') %>
 
-<!-- Inline script to fetch and populate data -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     fetch("http://localhost:3000/vendor/get-all-Vendors")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data.success) {
-        // Initialize DataTable
-        $('#vendorTable').DataTable();
-        
-        console.log("In venodr Table");                 
-        // Populate the table with the received data
-          var vendorTable = $('#vendorTable').DataTable();
-          var vendorTableBody = document.getElementById("vendorTableBody");
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          var vendorTable = $("#vendorTable").DataTable();
 
-          data.dataArr.forEach(function (item, index) {
-            const vendor = item.vendor;
+          data.vendors.forEach(function (vendor, index) {
+            const developerCount = vendor.developers.length;
 
-            console.log("venodr---",vendor);
-            const developer = item.developer;
-
-            vendorTable.row.add([
-              (index + 1),
-              vendor.email,
-              vendor.address,
-              vendor.companyname,
-              vendor.gstnumber,
-              (developer ? developer.name : "N/A"),
-              (developer ? developer.company_name : "N/A"),
-              // Add more columns based on your vendor model
-            ]).draw();
+            vendorTable.row
+              .add([
+                index + 1,
+                vendor.email,
+                vendor.address,
+                vendor.company_name,
+                vendor.gst_number,
+                developerCount > 0 ? developerCount : "No Developer added",
+              ])
+              .draw();
           });
         } else {
           console.error("API response indicates failure:", data.message);
@@ -92,10 +83,10 @@
         console.error("Error fetching vendors:", error);
       });
   });
+
   const tokens = localStorage.getItem("adminToken");
 
   if (!tokens) {
-    // Redirect to the login page if the token is not present
     window.location.href = "/login";
   }
 </script>

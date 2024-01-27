@@ -36,6 +36,7 @@ app.use(ejsRoute.routes);
 // Connect to MongoDB
 const connectDB = require("./db/conn");
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // Make sure this line is present
 
 // Use admin routes

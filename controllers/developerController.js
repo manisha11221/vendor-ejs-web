@@ -1,31 +1,62 @@
 const { default: mongoose } = require("mongoose");
 const Developer = require("../models/developerModel");
 const vendor = require("../models/vendorModel");
+const upload = require('../middlewares/multerMiddleware');
 
 exports.addDeveloper = async (req, res) => {
   try {
-    const { name, experience, technology, resume, available, rate } = req.body;
-
-    const developer = new Developer({
+    const {
       name,
       experience,
       technology,
       resume,
       available,
       rate,
+      portfolio,
+      gitHubUrl,
+      linkedInLink,
+    } = req.body;
+
+    console.log("reqqqqq", req.body);
+
+    if (!name || !experience || !rate) {
+      return res
+        .status(400)
+        .json({ message: "Name, experience, and rate are required fields." });
+    }
+
+    const developer = new Developer({
+      name,
+      experience,
+      technology,
+      available,
+      rate,
+      portfolio,
+      gitHubUrl,
+      linkedInLink,
       vendorId: req.user.id,
     });
 
-    await developer.save();
+      if (req.file) {
+        developer.resume = req.file.path;
+      }
 
-    // Update the vendor's developers array with the new developer's ID
-    await Vendor.findByIdAndUpdate(
-      req.user.id,
-      { $push: { developers: developer._id } },
-      { new: true }
-    );
+      await developer.save();
 
-    res.json({ message: "Developer created successfully", developer });
+      const updatedVendor = await vendor.findByIdAndUpdate(
+        req.user.id,
+        { $push: { developers: developer._id } },
+        { new: true }
+      );
+
+      console.log("Developer id in vendor table:", developer._id);
+
+      res.json({
+        message: "Developer created successfully",
+        developer,
+        updatedVendor,
+      });
+   
   } catch (error) {
     console.error("Create Developer Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -56,16 +87,17 @@ exports.getDeveloperAll = async (req, res) => {
     let dataArr = [];
 
     for (const findDeveloper of developers) {
-      let findVendorData = await vendor.findOne({ _id: findDeveloper.vendorId });
+      let findVendorData = await vendor.findOne({
+        _id: findDeveloper.vendorId,
+      });
       // console.log("findVendorData", findVendorData);
 
       // Check if vendor data is found
       if (findVendorData) {
-
         // Combine developer and vendor details
         let combinedData = {
           developer: findDeveloper.toObject(),
-          vendor: findVendorData.toObject()
+          vendor: findVendorData.toObject(),
         };
 
         dataArr.push(combinedData);
@@ -81,7 +113,6 @@ exports.getDeveloperAll = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 
 //view by vendor
 exports.getByVendor = async (req, res) => {

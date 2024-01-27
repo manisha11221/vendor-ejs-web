@@ -1,6 +1,6 @@
 <!-- developerDash.ejs -->
-<%- include('../../layouts/header.ejs') %> 
-<%- include('../../layouts/sidebar.ejs') %>
+<%- include('../../layouts/header.ejs') %> <%-
+include('../../layouts/sidebar.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
@@ -25,7 +25,6 @@
                         <th>Experience</th>
                         <th>vendor_Email</th>
                         <th>vendor_Company</th>
-                       
                       </tr>
                     </thead>
                     <tbody></tbody>
@@ -39,11 +38,10 @@
         <!-- Inline script to fetch and populate data -->
         <script>
           document.addEventListener("DOMContentLoaded", function () {
-           
             fetch("http://localhost:3000/developer/get-devAll/")
               .then((response) => response.json())
               .then((data) => {
-                displayDevelopers(data.dataArr); // The response key is dataArr, not developers
+                displayDevelopers(data.dataArr);
                 // Initialize DataTable
                 $("#developerTable").DataTable();
               })
@@ -64,9 +62,9 @@
                     developer.name,
                     developer.technology,
                     developer.experience,
-                    // vendor.email
-                    (vendor ? vendor.email : "N/A"),
-                    (vendor ? vendor.company_name : "N/A"),
+                    vendor ? vendor.email : "N/A",
+                    vendor ? vendor.company_name : "N/A",
+                    // Add one more column if needed
                   ])
                   .draw();
               });

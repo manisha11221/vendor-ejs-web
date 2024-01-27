@@ -4,8 +4,9 @@ const Vendor = require("../models/vendorModel");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const Tech = require("../public/techModel");
+const Tech = require("../models/techModel");
 const Developer = require("../models/developerModel");
+const Technology = require("../models/techModel")
 
 // Define email configuration
 const emailConfig = {
@@ -189,7 +190,6 @@ exports.resetPassword = async (req, res) => {
 
 
 
-
 //login the vendor
 // exports.loginVendor = async (req, res) => {
 //   try {
@@ -307,8 +307,7 @@ exports.editProfile = async (req, res) => {
     vendor.team_size = team_size || vendor.team_size;
 
     if (req.file) {
-      // Assuming you're using multer to handle file uploads
-      vendor.resume = req.file.path; // Save the file path in the 'resume' field
+        vendor.profileImage = req.file.path;
     }
 
     await vendor.save();
@@ -323,9 +322,10 @@ exports.editProfile = async (req, res) => {
 //get-all-vendor
 exports.getAllVendors = async (req, res) => {
   try {
-    
-    const vendors = await Vendor.find();
-    console.log("In venodr Table backend");  
+    const vendors = await Vendor.find().populate({
+      path: 'developers',
+      select: 'name rate',
+    });
 
     res.status(200).json({ success: true, vendors });
   } catch (error) {
@@ -334,50 +334,6 @@ exports.getAllVendors = async (req, res) => {
   }
 };
 
-
-
-// exports.getvendorById = async (req, res) => {
-//   try {
-//     const vendorId = req.params.id;
-
-//     // Fetch the vendor
-//     const vendor = await Vendor.findById(vendorId);
-
-//     if (!vendor) {
-//       return res.status(404).json({ message: "Vendor not found" });
-//     }
-
-//     // Fetch the associated developer using the vendorId from the Developer model
-//     const developer = await Developer.findOne({ vendorId }); // Assuming there's a vendorId in the Developer model
-
-//     if (!developer) {
-//       return res.status(404).json({ message: "Developer not found" });
-//     }
-
-//     // Combine vendor and developer details
-//     const vendorWithDeveloper = {
-//       _id: vendor._id,
-//       vendorEmail: vendor.email,
-//       Address: vendor.address,
-//       vendorEmail: vendor.email,
-//       companyname: vendor.company_name,
-//       gstnumber: vendor.gst_number,
-//       token: vendor.token,
-//       // Add other vendor details as needed
-
-//       developer: {
-//         _id: developer._id,
-//         developerName: developer.name,
-//         // Add other developer details as needed
-//       },
-//     };
-
-//     res.status(200).json({ success: true, vendor: vendorWithDeveloper });
-//   } catch (error) {
-//     console.error("Get vendor by ID Error:", error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
 
 
 exports.getvendorById = async (req, res) => {
@@ -392,9 +348,7 @@ exports.getvendorById = async (req, res) => {
     }
 
     // Fetch the associated developer using the vendorId from the Developer model
-    const developer = await Developer.find({ vendor: vendorId }); // Assuming there's a 'vendor' field in the Developer model that references the Vendor model
-
-    console.log("Developer By The vendor",developer);
+    const developer = await Developer.findOne({ vendorId }); // Assuming there's a vendorId in the Developer model
 
     if (!developer) {
       return res.status(404).json({ message: "Developer not found" });
@@ -405,6 +359,7 @@ exports.getvendorById = async (req, res) => {
       _id: vendor._id,
       vendorEmail: vendor.email,
       Address: vendor.address,
+      vendorEmail: vendor.email,
       companyname: vendor.company_name,
       gstnumber: vendor.gst_number,
       token: vendor.token,
@@ -423,6 +378,8 @@ exports.getvendorById = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
 
 
 
@@ -492,5 +449,41 @@ exports.developerCount = async (req, res) => {
   } catch (error) {
     console.error("Get Vendor developer Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+//added vendor by 
+exports.addTechByVendor = async (req, res) => {
+  try {
+    const vendorId = req.params.id;
+    const { techName } = req.body;
+
+    const vendor = await Vendor.findById(vendorId);
+
+    if (!vendor) {
+      return res.status(404).json({ message: 'Vendor not found' });
+    }
+
+    
+    const newTechnology = new Technology({
+      name: techName,
+      vendorId: vendor._id, 
+      
+    });
+
+    await newTechnology.save();
+    vendor.technologies = vendor.technologies || [];
+    vendor.technologies.push(newTechnology._id);
+    await vendor.save();
+    res.status(201).json({
+      success: true,
+      message: 'Technology added successfully',
+      technology: newTechnology,
+      vendorId: vendor._id, 
+    });
+  } catch (error) {
+    console.error('Add technology by vendor Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };

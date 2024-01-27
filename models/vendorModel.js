@@ -38,13 +38,16 @@ const vendorSchema = new mongoose.Schema({
   team_size: {
     type: Number, 
   },
-  resume: {
-    type: String, 
-  },
+  // resume: {
+  //   type: String, 
+  // },
   developers: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Developer', 
   }],
+  profileImage: {
+    type: String,
+  },
 });
 
 const Vendor = mongoose.model("Vendor", vendorSchema);
