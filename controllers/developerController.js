@@ -18,6 +18,13 @@ exports.addDeveloper = async (req, res) => {
 
     await developer.save();
 
+    // Update the vendor's developers array with the new developer's ID
+    await Vendor.findByIdAndUpdate(
+      req.user.id,
+      { $push: { developers: developer._id } },
+      { new: true }
+    );
+
     res.json({ message: "Developer created successfully", developer });
   } catch (error) {
     console.error("Create Developer Error:", error);

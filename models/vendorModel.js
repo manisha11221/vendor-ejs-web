@@ -41,6 +41,10 @@ const vendorSchema = new mongoose.Schema({
   resume: {
     type: String, 
   },
+  developers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Developer', 
+  }],
 });
 
 const Vendor = mongoose.model("Vendor", vendorSchema);

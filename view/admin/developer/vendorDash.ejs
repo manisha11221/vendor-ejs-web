@@ -21,8 +21,12 @@
                     <thead>
                       <tr>
                         <th>Sr.No</th>
-                       
                         <th>Email</th>
+                        <th>Address</th>
+                        <th>Company Name</th>
+                        <th>GST Number</th>
+                        <th>Developer Name</th>
+                        <th>Developer Company Name</th>
                         <!-- Add more columns based on your vendor model -->
                       </tr>
                     </thead>
@@ -46,28 +50,38 @@
 <!-- Inline script to fetch and populate data -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Fetch data from the API
     fetch("http://localhost:3000/vendor/get-all-Vendors")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.success) {
-          // Initialize DataTable
-          $('#vendorTable').DataTable();
-
-          // Populate the table with the received data
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.success) {
+        // Initialize DataTable
+        $('#vendorTable').DataTable();
+        
+        console.log("In venodr Table");                 
+        // Populate the table with the received data
           var vendorTable = $('#vendorTable').DataTable();
           var vendorTableBody = document.getElementById("vendorTableBody");
 
-          data.vendors.forEach(function (vendor, index) {
+          data.dataArr.forEach(function (item, index) {
+            const vendor = item.vendor;
+
+            console.log("venodr---",vendor);
+            const developer = item.developer;
+
             vendorTable.row.add([
               (index + 1),
-              
-              vendor.email
+              vendor.email,
+              vendor.address,
+              vendor.companyname,
+              vendor.gstnumber,
+              (developer ? developer.name : "N/A"),
+              (developer ? developer.company_name : "N/A"),
+              // Add more columns based on your vendor model
             ]).draw();
           });
         } else {
@@ -78,7 +92,6 @@
         console.error("Error fetching vendors:", error);
       });
   });
-
   const tokens = localStorage.getItem("adminToken");
 
   if (!tokens) {
