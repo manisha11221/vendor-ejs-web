@@ -1,5 +1,5 @@
 <%- include('../layouts/header.ejs') %>
-  <%- include('../layouts/vendor-dashboard.ejs') %>
+<%- include('../layouts/vendor-dashboard.ejs') %>
 
 
     <div class="container-scroller">
@@ -99,49 +99,7 @@
       </div>
     </div>
 
-    <!-- Modal for updating developer -->
-    <div class="modal fade" id="updateDeveloperModal" tabindex="-1" role="dialog"
-      aria-labelledby="updateDeveloperModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="updateDeveloperModalLabel">Update Developer</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="updateDeveloperForm">
-              <div class="form-group">
-                <label for="updatedDeveloperName">Name</label>
-                <input type="text" class="form-control" id="updatedDeveloperName" required>
-              </div>
-              <div class="form-group">
-                <label for="updatedExperience">Experience</label>
-                <input type="number" class="form-control" id="updatedExperience" required>
-              </div>
-              <div class="form-group">
-                <label for="updatedTechnology">Technology</label>
-                <input type="text" class="form-control" id="updatedTechnology" required>
-              </div>
-              <div class="form-group">
-                <label for="updatedResume">Resume URL</label>
-                <input type="url" class="form-control" id="updatedResume">
-              </div>
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="updatedAvailable">
-                <label class="form-check-label" for="updatedAvailable">Available</label>
-              </div>
-              <div class="form-group">
-                <label for="updatedRate">Rate</label>
-                <input type="number" class="form-control" id="updatedRate">
-              </div>
-              <button type="submit" class="btn btn-primary">Update Developer</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+
 
     <%- include('../layouts/footer.ejs') %>
 
@@ -261,6 +219,7 @@
           }
 
           function fetchDevelopers() {
+            console.log("Fetching developers...");
             fetch('http://localhost:3000/developer/get-devAll', {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -268,16 +227,22 @@
             })
               .then(response => response.json())
               .then(data => {
+                console.log("Fetched data:", data);
                 displayDevelopers(data.developers);
                 // Initialize DataTable after populating the table
                 $('#developerTable').DataTable();
               })
               .catch(handleError);
           }
-
+          
           function displayDevelopers(developers) {
+            console.log("---------------------");
+            if (!developers || !Array.isArray(developers)) {
+              console.error("Developers data is missing or not an array.");
+              return;
+            }
             developerTableBody.innerHTML = '';
-
+            console.log("--------------");
             developers.forEach(developer => {
               const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
               newRow.id = `developerRow_${developer._id}`;
@@ -291,6 +256,7 @@
                 developer.available ? 'Yes' : 'No',
                 developer.rate
               ];
+              console.log("cells", cells);
 
               cells.forEach((cell, index) => {
                 const newCell = newRow.insertCell(index);

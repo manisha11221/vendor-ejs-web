@@ -3,9 +3,10 @@ const router = express.Router();
 const developerController = require('../controllers/developerController');
 const auth = require('../middlewares/vendorMiddleware')
 const authentication = require('../middlewares/adminMiddleware')
+const multerMiddleware = require("../middlewares/multerMiddleware")
 
 
-router.post('/add-dev',auth,developerController.addDeveloper);
+router.post('/add-dev',auth,multerMiddleware.single('resume'),developerController.addDeveloper);
 router.get('/get-dev/:id', developerController.getDeveloperById);
 router.get('/get-devAll/', developerController.getDeveloperAll);
 router.get('/get-by-vendor',auth,developerController.getByVendor);

@@ -18,11 +18,19 @@ const developerSchema = new mongoose.Schema({
   resume: {
     type: String,
   },
-  available: {
-    type: Boolean,
-    default: true,
+  portfolio: {
+    type: String,
   },
-  //rate of the developer
+  gitHubUrl: {
+    type: String,
+  },
+  linkedInLink: {
+    type: String,
+  },
+  available: {
+    type: String, // "part-time", "full-time", or any other values you want to support
+    default: "full-time", 
+  },
   rate: {
     type: Number,
     required: true,

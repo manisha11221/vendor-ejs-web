@@ -35,9 +35,18 @@ const vendorSchema = new mongoose.Schema({
   address: {
     type: String,
   },
-  resume: {
-    type: String, 
-    require: true,
+  team_size: {
+    type: Number, 
+  },
+  // resume: {
+  //   type: String, 
+  // },
+  developers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Developer', 
+  }],
+  profileImage: {
+    type: String,
   },
 });
 

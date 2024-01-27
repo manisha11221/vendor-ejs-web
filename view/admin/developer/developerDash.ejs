@@ -1,6 +1,6 @@
 <!-- developerDash.ejs -->
-<%- include('../../layouts/header.ejs') %> 
-<%- include('../../layouts/sidebar.ejs') %>
+<%- include('../../layouts/header.ejs') %> <%-
+include('../../layouts/sidebar.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
@@ -23,7 +23,8 @@
                         <th>Name</th>
                         <th>Technology</th>
                         <th>Experience</th>
-                        
+                        <th>vendor_Email</th>
+                        <th>vendor_Company</th>
                       </tr>
                     </thead>
                     <tbody></tbody>
@@ -37,27 +38,35 @@
         <!-- Inline script to fetch and populate data -->
         <script>
           document.addEventListener("DOMContentLoaded", function () {
-           
             fetch("http://localhost:3000/developer/get-devAll/")
               .then((response) => response.json())
               .then((data) => {
-                displayDevelopers(data.developers);
+                displayDevelopers(data.dataArr);
                 // Initialize DataTable
-                $('#developerTable').DataTable();
+                $("#developerTable").DataTable();
               })
               .catch((error) => {
                 console.error("Error fetching data:", error);
               });
 
-            function displayDevelopers(developers) {
-              const table = $('#developerTable').DataTable();
-              developers.forEach((developer, index) => {
-                table.row.add([
-                  index + 1,
-                  developer.name,
-                  developer.technology,
-                  developer.experience
-                ]).draw();
+            function displayDevelopers(dataArr) {
+              const table = $("#developerTable").DataTable();
+              dataArr.forEach((data, index) => {
+                const developer = data.developer;
+                const vendor = data.vendor;
+
+                // Add more columns as needed
+                table.row
+                  .add([
+                    index + 1,
+                    developer.name,
+                    developer.technology,
+                    developer.experience,
+                    vendor ? vendor.email : "N/A",
+                    vendor ? vendor.company_name : "N/A",
+                    // Add one more column if needed
+                  ])
+                  .draw();
               });
             }
           });

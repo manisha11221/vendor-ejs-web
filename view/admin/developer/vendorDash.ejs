@@ -1,6 +1,6 @@
 <!-- vendorDash.ejs -->
-<%- include('../../layouts/header.ejs') %>
-<%- include('../../layouts/sidebar.ejs') %>
+<%- include('../../layouts/header.ejs') %> <%-
+include('../../layouts/sidebar.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
@@ -21,11 +21,16 @@
                     <thead>
                       <tr>
                         <th>Sr.No</th>
-                       
                         <th>Email</th>
+                        <th>Address</th>
+                        <th>Company Name</th>
+                        <th>GST Number</th>
+                        <th>Developer Count</th>
+                        
                         <!-- Add more columns based on your vendor model -->
                       </tr>
                     </thead>
+
                     <tbody id="vendorTableBody">
                       <!-- Table rows will be dynamically populated here -->
                     </tbody>
@@ -35,18 +40,16 @@
             </div>
           </div>
         </div>
-        <!-- End of vendor data table -->
+       
       </div>
-      <!-- content-wrapper ends -->
+    
     </div>
   </div>
 </div>
 <%- include('../../layouts/footer.ejs') %>
 
-<!-- Inline script to fetch and populate data -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Fetch data from the API
     fetch("http://localhost:3000/vendor/get-all-Vendors")
       .then((response) => {
         if (!response.ok) {
@@ -56,19 +59,21 @@
       })
       .then((data) => {
         if (data.success) {
-          // Initialize DataTable
-          $('#vendorTable').DataTable();
-
-          // Populate the table with the received data
-          var vendorTable = $('#vendorTable').DataTable();
-          var vendorTableBody = document.getElementById("vendorTableBody");
+          var vendorTable = $("#vendorTable").DataTable();
 
           data.vendors.forEach(function (vendor, index) {
-            vendorTable.row.add([
-              (index + 1),
-              
-              vendor.email
-            ]).draw();
+            const developerCount = vendor.developers.length;
+
+            vendorTable.row
+              .add([
+                index + 1,
+                vendor.email,
+                vendor.address,
+                vendor.company_name,
+                vendor.gst_number,
+                developerCount > 0 ? developerCount : "No Developer added",
+              ])
+              .draw();
           });
         } else {
           console.error("API response indicates failure:", data.message);
@@ -82,7 +87,6 @@
   const tokens = localStorage.getItem("adminToken");
 
   if (!tokens) {
-    // Redirect to the login page if the token is not present
     window.location.href = "/login";
   }
 </script>
