@@ -318,6 +318,33 @@ exports.editProfile = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+exports.viewProfile = async (req, res) => {
+  try {
+    const { email } = req.params; // Assuming email is part of the URL parameter
+
+    const vendor = await Vendor.findOne({ email });
+
+    if (!vendor) {
+      return res.status(404).json({ message: "Vendor not found" });
+    }
+
+    // You can customize the response structure based on your requirements
+    const profileData = {
+      email: vendor.email,
+      company_name: vendor.company_name,
+      website_link: vendor.website_link,
+      contact: vendor.contact,
+      gst_number: vendor.gst_number,
+      address: vendor.address,
+      resume: vendor.resume 
+    };
+
+    res.json({ message: "Profile retrieved successfully", data: profileData });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 //get-all-vendor
 exports.getAllVendors = async (req, res) => {

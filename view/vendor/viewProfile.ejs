@@ -1,0 +1,356 @@
+<%- include('../layouts/header.ejs') %>
+  <%- include('../layouts/vendor-dashboard.ejs') %>
+
+    <!-- View Profile Section -->
+    <div class="card mb-3 ml-3 mr-3">
+      <div class="card-body">
+        <h2 class="card-title mb-4">View Profile</h2>
+        <div id="errorMessageContainer">
+          <section>
+            <div class="container py-5 px-0">
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="card mb-4">
+                    <div class="card-body text-center">
+                      <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                        class="rounded-circle img-fluid" style="width: 170px; min-height: 200px;">
+                      <h5 class="my-3" id="companyNameDisplay">Loading...</h5>
+                      <p class="text-muted mb-1" id="websiteLinkDisplay">Loading...</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-8">
+                  <div class="card mb-4">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <p class="mb-0">Company Name</p>
+                        </div>
+                        <div class="col-sm-9">
+                          <p class="text-muted mb-0" id="profileCompanyName">Loading...</p>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <p class="mb-0">Email</p>
+                        </div>
+                        <div class="col-sm-9">
+                          <p class="text-muted mb-0" id="profileEmail">Loading...</p>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <p class="mb-0">Contact</p>
+                        </div>
+                        <div class="col-sm-9">
+                          <p class="text-muted mb-0" id="profileContact">Loading...</p>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <p class="mb-0">Gst Number</p>
+                        </div>
+                        <div class="col-sm-9">
+                          <p class="text-muted mb-0" id="profileGstNumber">Loading...</p>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <p class="mb-0">Address</p>
+                        </div>
+                        <div class="col-sm-9">
+                          <p class="text-muted mb-0" id="profileAddress">Loading...</p>
+                        </div>
+                      </div>
+                      <hr>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: right;">
+              <button type="button" class="btn" style="background-color: #b66dff; color: white;"
+                onclick="openEditProfileModal()">
+                Edit Profile
+              </button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="main" id="editProfileModal">
+      <div class="main">
+        <div class="container" style="width: 1500px; margin-top: 3.5rem;">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title mb-4">Edit Profile</h2>
+              <div id="errorMessageContainer"></div>
+
+              <form action="/vendor/edit-Profile" method="post" enctype="multipart/form-data" id="editProfileForm">
+
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email:</label>
+                  <input type="email" class="form-control" id="email" name="email" required />
+                </div>
+
+
+                <div class="mb-3">
+                  <label for="company_name" class="form-label">Company Name:</label>
+                  <input type="text" class="form-control" id="company_name" name="company_name" required />
+                </div>
+
+
+                <div class="mb-3">
+                  <label for="website_link" class="form-label">Website Link:</label>
+                  <input type="url" class="form-control" id="website_link" name="website_link" required />
+                </div>
+
+
+                <div class="mb-3">
+                  <label for="contact" class="form-label">Contact Number:</label>
+                  <input type="number" class="form-control" id="contact" name="contact" required />
+                </div>
+
+
+                <div class="mb-3">
+                  <label for="gst_number" class="form-label">GST Number:</label>
+                  <input type="text" class="form-control" id="gst_number" name="gst_number" required />
+                </div>
+
+
+                <div class="mb-3">
+                  <label for="address" class="form-label">Address:</label>
+                  <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                </div>
+
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">
+                  Save Changes
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <%- include('../layouts/footer.ejs') %>
+
+      <script>
+
+
+
+        const VendorId = localStorage.getItem("vendorId");
+        console.log("vendorId:::", VendorId)
+
+        const form = document.getElementById("editProfileForm");
+        const errorMessageContainer = document.getElementById(
+          "errorMessageContainer"
+        );
+
+        const validateEmail = (email) => {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return emailRegex.test(email);
+        };
+
+        const validateCompanyName = (company_name) => {
+          return /^[A-Za-z\s]{1,200}$/.test(company_name);
+        };
+
+        const validateWebsiteLink = (website_link) => {
+          const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+          return urlRegex.test(website_link);
+        };
+
+        // const validateGSTNumber = (gst_number) => {
+        //   return /^[A-Za-z0-9\s]{1,200}$/.test(gst_number);
+        // };
+
+        const validateGSTNumber = (gst_number) => {
+          const gstPattern = /^[0-9A-Z]{15}$/;
+
+          return gstPattern.test(gst_number);
+        };
+        const validateContactNumber = (contact) => {
+          return /^[0-9]{10}$/.test(contact);
+        };
+
+        const validateAddress = (address) => {
+          return /^[A-Za-z0-9\s]{1,400}$/.test(address);
+        };
+
+        const fetchVendorData = async () => {
+          try {
+            const response = await fetch(
+              `http://localhost:3000/vendor/get-Vendors-by-id/${VendorId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error fetching data:", errorData.message);
+            } else {
+              const responseData = await response.json();
+              console.log("Fetched Data:", responseData);
+
+              document.getElementById("email").value = responseData.vendor.email;
+              document.getElementById("company_name").value =
+                responseData.vendor.company_name;
+              document.getElementById("website_link").value =
+                responseData.vendor.website_link;
+              document.getElementById("gst_number").value =
+                responseData.vendor.gst_number;
+              document.getElementById("contact").value = responseData.vendor.contact;
+              document.getElementById("address").value = responseData.vendor.address;
+            }
+          } catch (error) {
+            console.error("Error fetching data:", error.message);
+          }
+        };
+
+        fetchVendorData();
+
+        const openEditProfileModal = () => {
+          const editProfileModal = document.getElementById("editProfileModal");
+          editProfileModal.style.display = "flex"; // Use "flex" to center the modal
+        };
+
+        // Function to close the modal
+        const closeEditProfileModal = () => {
+          const editProfileModal = document.getElementById("editProfileModal");
+          editProfileModal.style.display = "none";
+        };
+
+
+       
+
+        const saveChangesBtn = document.getElementById("saveChangesBtn");
+        saveChangesBtn.addEventListener("click", closeEditProfileModal);
+        saveChangesBtn.addEventListener("click", async () => {
+          try {
+            errorMessageContainer.innerHTML = ""; // Clear previous error messages
+
+            const email = document.getElementById("email").value;
+            if (!validateEmail(email)) {
+              displayErrorMessage("Invalid email address");
+              return;
+            }
+
+            const companyName = document.getElementById("company_name").value;
+            if (!validateCompanyName(companyName)) {
+              displayErrorMessage("Invalid company name");
+              return;
+            }
+
+            const websiteLink = document.getElementById("website_link").value;
+            if (!validateWebsiteLink(websiteLink)) {
+              displayErrorMessage("Invalid website link");
+              return;
+            }
+
+            const gstNumber = document.getElementById("gst_number").value;
+            if (!validateGSTNumber(gstNumber)) {
+              displayErrorMessage("Invalid GST number");
+              return;
+            }
+
+            const contactNumber = document.getElementById("contact").value;
+            if (!validateContactNumber(contactNumber)) {
+              displayErrorMessage("Invalid contact number");
+              return;
+            }
+
+            const address = document.getElementById("address").value;
+            if (!validateAddress(address)) {
+              displayErrorMessage("Invalid address");
+              return;
+            }
+
+            const formData = new FormData(form);
+            formData.append("vendorId", VendorId);
+
+            const response = await fetch(
+              "http://localhost:3000/vendor/edit-Profile",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+              }
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData.message);
+            } else {
+              const responseData = await response.json();
+              console.log("Success:", responseData.message);
+              window.location.href = "/vendor-dashboard";
+            }
+          } catch (error) {
+            console.error("Error:", error.message);
+          }
+        });
+
+
+
+        const fetchVendorDataInForm = async () => {
+          try {
+            const response = await fetch(
+              `http://localhost:3000/vendor/get-Vendors-by-id/${VendorId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error fetching data:", errorData.message);
+            } else {
+              const responseData = await response.json();
+              console.log("Fetched Data:", responseData);
+
+              // Fill in the dynamic data in the view profile section
+              document.getElementById("companyNameDisplay").innerText = responseData.vendor.company_name;
+              document.getElementById("websiteLinkDisplay").innerText = responseData.vendor.website_link;
+              document.getElementById("profileCompanyName").innerText = responseData.vendor.company_name;
+              document.getElementById("profileEmail").innerText = responseData.vendor.email;
+              document.getElementById("profileContact").innerText = responseData.vendor.contact;
+              document.getElementById("profileGstNumber").innerText = responseData.vendor.gst_number;
+              document.getElementById("profileAddress").innerText = responseData.vendor.address;
+            }
+          } catch (error) {
+            console.error("Error fetching data:", error.message);
+          }
+        };
+
+        fetchVendorDataInForm();
+
+
+        // Function to display error messages
+        const displayErrorMessage = (message) => {
+          const errorMessage = document.createElement("div");
+          errorMessage.className = "alert alert-danger";
+          errorMessage.textContent = message;
+          errorMessageContainer.appendChild(errorMessage);
+        };
+
+
+
+        //edit button toggle 
+
+      </script>
