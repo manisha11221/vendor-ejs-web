@@ -83,31 +83,31 @@ exports.getDeveloperById = async (req, res) => {
 //get all
 exports.getDeveloperAll = async (req, res) => {
   try {
-    const developers = await Developer.find();
-    let dataArr = [];
+    const developers = await Developer.find({});
+    // let dataArr = [];
 
-    for (const findDeveloper of developers) {
-      let findVendorData = await vendor.findOne({
-        _id: findDeveloper.vendorId,
-      });
-      // console.log("findVendorData", findVendorData);
+    // for (const findDeveloper of developers) {
+    //   let findVendorData = await vendor.findOne({
+    //     _id: findDeveloper.vendorId,
+    //   });
+    //   // console.log("findVendorData", findVendorData);
 
-      // Check if vendor data is found
-      if (findVendorData) {
-        // Combine developer and vendor details
-        let combinedData = {
-          developer: findDeveloper.toObject(),
-          vendor: findVendorData.toObject(),
-        };
+    //   // Check if vendor data is found
+    //   if (findVendorData) {
+    //     // Combine developer and vendor details
+    //     let combinedData = {
+    //       developer: findDeveloper.toObject(),
+    //       vendor: findVendorData.toObject(),
+    //     };
 
-        dataArr.push(combinedData);
-      } else {
-        // If no vendor data is found, include only developer details
-        dataArr.push({ developer: findDeveloper.toObject(), vendor: null });
-      }
-    }
+    //     dataArr.push(combinedData);
+    //   } else {
+    //     // If no vendor data is found, include only developer details
+    //     dataArr.push({ developer: findDeveloper.toObject(), vendor: null });
+    //   }
+    // }
 
-    res.json({ dataArr });
+    res.json({ developers });
   } catch (error) {
     console.error("Get All Developers Error:", error);
     res.status(500).json({ message: "Internal Server Error" });

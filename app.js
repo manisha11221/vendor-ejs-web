@@ -8,12 +8,13 @@ const devroutes = require("./routes/developerRoutes");
 const ejsRoute = require("./routes/homeEjsRoute");
 const multer = require("multer");
 const cors = require("cors");
+const config = require('./config');
 
 const app = express();
 const port = 3000;
 // Use cors middleware
 app.use(cors());
-
+app.use(express.static('public'));
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");

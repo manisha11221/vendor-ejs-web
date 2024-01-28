@@ -1,5 +1,5 @@
 <%- include('../layouts/header.ejs') %>
-  <%- include('../layouts/vendor-dashboard.ejs') %>
+<%- include('../layouts/vendor-dashboard.ejs') %>
 
     <!-- View Profile Section -->
     <div class="card mb-3 ml-3 mr-3">
@@ -204,15 +204,15 @@
               const responseData = await response.json();
               console.log("Fetched Data:", responseData);
 
-              document.getElementById("email").value = responseData.vendor.email;
+              document.getElementById("email").value = responseData.vendor.vendorEmail;
               document.getElementById("company_name").value =
-                responseData.vendor.company_name;
+                responseData.vendor.companyname;
               document.getElementById("website_link").value =
-                responseData.vendor.website_link;
+                responseData.vendor.website_link ?? '';
               document.getElementById("gst_number").value =
-                responseData.vendor.gst_number;
-              document.getElementById("contact").value = responseData.vendor.contact;
-              document.getElementById("address").value = responseData.vendor.address;
+                responseData.vendor.gstnumber ?? '';
+              document.getElementById("contact").value = responseData.vendor.contact ?? '';
+              document.getElementById("address").value = responseData.vendor.Address ?? '';
             }
           } catch (error) {
             console.error("Error fetching data:", error.message);
@@ -325,13 +325,13 @@
               console.log("Fetched Data:", responseData);
 
               // Fill in the dynamic data in the view profile section
-              document.getElementById("companyNameDisplay").innerText = responseData.vendor.company_name;
-              document.getElementById("websiteLinkDisplay").innerText = responseData.vendor.website_link;
-              document.getElementById("profileCompanyName").innerText = responseData.vendor.company_name;
-              document.getElementById("profileEmail").innerText = responseData.vendor.email;
-              document.getElementById("profileContact").innerText = responseData.vendor.contact;
-              document.getElementById("profileGstNumber").innerText = responseData.vendor.gst_number;
-              document.getElementById("profileAddress").innerText = responseData.vendor.address;
+              document.getElementById("companyNameDisplay").innerText = responseData.vendor.companyname;
+              document.getElementById("websiteLinkDisplay").innerText = responseData.vendor.website_link ?? '';
+              document.getElementById("profileCompanyName").innerText = responseData.vendor.companyname;
+              document.getElementById("profileEmail").innerText = responseData.vendor.vendorEmail;
+              document.getElementById("profileContact").innerText = responseData.vendor.contact ?? '';
+              document.getElementById("profileGstNumber").innerText = responseData.vendor.gstnumber;
+              document.getElementById("profileAddress").innerText = responseData.vendor.Address;
             }
           } catch (error) {
             console.error("Error fetching data:", error.message);

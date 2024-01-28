@@ -234,15 +234,19 @@
               })
               .catch(handleError);
           }
-          
+
           function displayDevelopers(developers) {
-            console.log("---------------------");
+
             if (!developers || !Array.isArray(developers)) {
               console.error("Developers data is missing or not an array.");
               return;
             }
+
+            const developerTableBody = document.getElementById('developerTableBody');
             developerTableBody.innerHTML = '';
+
             console.log("--------------");
+
             developers.forEach(developer => {
               const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
               newRow.id = `developerRow_${developer._id}`;
@@ -256,7 +260,6 @@
                 developer.available ? 'Yes' : 'No',
                 developer.rate
               ];
-              console.log("cells", cells);
 
               cells.forEach((cell, index) => {
                 const newCell = newRow.insertCell(index);
