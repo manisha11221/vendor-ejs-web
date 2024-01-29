@@ -26,13 +26,12 @@ include('../../layouts/sidebar.ejs') %>
                         <th>Company Name</th>
                         <th>GST Number</th>
                         <th>Developer Count</th>
-                        
-                        <!-- Add more columns based on your vendor model -->
+                        <th>View Developer</th>
                       </tr>
                     </thead>
 
                     <tbody id="vendorTableBody">
-                      <!-- Table rows will be dynamically populated here -->
+
                     </tbody>
                   </table>
                 </div>
@@ -72,6 +71,7 @@ include('../../layouts/sidebar.ejs') %>
                 vendor.company_name,
                 vendor.gst_number,
                 developerCount > 0 ? developerCount : "No Developer added",
+                
               ])
               .draw();
           });
@@ -83,6 +83,8 @@ include('../../layouts/sidebar.ejs') %>
         console.error("Error fetching vendors:", error);
       });
   });
+
+  
 
   const tokens = localStorage.getItem("adminToken");
 
