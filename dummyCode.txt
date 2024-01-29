@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+  <!-- <div class="main">
+      <div class="container mb-5 col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title mb-4">Edit Profile</h2>
+            <div id="errorMessageContainer"></div>
+
+            <form action="/vendor/edit-Profile" method="post" enctype="multipart/form-data" id="editProfileForm">
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required />
+=======
 // exports.getvendorById = async (req, res) => {
 //   try {
 //     const vendorId = req.params.id;
@@ -587,9 +601,49 @@ include('../../layouts/sidebar.ejs') %>
                     <button type="submit" class="btn btn-primary">Create Developer</button>
                   </form>
                 </div>
+>>>>>>> fa40fa2b2ac16994da463571e8a1e936d9ab6ca6
               </div>
-            </div>
 
+<<<<<<< HEAD
+
+              <div class="mb-3">
+                <label for="company_name" class="form-label">Company Name:</label>
+                <input type="text" class="form-control" id="company_name" name="company_name" required />
+              </div>
+
+
+              <div class="mb-3">
+                <label for="website_link" class="form-label">Website Link:</label>
+                <input type="url" class="form-control" id="website_link" name="website_link" required />
+              </div>
+
+
+              <div class="mb-3">
+                <label for="contact" class="form-label">Contact Number:</label>
+                <input type="number" class="form-control" id="contact" name="contact" required />
+              </div>
+
+
+              <div class="mb-3">
+                <label for="gst_number" class="form-label">GST Number:</label>
+                <input type="text" class="form-control" id="gst_number" name="gst_number" required />
+              </div>
+
+
+              <div class="mb-3">
+                <label for="address" class="form-label">Address:</label>
+                <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+              </div>
+
+              <button type="button" class="btn btn-primary" id="saveChangesBtn">
+                Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div> -->
+=======
             <div class="card mt-3 mb-5">
               <div class="card-body">
                 <h4 class="card-title">All Developers</h4>
@@ -821,3 +875,4 @@ include('../../layouts/sidebar.ejs') %>
           }
         });
       </script>
+>>>>>>> fa40fa2b2ac16994da463571e8a1e936d9ab6ca6

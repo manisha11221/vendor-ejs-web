@@ -6028,8 +6028,8 @@ fieldset:disabled .btn {
 
 .btn-primary {
   color: #000;
-  background-color: #b66dff;
-  border-color: #b66dff;
+  background-color: #b66dff !important;
+  border-color: #b66dff !important;
 }
 
 .btn-primary:hover {
@@ -8533,8 +8533,8 @@ fieldset:disabled .btn {
 .page-item.active .page-link {
   z-index: 3;
   color: #fff;
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: #b66dff !important;
+  border-color:  #b66dff !important;
 }
 
 .page-item.disabled .page-link {
@@ -20468,6 +20468,7 @@ dl li {
   margin-bottom: 0;
   padding: 11px 13px;
   cursor: pointer;
+  color: #000 !important;
 }
 
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-menu.navbar-dropdown .dropdown-item i {
@@ -21376,4 +21377,22 @@ div.dataTables_wrapper div.dataTables_length select{
   background-color: none !important;
   background: none !important;
   border: none !important;
+}
+
+#editProfileModal {
+  display: none; /* Initially hide the modal */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
 }

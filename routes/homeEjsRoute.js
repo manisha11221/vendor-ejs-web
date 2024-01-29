@@ -1,7 +1,7 @@
 const express = require('express');
 const auth = require('../middlewares/adminMiddleware');
 
-const {adminDashboard,adminLogin, otpSend, otpVerify,vendorPassword,vendorDashboard,adminDash,vendorDash,developerDash,technologyDash,vendorDeveloper,vendorTechnology,editProfile} = require('../controllers/homeEjsController');
+const {adminLogin, otpSend, otpVerify,vendorPassword,vendorDashboard,adminDash,vendorDash,developerDash,technologyDash,vendorDeveloper,vendorTechnology,editProfile,viewProfile} = require('../controllers/homeEjsController');
 const router = express.Router();
 
 
@@ -25,7 +25,7 @@ router.get('/technologyDash',technologyDash);
 router.get('/vendor-dashboard',vendorDashboard);
 router.get('/vendor-developer', vendorDeveloper);
 router.get('/vendor-technology', vendorTechnology);
-router.get('/edit-profile', editProfile);
+router.get('/view-profile', viewProfile);
 
 module.exports = {
     routes: router

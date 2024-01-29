@@ -1,5 +1,5 @@
 <%- include('../layouts/header.ejs') %>
-  <%- include('../layouts/vendor-dashboard.ejs') %>
+<%- include('../layouts/vendor.ejs') %>
 
 
     <div class="container-scroller">
@@ -99,8 +99,6 @@
       </div>
     </div>
 
-  
-
     <%- include('../layouts/footer.ejs') %>
 
     <script>
@@ -141,5 +139,33 @@
             }
           });
 
-    </script>
-    
+            const requestData = {
+              name: developerName,
+              experience: experience,
+              technology: technology,
+              resume: resume,
+              available: available,
+              rate: rate
+            };
+
+            fetch('http://localhost:3000/developer/add-dev', {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestData),
+            })
+              .then(response => response.json())
+              .then(data => {
+                handleApiResponse(data);
+                fetchDevelopers();
+                toggleDeveloperForm();
+              })
+              .catch(handleApiError);
+        
+          if (!tokens) {
+            window.location.href = "/login";
+          }
+        
+      </script>

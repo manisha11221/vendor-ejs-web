@@ -1,42 +1,45 @@
-<%- include('../layouts/header.ejs') %> <%- include('../layouts/vendor-dashboard.ejs') %>
+<%- include('../layouts/header.ejs') %> 
+<%- include('../layouts/vendor.ejs') %>
 
-<div class="container-scroller">
-  <div class="container-fluid page-body-wrapper">
-    <div class="main-panel">
-      <div class="content-wrapper">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="page-header">
-              <h3 class="page-title">Technology</h3>
-            </div>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper">
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="page-header">
+                  <h3 class="page-title">Technology</h3>
+                </div>
 
-            <div class="text-right mt-4">
-              <button type="button" class="btn btn-success" id="openFormBtn">Add Technology</button>
-            </div>
+                <div class="text-right mt-4">
+                  <button type="button" class="btn btn-success" id="openFormBtn">Add Technology</button>
+                </div>
 
-            <!-- Form to add technology -->
-            <form id="addTechnologyForm" style="display: none;" class="mt-4">
-              <div class="form-group">
-                <label for="technologyName">Technology Name</label>
-                <input type="text" class="form-control" id="technologyName" required />
-                <small class="form-text text-muted">Enter the name of the technology you want to add.</small>
-              </div>
-              <button type="button" class="btn btn-primary" id="addTechnologyBtnSubmit">Add Technology</button>
-            </form>
+                <!-- Form to add technology -->
+                <form id="addTechnologyForm" style="display: none;" class="mt-4">
+                  <div class="form-group">
+                    <label for="technologyName">Technology Name</label>
+                    <input type="text" class="form-control" id="technologyName" required />
+                    <small class="form-text text-muted">Enter the name of the technology you want to add.</small>
+                  </div>
+                  <button type="button" class="btn btn-primary" id="addTechnologyBtnSubmit">Add Technology</button>
+                </form>
 
-            <div class="card mt-4">
-              <div class="card-body mb-5">
-                <h4 class="card-title">All Technologies</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped" id="technologyTable">
-                    <thead>
-                      <tr>
-                        <th>Sr.No</th>
-                        <th>Technology Name</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
+                <div class="card mt-4">
+                  <div class="card-body mb-5">
+                    <h4 class="card-title">All Technologies</h4>
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="technologyTable">
+                        <thead>
+                          <tr>
+                            <th>Sr.No</th>
+                            <th>Technology Name</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -44,115 +47,110 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<%- include('../layouts/footer.ejs') %>
+    <%- include('../layouts/footer.ejs') %>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Fetch technology data
-    fetch("http://localhost:3000/technology/get-technology")
-      .then((response) => response.json())
-      .then((data) => {
-        displayTechnologies(data.technology);
-        // Initialize DataTable
-        $("#technologyTable").DataTable();
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-
-    // Display technologies in the table
-    function displayTechnologies(technologies) {
-      const tableBody = document.getElementById("technologyTable").getElementsByTagName("tbody")[0];
-      tableBody.innerHTML = ""; // Clear existing rows
-
-      technologies.forEach((technology, index) => {
-        const row = tableBody.insertRow(-1);
-
-        // Add a cell for serial number
-        const serialCell = row.insertCell(0);
-        serialCell.innerHTML = index + 1;
-
-        // Add a cell for technology name
-        const techCell = row.insertCell(1);
-        techCell.innerHTML = technology.name;
-      });
-    }
-
-    // Add click event listener for the "Add Technology" button
-    $("#openFormBtn").click(function () {
-      $("#addTechnologyForm").slideToggle();
-    });
-
-    // Add click event listener for the "Add Technology" form submit
-    $("#addTechnologyBtnSubmit").click(function () {
-      const techName = $("#technologyName").val();
-      // Send a request to add technology
-      addTechnology(techName);
-    });
-
-    // ... Your existing code ...
-
-    async function addTechnology(technologyName) {
-      const vendorId = localStorage.getItem("vendorId");
-
-      console.log("........tech data", vendorId);
-
-      try {
-        const response = await fetch(`http://localhost:3000/vendor/add-tech-by-vendor/${vendorId}`, {
-          method: "POST",
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const tokens = localStorage.getItem("vendorToken");
+    
+        if (!tokens) {
+          // Redirect to the login page if the token is not present
+          window.location.href = "/login";
+        }
+    
+        // Fetch technology data
+        fetch("http://localhost:3000/technology/get-technology", {
           headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${tokens}`,
           },
-          body: JSON.stringify({ techName: technologyName }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          
-          console.log("Technology added successfully:", data);
-          
-          //add here the get api to view uodated data
-
-          
-         
-          // $("#addTechnologyForm").slideUp();
-          location.reload(true);
-          
-          fetchTechnologies();
-        } else {
-          console.error("Error adding technology:", data.message);
-        }
-      } catch (error) {
-        console.error("Error adding technology:", error);
-        // Handle network error or any other unexpected error
-      }
-    }
-
-    const tokens = localStorage.getItem("vendorToken");
-
-    if (!tokens) {
-      // Redirect to the login page if the token is not present
-      window.location.href = "/login";
-    }
-
-    // Function to fetch and refresh technologies
-    function fetchTechnologies() {
-      fetch("http://localhost:3000/technology/get-technology")
-        .then((response) => response.json())
-        .then((data) => {
-          displayTechnologies(data.technology);
-          // Redraw DataTable with updated data
-          $("#technologyTable").DataTable().destroy();
-          $("#technologyTable").DataTable();
         })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
+          .then((response) => response.json())
+          .then((data) => {
+            displayTechnologies(data.technology);
+            // Initialize DataTable
+            $("#technologyTable").DataTable();
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+    
+        // Display technologies in the table
+        function displayTechnologies(technologies) {
+          const tableBody = document.getElementById("technologyTable").getElementsByTagName("tbody")[0];
+          tableBody.innerHTML = ""; // Clear existing rows
+    
+          technologies.forEach((technology, index) => {
+            const row = tableBody.insertRow(-1);
+    
+            // Add a cell for serial number
+            const serialCell = row.insertCell(0);
+            serialCell.innerHTML = index + 1;
+    
+            // Add a cell for technology name
+            const techCell = row.insertCell(1);
+            techCell.innerHTML = technology.name;
+          });
+        }
+    
+        // Add click event listener for the "Add Technology" button
+        $("#openFormBtn").click(function () {
+          $("#addTechnologyForm").slideToggle();
         });
-    }
-  });
-</script>
+    
+        // Add click event listener for the "Add Technology" form submit
+        $("#addTechnologyBtnSubmit").click(function () {
+          const techName = $("#technologyName").val();
+          // Send a request to add technology
+          addTechnology(techName);
+        });
+    
+        // Function to fetch and refresh technologies
+        function fetchTechnologies() {
+          fetch("http://localhost:3000/technology/get-technology", {
+            headers: {
+              "Authorization": `Bearer ${tokens}`,
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              displayTechnologies(data.technology);
+              // Redraw DataTable with updated data
+              $("#technologyTable").DataTable().destroy();
+              $("#technologyTable").DataTable();
+            })
+            .catch((error) => {
+              console.error("Error fetching data:", error);
+            });
+        }
+    
+        async function addTechnology(technologyName) {
+          const vendorId = localStorage.getItem("vendorId");
+    
+          console.log("........tech data", vendorId);
+    
+          try {
+            const response = await fetch(`http://localhost:3000/vendor/add-tech-by-vendor/${vendorId}`, {
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${tokens}`,
+              },
+              body: JSON.stringify({ techName: technologyName }),
+            });
+    
+            console.log("response", response);
+            const data = await response.json();
+            console.log("data", data);
+            if (response.ok) {
+              console.log("Technology added successfully:", data);
+              location.reload(true);
+              fetchTechnologies();
+            } else {
+              console.error("Error adding technology:", data.message);
+            }
+          } catch (error) {
+            console.error("Error adding technology:", error);
+          }
+        }
+      });
+    </script>

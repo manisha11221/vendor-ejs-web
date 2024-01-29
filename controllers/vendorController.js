@@ -6,7 +6,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Tech = require("../models/techModel");
 const Developer = require("../models/developerModel");
-const Technology = require("../models/techModel")
+const Technology = require("../models/techModel");
+// const storage = multer.memoryStorage(); 
+const upload = require('../middlewares/multerMiddleware')
 
 // Define email configuration
 const emailConfig = {
@@ -188,8 +190,6 @@ exports.resetPassword = async (req, res) => {
 };
 
 
-
-
 //login the vendor
 // exports.loginVendor = async (req, res) => {
 //   try {
@@ -284,7 +284,6 @@ exports.loginVendor = async (req, res) => {
 };
 
 
-
 exports.editProfile = async (req, res) => {
   try {
     const { email, company_name, website_link, contact, gst_number, address ,team_size} = req.body;
@@ -319,6 +318,51 @@ exports.editProfile = async (req, res) => {
   }
 };
 
+exports.viewProfile = async (req, res) => {
+  try {
+    const vendorId = req.params.id;
+    const vendor = await Vendor.findById(vendorId);
+
+    if (!vendor) {
+      return res.status(404).json({ message: "Vendor not found" });
+    }
+
+    res.json({ vendor });
+  } catch (error) {
+    console.error("Veiw Profile:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// exports.viewProfile = async (req, res) => {
+//   try {
+//     const { email } = req.params; 
+
+//     const vendor = await Vendor.findOne({ email });
+
+//     if (!vendor) {
+//       return res.status(404).json({ message: "Vendor not found" });
+//     }
+
+//     // You can customize the response structure based on your requirements
+//     const profileData = {
+//       email: vendor.email,
+//       company_name: vendor.company_name,
+//       website_link: vendor.website_link,
+//       contact: vendor.contact,
+//       gst_number: vendor.gst_number,
+//       address: vendor.address,
+//       resume: vendor.resume,
+//       // profileImage: vendor.profileImage || './assets/images/blank-profile-picture.webp',
+//     };
+
+//     res.json({ message: "Profile retrieved successfully", data: profileData });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
+
 //get-all-vendor
 exports.getAllVendors = async (req, res) => {
   try {
@@ -335,6 +379,8 @@ exports.getAllVendors = async (req, res) => {
 };
 
 
+
+
 exports.getvendorById = async (req, res) => {
   try {
     const vendorId = req.params.id;
@@ -346,8 +392,7 @@ exports.getvendorById = async (req, res) => {
       return res.status(404).json({ message: "Vendor not found" });
     }
 
-    // Fetch the associated developer using the vendorId from the Developer model
-    const developer = await Developer.findOne({ vendorId }); // Assuming there's a vendorId in the Developer model
+    const developer = await Developer.findOne({ vendorId: vendorId }); 
 
     if (!developer) {
       return res.status(404).json({ message: "Developer not found" });
@@ -372,14 +417,13 @@ exports.getvendorById = async (req, res) => {
     };
 
     res.status(200).json({ success: true, vendor: vendorWithDeveloper });
+
   } catch (error) {
     console.error("Get vendor by ID Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-
-//vendor logout
 exports.logoutVendor = async (req, res, next) => {
   try {
     // Get the token from the request headers
@@ -414,7 +458,6 @@ exports.logoutVendor = async (req, res, next) => {
     res.status(500).json({ success: false, message: "Internal server error", error });
   }
 };
-
 
 //developer count and admi count api
 exports.countTech = async (req, res) => {
