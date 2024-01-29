@@ -1,6 +1,6 @@
 <!-- developerDash.ejs -->
-<%- include('../../layouts/header.ejs') %> <%-
-include('../../layouts/admin.ejs') %>
+<%- include('../../layouts/header.ejs') %> 
+<%- include('../../layouts/admin.ejs') %>
 
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
@@ -38,7 +38,7 @@ include('../../layouts/admin.ejs') %>
         <!-- Inline script to fetch and populate data -->
         <script>
           document.addEventListener("DOMContentLoaded", function () {
-            fetch("http://localhost:3000/developer/get-devAll/")
+            fetch("http://localhost:3000/developer/get-devAll")
               .then((response) => response.json())
               .then((data) => {
                 displayDevelopers(data.dataArr);

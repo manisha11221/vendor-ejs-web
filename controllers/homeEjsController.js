@@ -29,6 +29,10 @@ const technologyDash=(req,res)=>{
     res.render('admin/developer/technologyDash')
 }
 
+//viewPage For devlopers by vendor in admin
+const viewdevPage=(req,res)=>{
+    res.render('admin/developer/developerViewPage')
+}
 
 
 
@@ -72,6 +76,10 @@ const viewProfile=(req,res)=>{
     res.render('vendor/viewProfile')
 }
 
+
+
+
+
 module.exports = {
     adminLogin,
     otpSend,
@@ -84,5 +92,6 @@ module.exports = {
     technologyDash,
     vendorDeveloper,
     vendorTechnology,
-    viewProfile
+    viewProfile,
+    viewdevPage
 }

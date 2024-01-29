@@ -1,0 +1,89 @@
+<!-- developerPage.ejs -->
+<%- include('../../layouts/header.ejs') %> <%-
+include('../../layouts/admin.ejs') %>
+
+<div class="container-scroller">
+  <div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="card mb-5">
+          <div class="card-body">
+            <h4 class="card-title">Developer Information</h4>
+            <div class="table-responsive">
+              <table class="table table-striped" id="developerTable">
+                <!-- Developer table structure can be customized as needed -->
+                <thead>
+                  <tr>
+                    <th>Sr.No</th>
+                    <th>Name</th>
+                    <th>Technology</th>
+                    <th>Experience</th>
+                    <th>Rate</th>
+                  </tr>
+                </thead>
+                <tbody id="developerTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../layouts/footer.ejs') %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let selectedVendor;
+    fetch(
+              `http://localhost:3000/developer/get-by-vendor/${selectedVendor._id}`
+            )
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                return response.json();
+              })
+              .then((developerData) => {
+                 
+                if (developerData.developers.length > 0) {
+                  console.log("Selected Vendor:", selectedVendor);
+                  console.log("Developer Data:", developerData.developers);
+
+                  // Clear existing rows in the new data table
+                  // Populate the new data table with developer data
+                  developerData.developers.forEach(function (developer, index) {
+                    $("#newDataTable").DataTable().row
+                      .add([
+                        index + 1,
+                        developer.name,
+                        developer.technology,
+                        developer.experience,
+                        developer.rate,
+                      ])
+                      .draw();
+                  });
+
+                  // Show the new table container
+                  document.getElementById(
+                    "newDataTableContainer"
+                  ).style.display = "block";
+                } else {
+                  console.log(
+                    "API response indicates failure------------:",
+                    developerData.message
+                  );
+                }
+              })
+              .catch((error) => {
+                console.error("Error fetching developer data:", error);
+              });
+          });
+
+  const tokens = localStorage.getItem("adminToken");
+
+  if (!tokens) {
+    window.location.href = "/login";
+  }
+</script>
