@@ -1,5 +1,5 @@
 <%- include('../layouts/header.ejs') %> 
-<%- include('../layouts/vendor-dashboard.ejs') %>
+<%- include('../layouts/vendor.ejs') %>
 
 <div class="main">
   <div class="container mb-5 col-md-6">
@@ -243,7 +243,7 @@
       } else {
         const responseData = await response.json();
         console.log("Success:", responseData.message);
-        window.location.href = "/vendor-dashboard";
+        window.location.href = "/view-Profile";
       }
     } catch (error) {
       console.error("Error:", error.message);

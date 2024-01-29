@@ -29,6 +29,7 @@ exports.addDeveloper = async (req, res) => {
       name,
       experience,
       technology,
+      resume,
       available,
       rate,
       portfolio,
