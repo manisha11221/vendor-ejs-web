@@ -1,5 +1,5 @@
 <%- include('../layouts/header.ejs') %>
-<%- include('../layouts/vendor.ejs') %>
+  <%- include('../layouts/vendor.ejs') %>
 
 
     <div class="container-scroller">
@@ -46,16 +46,42 @@
                       </div>
                       <div class="col-md-6">
                         <div class="form-group">
-                          <label for="resume">Resume URL</label>
-                          <input type="url" class="form-control" id="resume" placeholder="Enter resume URL">
+                          <label for="resume">Upload Resume</label>
+                          <input type="file" class="form-control" id="resume" placeholder="upload resume">
                         </div>
                       </div>
                       <div class="col-md-6">
-                        <div class="form-check">
-                          <input type="checkbox" class="form-check-input" id="available">
-                          <label class="form-check-label" for="available">Available</label>
+                        <div class="form-group">
+                          <label for="resume">Portfolio Link</label>
+                          <input type="url" class="form-control" id="portfolio" placeholder="portfolio Url">
                         </div>
                       </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="resume">GitHubUrl Link</label>
+                          <input type="url" class="form-control" id="gitHubUrl" placeholder="GitHub Url">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="resume">linkedIn Link</label>
+                          <input type="url" class="form-control" id="linkedInLink" placeholder="linkedIn Url">
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" id="parttime" name="employment_type"
+                            value="parttime">
+                          <label class="form-check-label" for="parttime">Part Time</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" id="fulltime" name="employment_type"
+                            value="fulltime">
+                          <label class="form-check-label" for="fulltime">Full Time</label>
+                        </div>
+                      </div>
+
                       <div class="col-md-6">
                         <div class="form-group">
                           <label for="rate">Rate</label>
@@ -76,7 +102,7 @@
                   <table class="table table-striped" id="developerTable">
                     <thead>
                       <tr>
-                        <th>ID</th>
+                        <th>Sr. No.</th>
                         <th>Name</th>
                         <th>Experience</th>
                         <th>Technology</th>
@@ -84,11 +110,14 @@
                         <th>Available</th>
                         <th>Rate</th>
                         <th>Action</th>
+                        <th>Portfolio Link</th>
+                        <th>GitHub Link</th>
+                        <th>LinkedIn Link</th>
                       </tr>
                     </thead>
                     <tbody id="developerTableBody">
 
-                       <!-- Rows will be dynamically added here -->
+
                     </tbody>
                   </table>
                 </div>
@@ -101,43 +130,101 @@
 
     <%- include('../layouts/footer.ejs') %>
 
-    <script>
-       document.addEventListener("DOMContentLoaded", function () {
-            fetch("http://localhost:3000/developer/get-devAll/")
-              .then((response) => response.json())
-              .then((data) => {
-                displayDevelopers(data.dataArr);
-                // Initialize DataTable
-                $("#developerTable").DataTable();
-              })
-              .catch((error) => {
-                console.error("Error fetching data:", error);
-              });
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const token = localStorage.getItem("vendorToken");
+          const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
+          const developerFormContainer = document.getElementById('developerFormContainer');
+          const createDeveloperForm = document.getElementById('createDeveloperForm');
+          const developerTableBody = document.getElementById('developerTableBody');
 
-            function displayDevelopers(dataArr) {
-              const table = $("#developerTable").DataTable();
-              dataArr.forEach((data, index) => {
-                const developer = data.developer;
-                const vendor = data.vendor;
-
-                // Add more columns as needed
-                table.row
-                  .add([
-                    index + 1,
-                    developer.name,
-                    developer.technology,
-                    developer.experience,
-                    developer.rate,
-                    developer.resume,
-                    developer.availble,
-                    vendor ? vendor.email : "N/A",
-                    vendor ? vendor.company_name : "N/A",
-                    // Add one more column if needed
-                  ])
-                  .draw();
-              });
-            }
+          toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
+          createDeveloperForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            addDeveloper();
           });
+
+          fetchDevelopers();
+
+          function toggleDeveloperForm() {
+            developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
+          }
+
+          function fetchDevelopers() {
+            console.log("Fetching developers...");
+            fetch('http://localhost:3000/developer/get-devAll', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+              .then(response => response.json())
+              .then(data => {
+                console.log("Fetched data:", data);
+                displayDevelopers(data.developers);
+                // Initialize DataTable after populating the table
+                $('#developerTable').DataTable();
+              })
+              .catch(handleError);
+          }
+
+          function displayDevelopers(developers) {
+            if (!developers || !Array.isArray(developers)) {
+              console.error("Developers data is missing or not an array.");
+              return;
+            }
+
+            const developerTableBody = document.getElementById('developerTableBody');
+            developerTableBody.innerHTML = '';
+
+            developers.forEach((developer, index) => {
+              const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
+              newRow.id = `developerRow_${developer._id}`;
+
+              const cells = [
+                index + 1,
+                developer.name,
+                developer.experience,
+                developer.technology.join(', '),
+                `<a href="${developer.resume}" target="_blank">View Resume</a>`,
+                developer.available === 'parttime' ? 'Part Time' : 'Full Time',
+                developer.rate,
+                developer.portfolio,
+                developer.gitHubUrl,
+                developer.linkedInLink,
+                `<a href="#" onclick="downloadResume('${developer.resume}')">Download Resume</a>`,
+              ];
+
+              cells.forEach((cell, index) => {
+                const newCell = newRow.insertCell(index);
+                newCell.innerHTML = cell;
+              });
+            });
+          }
+
+          function downloadResume(resumeFileName) {
+            // You may want to modify this to handle different file locations or types
+            const resumeUrl = `http://localhost:3000/developer/download-resume/${resumeFileName}`;
+
+            // Create a temporary link element and trigger the download
+            const link = document.createElement('a');
+            link.href = resumeUrl;
+            link.target = '_blank';
+            link.download = resumeFileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+
+          function addDeveloper() {
+            const developerName = document.getElementById('developerName').value;
+            const experience = document.getElementById('experience').value;
+            const technology = document.getElementById('technology').value;
+            const resume = document.getElementById('resume').value;
+            const available = document.querySelector('input[name="employment_type"]:checked').value;
+            const rate = document.getElementById('rate').value;
+            const portfolio = document.getElementById('portfolio').value;
+            const gitHubUrl = document.getElementById('gitHubUrl').value;
+            const linkedInLink = document.getElementById('linkedInLink').value;
 
             const requestData = {
               name: developerName,
@@ -145,7 +232,10 @@
               technology: technology,
               resume: resume,
               available: available,
-              rate: rate
+              rate: rate,
+              portfolio: portfolio,
+              gitHubUrl: gitHubUrl,
+              linkedInLink: linkedInLink
             };
 
             fetch('http://localhost:3000/developer/add-dev', {
@@ -163,9 +253,27 @@
                 toggleDeveloperForm();
               })
               .catch(handleApiError);
-        
-          if (!tokens) {
+          }
+
+          function toggleDeveloperForm() {
+            developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
+
+            // Clear form fields after toggling
+            if (developerFormContainer.style.display === 'block') {
+              document.getElementById('createDeveloperForm').reset();
+            }
+          }
+
+          function handleApiResponse(data) {
+            console.log(data);
+          }
+
+          function handleApiError(error) {
+            console.error('API Request Error:', error);
+          }
+
+          if (!token) {
             window.location.href = "/login";
           }
-        
+        });
       </script>

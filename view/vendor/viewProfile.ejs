@@ -2,7 +2,7 @@
   <%- include('../layouts/vendor.ejs') %>
 
     <!-- View Profile Section -->
-    <div class="card mb-3 ml-3 mr-3">
+    <data class="card mb-3 ml-3 mr-3">
       <div class="card-body">
         <h2 class="card-title mb-4">View Profile</h2>
         <div id="errorMessageContainer">
@@ -87,7 +87,7 @@
           </section>
         </div>
       </div>
-    </div>
+    </data>
 
     <div class="main" id="editProfileModal">
       <div class="main">
@@ -329,14 +329,15 @@
             } else {
               const responseData = await response.json();
               localStorage.setItem("company_name", responseData.vendor.company_name);
+              localStorage.setItem("profileImage", responseData.vendor.profileImage);
               console.log("Fetched Data:", responseData);
 
               // Fill in the dynamic data in the view profile section
-              // document.getElementById("displayprofileImage").src = responseData.vendor.profileImage ?? 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp';
+              document.getElementById("displayprofileImage").src = responseData.vendor.profileImage ?? 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp';
               // document.getElementById("displayprofileImage").src = responseData.vendor.profileImage || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp';
-              const profileImageElement = document.getElementById("displayprofileImage");
-              const imageUrl = responseData.vendor.profileImage || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp';
-              profileImageElement.src = imageUrl;
+              // const profileImageElement = document.getElementById("displayprofileImage");
+              // const imageUrl = responseData.vendor.profileImage || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp';
+              // profileImageElement.src = imageUrl;
 
               document.getElementById("companyNameDisplay").innerText =
                 responseData.vendor.company_name ?? '';

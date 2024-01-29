@@ -115,10 +115,6 @@ exports.getDeveloperAll = async (req, res) => {
   }
 };
 
-
-
-
-
 //view by vendor
 exports.getByVendor = async (req, res) => {
   try {

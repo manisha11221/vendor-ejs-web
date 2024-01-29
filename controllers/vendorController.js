@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const Tech = require("../models/techModel");
 const Developer = require("../models/developerModel");
 const Technology = require("../models/techModel");
+const path = require("path")
 // const storage = multer.memoryStorage(); 
 const upload = require('../middlewares/multerMiddleware')
 
@@ -306,7 +307,10 @@ exports.editProfile = async (req, res) => {
     vendor.team_size = team_size || vendor.team_size;
 
     if (req.file) {
-        vendor.profileImage = req.file.path;
+      const filePath = path.join('public/uploads', req.file.filename);
+      console.log("filePath" , req.file.filename);
+
+        vendor.profileImage = `http://localhost:3000/uploads/${req.file.filename}`;
     }
 
     await vendor.save();
@@ -424,6 +428,8 @@ exports.getvendorById = async (req, res) => {
   }
 };
 
+
+//vendor logout
 exports.logoutVendor = async (req, res, next) => {
   try {
     // Get the token from the request headers
