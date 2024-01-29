@@ -90,8 +90,7 @@ exports.getDeveloperAll = async (req, res) => {
       let findVendorData = await vendor.findOne({
         _id: findDeveloper.vendorId,
       });
-      // console.log("findVendorData", findVendorData);
-
+      
       // Check if vendor data is found
       if (findVendorData) {
         // Combine developer and vendor details
@@ -99,7 +98,8 @@ exports.getDeveloperAll = async (req, res) => {
           developer: findDeveloper.toObject(),
           vendor: findVendorData.toObject(),
         };
-
+        
+        console.log("findVendorDataByTheFrontENd", findVendorData);
         dataArr.push(combinedData);
       } else {
         // If no vendor data is found, include only developer details
@@ -113,6 +113,10 @@ exports.getDeveloperAll = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+
+
 
 //view by vendor
 exports.getByVendor = async (req, res) => {

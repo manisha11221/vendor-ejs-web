@@ -88,7 +88,7 @@
                     </thead>
                     <tbody id="developerTableBody">
 
-
+                       <!-- Rows will be dynamically added here -->
                     </tbody>
                   </table>
                 </div>
@@ -103,200 +103,43 @@
 
     <%- include('../layouts/footer.ejs') %>
 
-      <script>
-        const tokens = localStorage.getItem("vendorToken");
-
-        function handleError(error) {
-          console.error('Error:', error);
-        }
-
-        function updateDeveloper(developerId) {
-          console.log(developerId)
-          fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
-            headers: {
-              Authorization: `Bearer ${tokens}`,
-            },
-          })
-            .then(response => response.json())
-            .then(data => {
-              const updatedDeveloperNameInput = document.getElementById('updatedDeveloperName');
-              const updatedExperienceInput = document.getElementById('updatedExperience');
-              const updatedTechnologyInput = document.getElementById('updatedTechnology');
-              const updatedResumeInput = document.getElementById('updatedResume');
-              const updatedAvailableInput = document.getElementById('updatedAvailable');
-              const updatedRateInput = document.getElementById('updatedRate');
-
-              updatedDeveloperNameInput.value = data.developer.name;
-              updatedExperienceInput.value = data.developer.experience;
-              updatedTechnologyInput.value = data.developer.technology.join(', ');
-              updatedResumeInput.value = data.developer.resume;
-              updatedAvailableInput.checked = data.developer.available;
-              updatedRateInput.value = data.developer.rate;
-
-              $('#updateDeveloperModal').modal('show');
-            })
-            .catch(handleError);
-
-          document.getElementById('updateDeveloperForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const updatedDeveloperName = document.getElementById('updatedDeveloperName').value;
-            const updatedExperience = document.getElementById('updatedExperience').value;
-            const updatedTechnology = document.getElementById('updatedTechnology').value.split(',').map(item => item.trim());
-            const updatedResume = document.getElementById('updatedResume').value;
-            const updatedAvailable = document.getElementById('updatedAvailable').checked;
-            const updatedRate = document.getElementById('updatedRate').value;
-
-            const requestData = {
-              name: updatedDeveloperName,
-              experience: updatedExperience,
-              technology: updatedTechnology,
-              resume: updatedResume,
-              available: updatedAvailable,
-              rate: updatedRate
-            };
-            console.log("requestData", requestData);
-            fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
-              method: 'PUT',
-              headers: {
-                Authorization: `Bearer ${tokens}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(requestData),
-            })
-              .then(response => response.json())
-              .then(data => {
-                handleApiResponse(data);
-                // fetchDevelopers();
-                $('#updateDeveloperModal').modal('hide');
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+            fetch("http://localhost:3000/developer/get-devAll/")
+              .then((response) => response.json())
+              .then((data) => {
+                displayDevelopers(data.dataArr);
+                // Initialize DataTable
+                $("#developerTable").DataTable();
               })
-              .catch(handleApiError);
-          });
-
-        }
-
-        function handleApiResponse(data) {
-          console.log(data);
-        }
-
-        function handleApiError(error) {
-          console.error('API Request Error:', error);
-        }
-
-        function deleteDeveloper(developerId) {
-          fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
-            method: 'DELETE',
-            headers: {
-              Authorization: `Bearer ${tokens}`,
-              'Content-Type': 'application/json',
-            },
-          })
-            .then(response => response.json())
-            .then(data => {
-              handleApiResponse(data);
-              // fetchDevelopers();
-            })
-            .catch(handleError);
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-          const token = localStorage.getItem("vendorToken");
-          const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
-          const developerFormContainer = document.getElementById('developerFormContainer');
-          const createDeveloperForm = document.getElementById('createDeveloperForm');
-          const developerTableBody = document.getElementById('developerTableBody');
-
-          toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
-          createDeveloperForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            addDeveloper();
-          });
-
-          fetchDevelopers();
-
-          function toggleDeveloperForm() {
-            developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
-          }
-
-          function fetchDevelopers() {
-            fetch('http://localhost:3000/developer/get-devAll', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-              .then(response => response.json())
-              .then(data => {
-                displayDevelopers(data.developers);
-                // Initialize DataTable after populating the table
-                $('#developerTable').DataTable();
-              })
-              .catch(handleError);
-          }
-
-          function displayDevelopers(developers) {
-            developerTableBody.innerHTML = '';
-
-            developers.forEach(developer => {
-              const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
-              newRow.id = `developerRow_${developer._id}`;
-
-              const cells = [
-                developer._id,
-                developer.name,
-                developer.experience,
-                developer.technology.join(', '),
-                developer.resume,
-                developer.available ? 'Yes' : 'No',
-                developer.rate
-              ];
-
-              cells.forEach((cell, index) => {
-                const newCell = newRow.insertCell(index);
-                newCell.innerHTML = cell;
+              .catch((error) => {
+                console.error("Error fetching data:", error);
               });
 
-              const actionCell = newRow.insertCell(cells.length);
-              actionCell.innerHTML = `<button class="btn btn-warning mx-3" onclick="updateDeveloper('${developer._id}')">Update</button>` +
-                `<button class="btn btn-danger ml-2" onclick="deleteDeveloper('${developer._id}')">Delete</button>`;
-            });
-          }
+            function displayDevelopers(dataArr) {
+              const table = $("#developerTable").DataTable();
+              dataArr.forEach((data, index) => {
+                const developer = data.developer;
+                const vendor = data.vendor;
 
-          function addDeveloper() {
-            const developerName = document.getElementById('developerName').value;
-            const experience = document.getElementById('experience').value;
-            const technology = document.getElementById('technology').value.split(',').map(item => item.trim());
-            const resume = document.getElementById('resume').value;
-            const available = document.getElementById('available').checked;
-            const rate = document.getElementById('rate').value;
+                // Add more columns as needed
+                table.row
+                  .add([
+                    index + 1,
+                    developer.name,
+                    developer.technology,
+                    developer.experience,
+                    developer.rate,
+                    developer.resume,
+                    developer.availble,
+                    vendor ? vendor.email : "N/A",
+                    vendor ? vendor.company_name : "N/A",
+                    // Add one more column if needed
+                  ])
+                  .draw();
+              });
+            }
+          });
 
-            const requestData = {
-              name: developerName,
-              experience: experience,
-              technology: technology,
-              resume: resume,
-              available: available,
-              rate: rate
-            };
-
-            fetch('http://localhost:3000/developer/add-dev', {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(requestData),
-            })
-              .then(response => response.json())
-              .then(data => {
-                handleApiResponse(data);
-                fetchDevelopers();
-                toggleDeveloperForm();
-              })
-              .catch(handleApiError);
-          }
-
-          if (!tokens) {
-            window.location.href = "/login";
-          }
-        });
-      </script>
+    </script>
+    

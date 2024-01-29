@@ -335,7 +335,6 @@ exports.getAllVendors = async (req, res) => {
 };
 
 
-
 exports.getvendorById = async (req, res) => {
   try {
     const vendorId = req.params.id;
@@ -380,10 +379,6 @@ exports.getvendorById = async (req, res) => {
 };
 
 
-
-
-
-
 //vendor logout
 exports.logoutVendor = async (req, res, next) => {
   try {
@@ -421,12 +416,7 @@ exports.logoutVendor = async (req, res, next) => {
 };
 
 
-
-
-
-
 //developer count and admi count api
-
 exports.countTech = async (req, res) => {
 
   // console.log("===Techhhhhhhhhhhhhh");
