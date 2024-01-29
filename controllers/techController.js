@@ -1,8 +1,11 @@
 const Technology = require("../models/techModel");
+const mongoose = require("mongoose");
 
 exports.addTechnology = async (req, res) => {
+  console.log("reqqqqqqqqqqqqqqqqqqqqqq",req);
   try {
     const { name, status } = req.body;
+    
     const technology = new Technology({ name, status });
     await technology.save();
     res.json({
@@ -17,6 +20,7 @@ exports.addTechnology = async (req, res) => {
 
 //get all technology
 exports.getTechnology = async (req, res) => {
+  console.log("TechIn co0nroller.......");
   try {
     const technology = await Technology.find();
     console.log("tech", technology);
@@ -47,23 +51,35 @@ exports.getTechnologyById = async (req, res) => {
     }
   };
 
+
+  
 //edit technology by id
 exports.editTechnology = async (req, res) => {
   try {
     const { name, status } = req.body;
     const technologyId = req.params.id;
 
-    console.log(technologyId);
+    console.log("TECXHiD",req.body , req.para);
+    
+    // Convert technologyId to ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(technologyId)) {
+      return res.status(400).json({ message: "Invalid technologyId" });
+    }
+    const validTechnologyId = new mongoose.Types.ObjectId(technologyId);
+    console.log("TECXHiD",technologyId);
+
+    console.log("afterInObject.......",validTechnologyId);
 
     const technology = await Technology.findByIdAndUpdate(
-      technologyId,
-      { name, status },
+      {_id:validTechnologyId},
+      { $set : {name, status} },
       { new: true }
     );
 
     if (!technology) {
       return res.status(404).json({ message: "Technology not found" });
     }
+
     res.json({ message: "Technology updated successfully", technology });
   } catch (error) {
     console.error("Update Technology Error:", error);

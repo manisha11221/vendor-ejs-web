@@ -460,7 +460,6 @@ exports.logoutVendor = async (req, res, next) => {
 };
 
 //developer count and admi count api
-
 exports.countTech = async (req, res) => {
 
   // console.log("===Techhhhhhhhhhhhhh");

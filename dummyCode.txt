@@ -1,3 +1,4 @@
+<<<<<<< HEAD
   <!-- <div class="main">
       <div class="container mb-5 col-md-6">
         <div class="card">
@@ -10,8 +11,600 @@
               <div class="mb-3">
                 <label for="email" class="form-label">Email:</label>
                 <input type="email" class="form-control" id="email" name="email" required />
+=======
+// exports.getvendorById = async (req, res) => {
+//   try {
+//     const vendorId = req.params.id;
+
+//     // Fetch the vendor
+//     const vendor = await Vendor.findById(vendorId);
+
+//     if (!vendor) {
+//       return res.status(404).json({ message: "Vendor not found" });
+//     }
+
+
+//     const developer = await Developer.findOne({ vendorId }); 
+
+//     if (!developer) {
+//       return res.status(404).json({ message: "Developer not found" });
+//     }
+
+//     // Combine vendor and developer details
+//     const vendorWithDeveloper = {
+//       _id: vendor._id,
+//       vendorEmail: vendor.email,
+//       Address: vendor.address,
+//       vendorEmail: vendor.email,
+//       companyname: vendor.company_name,
+//       gstnumber: vendor.gst_number,
+//       token: vendor.token,
+      
+//       developer: {
+//         _id: developer._id,
+//         developerName: developer.name,
+
+//       },
+//     };
+
+//     res.status(200).json({ success: true, vendor: vendorWithDeveloper });
+//   } catch (error) {
+//     console.error("Get vendor by ID Error:", error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
+
+
+//get-vendor-by-id
+
+
+
+//update code
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize DataTable
+    $("#technologyTable").DataTable();
+    getAllTechnologies();
+  });
+
+  function getAllTechnologies() {
+    fetch("http://localhost:3000/technology/get-technology")
+      .then((response) => response.json())
+      .then((data) => {
+        displayTechnologies(data.technology);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }
+
+  // Function to display technologies in the table
+  function displayTechnologies(technologies) {
+    var table = $("#technologyTable").DataTable();
+    table.clear().draw();
+
+    technologies.forEach((technology, index) => {
+      table.row
+        .add([
+          index + 1,
+          technology.name,
+          '<button class="btn btn-warning button-all" onclick="updateTechnology(this)">Update</button>' +
+            '<button class="btn btn-danger ml-2" onclick="deleteTechnology(this)">Delete</button>',
+        ])
+        .draw();
+    });
+  }
+
+  // Toggle visibility of technology form
+  document
+    .getElementById("toggleTechnologyForm")
+    .addEventListener("click", function () {
+      var formContainer = document.getElementById("technologyFormContainer");
+      formContainer.style.display =
+        formContainer.style.display === "none" ? "block" : "none";
+    });
+
+  // Handle technology form submission
+  document.addEventListener("DOMContentLoaded", function () {
+    const addTechnologyForm = document.getElementById("addTechnologyForm");
+
+    addTechnologyForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      // Get the input value
+      const technologyName = document.getElementById("technologyName").value;
+
+      try {
+        const response = await fetch(
+          "http://localhost:3000/technology/add-technology",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: technologyName,
+            }),
+          }
+        );
+
+        // Handle the response
+        if (response.ok) {
+          const result = await response.json();
+          console.log("Successful Response Data:", result);
+          console.log(response);
+          getAllTechnologies(result.technology._id, name);
+          // location.reload();
+          const TechIdByAdmin = localStorage.setItem(
+            "techId",
+            result.technology._id
+          );
+        } else {
+          const error = await response.json();
+          alert(error.message);
+        }
+      } catch (error) {
+        console.error("Error making API call", error);
+        alert("Internal Server Error");
+      }
+    });
+  });
+
+  // Function to add technology to the table
+  function addTechnologyToTable(techId, techName) {
+    var table = $("#technologyTable").DataTable();
+    table.row
+      .add([
+        techId,
+        techName,
+        '<button class="btn btn-warning" onclick="updateTechnology(this)">Update</button>' +
+          '<button class="btn btn-danger ml-2" onclick="deleteTechnology(this)">Delete</button>',
+      ])
+      .draw();
+  }
+
+  // Function to update technology
+  function updateTechnology(button) {
+    var row = button.parentNode.parentNode;
+    var techId = row.cells[0].innerHTML;
+    var techName = row.cells[1].innerHTML;
+
+    // Set the current technology name in the modal input field
+    document.getElementById("updatedTechnologyName").value = techName;
+
+    // Retrieve the technology ID from local storage
+    var storedTechId = localStorage.getItem("techId");
+
+    // Check if the storedTechId is available and not empty
+    if (storedTechId) {
+      // Use the stored technology ID for the update
+      techId = storedTechId;
+    }
+
+    // Show the updateTechnologyModal
+    $("#updateTechnologyModal").modal("show");
+
+    // Handle form submission
+    document
+      .getElementById("updateTechnologyForm")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        var newTechName = document.getElementById(
+          "updatedTechnologyName"
+        ).value;
+
+        try {
+          // Create an object with the _id property
+          var requestBody = {
+            name: newTechName,
+            status: "someDefaultValue", // You may set the status as needed
+          };
+
+          const response = await fetch(
+            `http://localhost:3000/technology/edit-technology/${techId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(requestBody),
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Update the table with the updated technology
+            row.cells[1].innerHTML = newTechName;
+            $("#updateTechnologyModal").modal("hide");
+          } else {
+            console.error("Failed to update technology:", data.message);
+          }
+        } catch (error) {
+          console.error("Error updating technology:", error);
+        }
+      });
+  }
+
+  document
+    .getElementById("closeUpdateModalButton")
+    .addEventListener("click", function () {
+      $("#updateTechnologyModal").modal("hide");
+    });
+
+  // Function to delete technology
+  function deleteTechnology(button) {
+    var row = button.parentNode.parentNode;
+    var techId = row.cells[0].innerHTML;
+
+    // Send AJAX request to delete technology in the server
+    fetch(`http://localhost:3000/technology/delete-technology/${techId}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Remove the row from the table
+          row.parentNode.removeChild(row);
+        } else {
+          console.error("Failed to delete technology:", data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting technology:", error);
+      });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%- include('../../layouts/header.ejs') %> <%-
+include('../../layouts/sidebar.ejs') %>
+
+<div class="container-scroller">
+  <div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+      <div class="content-wrapperrr">
+        <div class="page-header">
+          <h3 class="page-title">Technology Dashboard</h3>
+        </div>
+
+        <!-- Add button to toggle technology form -->
+        <div class="mb-3">
+          <button id="toggleTechnologyForm" class="btn btn-primary">
+            Add Technology
+          </button>
+        </div>
+
+        <!-- Technology form initially hidden -->
+        <div id="technologyFormContainer" style="display: none">
+          <div class="card col-md-6">
+            <div class="card-body">
+              <h4 class="card-title">Add Technology</h4>
+              <form id="addTechnologyForm">
+                <div class="form-group">
+                  <label for="technologyName">Technology Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="technologyName"
+                    placeholder="Enter technology name"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Create Technology
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3 mb-5">
+          <div class="card-body">
+            <h4 class="card-title">All Technologies</h4>
+            <div class="table-responsive">
+              <table class="table table-striped" id="technologyTable">
+                <thead>
+                  <tr>
+                    <th>Sr.No</th>
+                    <th>Technology Name</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="technologyTableBody">
+                  <!-- Table rows will be dynamically populated here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for updating technology -->
+<div class="modal mt-4" id="updateTechnologyModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Technology</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          id="closeUpdateModalButton"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="updateTechnologyForm">
+          <div class="form-group">
+            <label for="updatedTechnologyName">Technology Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="updatedTechnologyName"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Update Technology
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../layouts/footer.ejs') %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize DataTable
+    $("#technologyTable").DataTable();
+    getAllTechnologies();
+  });
+
+  function getAllTechnologies() {
+    fetch("http://localhost:3000/technology/get-technology")
+      .then((response) => response.json())
+      .then((data) => {
+        displayTechnologies(data.technology);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }
+
+  // Function to display technologies in the table
+  function displayTechnologies(technologies) {
+    var table = $("#technologyTable").DataTable();
+    table.clear().draw();
+
+    technologies.forEach((technology, index) => {
+      table.row
+        .add([
+          index + 1,
+          technology.name,
+          '<button class="btn btn-warning button-all" onclick="updateTechnology(this)">Update</button>' +
+            '<button class="btn btn-danger ml-2" onclick="deleteTechnology(this)">Delete</button>',
+        ])
+        .draw();
+    });
+  }
+
+  // Toggle visibility of technology form
+  document
+    .getElementById("toggleTechnologyForm")
+    .addEventListener("click", function () {
+      var formContainer = document.getElementById("technologyFormContainer");
+      formContainer.style.display =
+        formContainer.style.display === "none" ? "block" : "none";
+    });
+
+  // Handle technology form submission
+  document.addEventListener("DOMContentLoaded", function () {
+    const addTechnologyForm = document.getElementById("addTechnologyForm");
+
+    addTechnologyForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      // Get the input value
+      const technologyName = document.getElementById("technologyName").value;
+
+      try {
+        const response = await fetch(
+          "http://localhost:3000/technology/add-technology",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: technologyName,
+            }),
+          }
+        );
+
+        // Handle the response
+        if (response.ok) {
+          const result = await response.json();
+          console.log("Successful Response Data:", result);
+          console.log(response);
+          getAllTechnologies(result.technology._id, name);
+          // location.reload();
+          const TechIdByAdmin = localStorage.setItem('techId', result.technology._id);
+
+        } else {
+          const error = await response.json();
+          alert(error.message);
+        }
+      } catch (error) {
+        console.error("Error making API call", error);
+        alert("Internal Server Error");
+      }
+    });
+  });
+
+  // Function to add technology to the table
+  function addTechnologyToTable(techId, techName) {
+    var table = $("#technologyTable").DataTable();
+    table.row
+      .add([
+        techId,
+        techName,
+        '<button class="btn btn-warning" onclick="updateTechnology(this)">Update</button>' +
+          '<button class="btn btn-danger ml-2" onclick="deleteTechnology(this)">Delete</button>',
+      ])
+      .draw();
+  }
+
+  // Function to update technology
+
+ 
+
+  // Function to delete technology
+  function deleteTechnology(button) {
+    var row = button.parentNode.parentNode;
+    var techId = row.cells[0].innerHTML;
+
+    // Send AJAX request to delete technology in the server
+    fetch(`http://localhost:3000/technology/delete-technology/${techId}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Remove the row from the table
+          row.parentNode.removeChild(row);
+        } else {
+          console.error("Failed to delete technology:", data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting technology:", error);
+      });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%- include('../layouts/header.ejs') %>
+  <%- include('../layouts/vendor-dashboard.ejs') %>
+
+
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper">
+        <div class="main-panel">
+          <div class="content-wrapperrr">
+            <div class="page-header">
+              <h3 class="page-title"> Developer Dashboard </h3>
+            </div>
+
+            <!-- Add button to toggle developer form -->
+            <div class="mb-3">
+              <button id="toggleDeveloperForm" class="btn btn-primary">Add Developer</button>
+            </div>
+
+            <!-- Developer form initially hidden -->
+            <div id="developerFormContainer" style="display: none;">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Create Developer</h4>
+                  <form id="createDeveloperForm">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="developerName">Name</label>
+                          <input type="text" class="form-control" id="developerName" placeholder="Enter name" required>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="experience">Experience</label>
+                          <input type="number" class="form-control" id="experience" placeholder="Enter experience"
+                            required>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="technology">Technology</label>
+                          <input type="text" class="form-control" id="technology" placeholder="Enter technology"
+                            required>
+                          <small class="form-text text-muted">Enter technologies as a comma-separated list (e.g.,
+                            Node.js, Laravel)</small>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="resume">Resume URL</label>
+                          <input type="url" class="form-control" id="resume" placeholder="Enter resume URL">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check">
+                          <input type="checkbox" class="form-check-input" id="available">
+                          <label class="form-check-label" for="available">Available</label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="rate">Rate</label>
+                          <input type="number" class="form-control" id="rate" placeholder="Enter hourly rate">
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Developer</button>
+                  </form>
+                </div>
+>>>>>>> fa40fa2b2ac16994da463571e8a1e936d9ab6ca6
               </div>
 
+<<<<<<< HEAD
 
               <div class="mb-3">
                 <label for="company_name" class="form-label">Company Name:</label>
@@ -50,3 +643,236 @@
         </div>
       </div>
     </div> -->
+=======
+            <div class="card mt-3 mb-5">
+              <div class="card-body">
+                <h4 class="card-title">All Developers</h4>
+                <div class="table-responsive">
+                  <table class="table table-striped" id="developerTable">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Experience</th>
+                        <th>Technology</th>
+                        <th>Resume</th>
+                        <th>Available</th>
+                        <th>Rate</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="developerTableBody">
+
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+
+    <%- include('../layouts/footer.ejs') %>
+
+      <script>
+        const tokens = localStorage.getItem("vendorToken");
+
+        function handleError(error) {
+          console.error('Error:', error);
+        }
+
+        function updateDeveloper(developerId) {
+          console.log(developerId)
+          fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
+            headers: {
+              Authorization: `Bearer ${tokens}`,
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              const updatedDeveloperNameInput = document.getElementById('updatedDeveloperName');
+              const updatedExperienceInput = document.getElementById('updatedExperience');
+              const updatedTechnologyInput = document.getElementById('updatedTechnology');
+              const updatedResumeInput = document.getElementById('updatedResume');
+              const updatedAvailableInput = document.getElementById('updatedAvailable');
+              const updatedRateInput = document.getElementById('updatedRate');
+
+              updatedDeveloperNameInput.value = data.developer.name;
+              updatedExperienceInput.value = data.developer.experience;
+              updatedTechnologyInput.value = data.developer.technology.join(', ');
+              updatedResumeInput.value = data.developer.resume;
+              updatedAvailableInput.checked = data.developer.available;
+              updatedRateInput.value = data.developer.rate;
+
+              $('#updateDeveloperModal').modal('show');
+            })
+            .catch(handleError);
+
+          document.getElementById('updateDeveloperForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const updatedDeveloperName = document.getElementById('updatedDeveloperName').value;
+            const updatedExperience = document.getElementById('updatedExperience').value;
+            const updatedTechnology = document.getElementById('updatedTechnology').value.split(',').map(item => item.trim());
+            const updatedResume = document.getElementById('updatedResume').value;
+            const updatedAvailable = document.getElementById('updatedAvailable').checked;
+            const updatedRate = document.getElementById('updatedRate').value;
+
+            const requestData = {
+              name: updatedDeveloperName,
+              experience: updatedExperience,
+              technology: updatedTechnology,
+              resume: updatedResume,
+              available: updatedAvailable,
+              rate: updatedRate
+            };
+            console.log("requestData", requestData);
+            fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
+              method: 'PUT',
+              headers: {
+                Authorization: `Bearer ${tokens}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestData),
+            })
+              .then(response => response.json())
+              .then(data => {
+                handleApiResponse(data);
+                // fetchDevelopers();
+                $('#updateDeveloperModal').modal('hide');
+              })
+              .catch(handleApiError);
+          });
+
+        }
+
+        function handleApiResponse(data) {
+          console.log(data);
+        }
+
+        function handleApiError(error) {
+          console.error('API Request Error:', error);
+        }
+
+        function deleteDeveloper(developerId) {
+          fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${tokens}`,
+              'Content-Type': 'application/json',
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              handleApiResponse(data);
+              // fetchDevelopers();
+            })
+            .catch(handleError);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+          const token = localStorage.getItem("vendorToken");
+          const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
+          const developerFormContainer = document.getElementById('developerFormContainer');
+          const createDeveloperForm = document.getElementById('createDeveloperForm');
+          const developerTableBody = document.getElementById('developerTableBody');
+
+          toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
+          createDeveloperForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            addDeveloper();
+          });
+
+          fetchDevelopers();
+
+          function toggleDeveloperForm() {
+            developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
+          }
+
+          function fetchDevelopers() {
+            fetch('http://localhost:3000/developer/get-devAll', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+              .then(response => response.json())
+              .then(data => {
+                displayDevelopers(data.developers);
+                // Initialize DataTable after populating the table
+                $('#developerTable').DataTable();
+              })
+              .catch(handleError);
+          }
+
+          function displayDevelopers(developers) {
+            developerTableBody.innerHTML = '';
+
+            developers.forEach(developer => {
+              const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
+              newRow.id = `developerRow_${developer._id}`;
+
+              const cells = [
+                developer._id,
+                developer.name,
+                developer.experience,
+                developer.technology.join(', '),
+                developer.resume,
+                developer.available ? 'Yes' : 'No',
+                developer.rate
+              ];
+
+              cells.forEach((cell, index) => {
+                const newCell = newRow.insertCell(index);
+                newCell.innerHTML = cell;
+              });
+
+              const actionCell = newRow.insertCell(cells.length);
+              actionCell.innerHTML = `<button class="btn btn-warning mx-3" onclick="updateDeveloper('${developer._id}')">Update</button>` +
+                `<button class="btn btn-danger ml-2" onclick="deleteDeveloper('${developer._id}')">Delete</button>`;
+            });
+          }
+
+          function addDeveloper() {
+            const developerName = document.getElementById('developerName').value;
+            const experience = document.getElementById('experience').value;
+            const technology = document.getElementById('technology').value.split(',').map(item => item.trim());
+            const resume = document.getElementById('resume').value;
+            const available = document.getElementById('available').checked;
+            const rate = document.getElementById('rate').value;
+
+            const requestData = {
+              name: developerName,
+              experience: experience,
+              technology: technology,
+              resume: resume,
+              available: available,
+              rate: rate
+            };
+
+            fetch('http://localhost:3000/developer/add-dev', {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestData),
+            })
+              .then(response => response.json())
+              .then(data => {
+                handleApiResponse(data);
+                fetchDevelopers();
+                toggleDeveloperForm();
+              })
+              .catch(handleApiError);
+          }
+
+          if (!tokens) {
+            window.location.href = "/login";
+          }
+        });
+      </script>
+>>>>>>> fa40fa2b2ac16994da463571e8a1e936d9ab6ca6
