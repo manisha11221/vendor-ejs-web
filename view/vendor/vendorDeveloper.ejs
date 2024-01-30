@@ -1,171 +1,412 @@
-<%- include('../layouts/header.ejs') %>
-<%- include('../layouts/vendor.ejs') %>
+<%- include('../layouts/header.ejs') %> <%- include('../layouts/vendor.ejs') %>
 
+<div class="container-scroller">
+  <div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+      <div class="content-wrapperrr">
+        <div class="page-header">
+          <h3 class="page-title">Developer Dashboard</h3>
+        </div>
 
-    <div class="container-scroller">
-      <div class="container-fluid page-body-wrapper">
-        <div class="main-panel">
-          <div class="content-wrapperrr">
-            <div class="page-header">
-              <h3 class="page-title"> Developer Dashboard </h3>
-            </div>
+        <!-- Add button to toggle developer form -->
+        <div class="mb-3">
+          <button id="toggleDeveloperForm" class="btn btn-primary">
+            Add Developer
+          </button>
+        </div>
 
-            <!-- Add button to toggle developer form -->
-            <div class="mb-3">
-              <button id="toggleDeveloperForm" class="btn btn-primary">Add Developer</button>
-            </div>
-
-            <!-- Developer form initially hidden -->
-            <div id="developerFormContainer" style="display: none;">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title">Create Developer</h4>
-                  <form id="createDeveloperForm">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="developerName">Name</label>
-                          <input type="text" class="form-control" id="developerName" placeholder="Enter name" required>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="experience">Experience</label>
-                          <input type="number" class="form-control" id="experience" placeholder="Enter experience"
-                            required>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="technology">Technology</label>
-                          <input type="text" class="form-control" id="technology" placeholder="Enter technology"
-                            required>
-                          <small class="form-text text-muted">Enter technologies as a comma-separated list (e.g.,
-                            Node.js, Laravel)</small>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="resume">Resume URL</label>
-                          <input type="url" class="form-control" id="resume" placeholder="Enter resume URL">
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-check">
-                          <input type="checkbox" class="form-check-input" id="available">
-                          <label class="form-check-label" for="available">Available</label>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="rate">Rate</label>
-                          <input type="number" class="form-control" id="rate" placeholder="Enter hourly rate">
-                        </div>
-                      </div>
+        <!-- Developer form initially hidden -->
+        <div id="developerFormContainer" style="display: none">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Create Developer</h4>
+              <form id="createDeveloperForm">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="developerName">Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="developerName"
+                        placeholder="Enter name"
+                        required
+                      />
                     </div>
-                    <button type="submit" class="btn btn-primary">Create Developer</button>
-                  </form>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="experience">Experience</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="experience"
+                        placeholder="Enter experience"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="simpleDropdown">Select a Fruit:</label>
+                      <select id="technology">
+                       
+                      </select>
+                      
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">Upload Resume</label>
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="resume"
+                        placeholder="upload resume"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">Portfolio Link</label>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="portfolio"
+                        placeholder="portfolio Url"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">GitHubUrl Link</label>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="gitHubUrl"
+                        placeholder="GitHub Url"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">linkedIn Link</label>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="linkedInLink"
+                        placeholder="linkedIn Url"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-check">
+                      <input
+                        type="radio"
+                        class="form-check-input"
+                        id="parttime"
+                        name="employment_type"
+                        value="parttime"
+                      />
+                      <label class="form-check-label" for="parttime"
+                        >Part Time</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        type="radio"
+                        class="form-check-input"
+                        id="fulltime"
+                        name="employment_type"
+                        value="fulltime"
+                      />
+                      <label class="form-check-label" for="fulltime"
+                        >Full Time</label
+                      >
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="rate">Rate</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="rate"
+                        placeholder="Enter hourly rate"
+                      />
+                    </div>
+                  </div>
+
+                 
+                  
                 </div>
-              </div>
+                <button type="submit" class="btn btn-primary">
+                  Create Developer
+                </button>
+              </form>
             </div>
+          </div>
+        </div>
 
-            <div class="card mt-3 mb-5">
-              <div class="card-body">
-                <h4 class="card-title">All Developers</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped" id="developerTable">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Experience</th>
-                        <th>Technology</th>
-                        <th>Resume</th>
-                        <th>Available</th>
-                        <th>Rate</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody id="developerTableBody">
-
-                       <!-- Rows will be dynamically added here -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+        <div class="card mt-3 mb-5">
+          <div class="card-body">
+            <h4 class="card-title">All Developers</h4>
+            <div class="table-responsive">
+              <table id="developerTableBody" class="display">
+                <thead>
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th>Name</th>
+                    <th>Technology</th>
+                    <th>Experience</th>
+                    <th>Rate</th>
+                    <th>Resume</th>
+                    <th>Available</th>
+                    <th>Portfolio Link</th>
+                    <th>GitHub Link</th>
+                    <th>LinkedIn Link</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Table rows will be added dynamically by DataTables -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <%- include('../layouts/footer.ejs') %>
+<!-- update table -->
+<div class="modal" id="updateDeveloperModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Developer</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="updateDeveloperForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateDeveloperName">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="updateDeveloperName"
+                  placeholder="Enter name"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateExperience">Experience</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="updateExperience"
+                  placeholder="Enter experience"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateTechnology">Technology</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="updateTechnology"
+                  placeholder="Enter technology"
+                  required
+                />
+                <small class="form-text text-muted"
+                  >Enter technologies as a comma-separated list (e.g., Node.js,
+                  Laravel)</small
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateResume">Upload Resume</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="updateResume"
+                  placeholder="upload resume"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updatePortfolio">Portfolio Link</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="updatePortfolio"
+                  placeholder="portfolio Url"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateGitHubUrl">GitHubUrl Link</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="updateGitHubUrl"
+                  placeholder="GitHub Url"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateLinkedInLink">LinkedIn Link</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="updateLinkedInLink"
+                  placeholder="LinkedIn Url"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="updatePartTime"
+                  name="updateEmploymentType"
+                  value="parttime"
+                />
+                <label class="form-check-label" for="updatePartTime"
+                  >Part Time</label
+                >
+              </div>
+              <div class="form-check">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="updateFullTime"
+                  name="updateEmploymentType"
+                  value="fulltime"
+                />
+                <label class="form-check-label" for="updateFullTime"
+                  >Full Time</label
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateRate">Rate</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="updateRate"
+                  placeholder="Enter hourly rate"
+                />
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="updateDeveloperId" />
+          <button type="submit" id="update" class="btn btn-primary">
+            Update Developer
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <script>
-       document.addEventListener("DOMContentLoaded", function () {
-            fetch("http://localhost:3000/developer/get-devAll/")
-              .then((response) => response.json())
-              .then((data) => {
-                displayDevelopers(data.dataArr);
-                // Initialize DataTable
-                $("#developerTable").DataTable();
-              })
-              .catch((error) => {
-                console.error("Error fetching data:", error);
-              });
+<%- include('../layouts/footer.ejs') %>
 
-            function displayDevelopers(dataArr) {
-              const table = $("#developerTable").DataTable();
-              dataArr.forEach((data, index) => {
-                const developer = data.developer;
-                const vendor = data.vendor;
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Toggle form visibility
+  $("#toggleDeveloperForm").click(function () {
+    $("#developerFormContainer").toggle();
+  });
+    // Call the developer API
+    fetch("http://localhost:3000/developer/get-devAll")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          var developerTable = $("#developerTableBody").DataTable(); // Initialize DataTables on the table
 
-                // Add more columns as needed
-                table.row
-                  .add([
-                    index + 1,
-                    developer.name,
-                    developer.technology,
-                    developer.experience,
-                    developer.rate,
-                    developer.resume,
-                    developer.availble,
-                    vendor ? vendor.email : "N/A",
-                    vendor ? vendor.company_name : "N/A",
-                    // Add one more column if needed
-                  ])
-                  .draw();
-              });
-            }
+          data.developers.forEach(function (developer, index) {
+            // Create a button element for the "View" action
+            const viewButton = `<button class="view-button btn btn-info" data-index="${index}">View</button>`;
+
+            // Add rows to the DataTable
+            developerTable.row
+              .add([
+                index + 1,
+                developer.name,
+                developer.technology,
+                developer.experience,
+                developer.rate,
+                developer.resume
+                  ? `<a href="#" class="resume-link" data-resume="${developer.resume}">Resume</a>`
+                  : "N/A",
+                developer.available,
+                developer.portfolio
+                  ? `<a href="${developer.portfolio}" target="_blank">Portfolio Link</a>`
+                  : "N/A",
+                developer.gitHubUrl
+                  ? `<a href="${developer.gitHubUrl}" target="_blank">GitHub Link</a>`
+                  : "N/A",
+                developer.linkedInLink
+                  ? `<a href="${developer.linkedInLink}" target="_blank">LinkedIn Profile</a>`
+                  : "N/A",
+                viewButton,
+                // Other data you want to display
+              ])
+              .draw();
           });
 
-            const requestData = {
-              name: developerName,
-              experience: experience,
-              technology: technology,
-              resume: resume,
-              available: available,
-              rate: rate
-            };
+          // Populate technologies dropdown
+          // Populate technologies dropdown
 
-            fetch('http://localhost:3000/developer/add-dev', {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(requestData),
-            })
-              .then(response => response.json())
-              .then(data => {
-                handleApiResponse(data);
-                fetchDevelopers();
-                toggleDeveloperForm();
-              })
-              .catch(handleApiError);
-        
-          if (!tokens) {
-            window.location.href = "/login";
-          }
-        
-      </script>
+const technologyDropdown = $("#technology");
+data.technologies.forEach((tech) => {
+  technologyDropdown.append(`<option value="${tech}">${tech}</option>`);
+});
+
+// Initialize Bootstrap Select for the technologies dropdown
+technologyDropdown.selectpicker();
+
+          // Add event listener for the "View" button
+        } else {
+          console.error("API response indicates failure:", data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching developers:", error);
+      });
+  });
+
+  const tokens = localStorage.getItem("adminToken");
+
+  if (!tokens) {
+    window.location.href = "/login";
+  }
+</script>

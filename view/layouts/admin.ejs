@@ -1,43 +1,46 @@
 <div class="container-scroller">
-    <!-- partial:../../partials/_navbar.html -->
-    <% const url = 'http://localhost:3000'; %>
+  <!-- partial:../../partials/_navbar.html -->
+  <% const url='http://localhost:3000' ; %>
     <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo" href="/vendor-dashboard"><img src="<%= url %>/assets/images/takedevbg.png" alt="logo" /></a>
-        <a class="navbar-brand brand-logo-mini" href="/vendor-dashboard"><img src="../../assets/images/logo-mini.svg" alt="logo" /></a>
+        <a class="navbar-brand brand-logo" href="/vendor-dashboard"><img src="<%= url %>/assets/images/takedevbg.png"
+            alt="logo" /></a>
+        <a class="navbar-brand brand-logo-mini" href="/vendor-dashboard"><img
+            src="../../assets/images/logo-mini.svg" alt="logo" /></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span class="mdi mdi-menu"></span>
         </button>
         <div class="search-field d-none d-md-block">
-          <form class="d-flex align-items-center h-100" action="#">
+          <!-- <form class="d-flex align-items-center h-100" action="#">
             <div class="input-group">
               <div class="input-group-prepend bg-transparent">
                 <i class="input-group-text border-0 mdi mdi-magnify"></i>
               </div>
               <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
             </div>
-          </form>
+          </form> -->
         </div>
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item nav-profile dropdown">
-            <a class="nav-link dropdown-toggle" id="profileDropdown" href="/adminDash" data-bs-toggle="dropdown" aria-expanded="false">
-              <div class="nav-profile-img">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="image">
+            <a class="nav-link dropdown-toggle" id="profileDropdown" href="/adminDash" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <!-- <div class="nav-profile-img">
+                <img src="" alt="image" id="profileImagedisplay">
                 <span class="availability-status online"></span>
-              </div>
+              </div> -->
               <div class="nav-profile-text" id="emailContainer">
-                <!-- EJS will replace the value inside the curly braces with the actual email -->
-                <p class="mb-1 text-black"></p>
-            </div>
+                <p class="mb-1 text-black">Admin</p>
+              </div>
             </a>
-            <div class="dropdown-menu navbar-dropdown" aria-labelledby="emailContainer2">
+            <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#" id="logoutButton">
                 <i class="mdi mdi-logout me-2 text-primary"></i> Signout
               </a>
-              
+
             </div>
           </li>
           <li class="nav-item d-none d-lg-block full-screen-link">
@@ -45,9 +48,10 @@
               <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
             </a>
           </li>
-        
+
         </ul>
-        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+          data-toggle="offcanvas">
           <span class="mdi mdi-menu"></span>
         </button>
       </div>
@@ -57,20 +61,20 @@
       <!-- partial:../../partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
-          <li class="nav-item nav-profile">
+          <!-- <li class="nav-item nav-profile">
             <a href="#" class="nav-link">
               <div class="nav-profile-image">
                 <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="profile">
                 <span class="login-status online"></span>
-                <!--change to offline or busy as needed-->
+               
               </div>
-             <div class="nav-profile-text" id="emailContainer2">
-                <!-- EJS will replace the value inside the curly braces with the actual email -->
+              <div class="nav-profile-text" id="emailContainer2">
+             
                 <p class="mb-1 text-black"></p>
-            </div>
-              
+              </div>
+              <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="/adminDash">
               <span class="menu-title">Dashboard</span>
@@ -78,8 +82,8 @@
             </a>
 
           </li>
-                 </li>
-        
+          </li>
+
           <li class="nav-item">
             <a class="nav-link" href="technologyDash">
               <span class="menu-title">Technology</span>
@@ -112,60 +116,76 @@
               </ol>
             </nav> -->
           </div>
-         
+
         </div>
         <!-- content-wrapper ends -->
 
 
         <script>
-
-
-
-          
           //logout admin
           const token = localStorage.getItem("adminToken");
 
-  document.addEventListener("DOMContentLoaded", function () {
-  const logoutButton = document.getElementById("logoutButton");
+          document.addEventListener("DOMContentLoaded", function () {
+            const logoutButton = document.getElementById("logoutButton");
 
-  logoutButton.addEventListener("click", async function (event) {
-    event.preventDefault(); // Prevent the default anchor tag behavior
+            logoutButton.addEventListener("click", async function (event) {
+              event.preventDefault(); // Prevent the default anchor tag behavior
 
-    try {
-      console.log("Ready to logout");
-      const response = await fetch("/admin/logout", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`, // Make sure 'token' is defined
-          "Content-Type": "application/json",
-        },
-      });
+              try {
+                console.log("Ready to logout");
+                const response = await fetch("/admin/logout", {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${token}`, // Make sure 'token' is defined
+                    "Content-Type": "application/json",
+                  },
+                });
 
-      if (response.ok) {
-        const responseData = await response.json();
-        window.location.href = "/login";
-        localStorage.removeItem("adminToken");
-        localStorage.removeItem("adminEmail");
-      } else {
-        // Handle error responses
-        const errorData = await response.json();
-        console.error("Logout failed:", errorData);
-      }
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  });
-});
+                if (response.ok) {
+                  const responseData = await response.json();
+                  window.location.href = "/login";
+                  localStorage.removeItem("adminToken");
+                  localStorage.removeItem("adminEmail");
+                } else {
+                  // Handle error responses
+                  const errorData = await response.json();
+                  console.error("Logout failed:", errorData);
+                }
+              } catch (error) {
+                console.error("Error during logout:", error);
+              }
+            });
+          });
 
 
-//to get admin email
-// Assuming you have the email stored in local storage under the key 'adminEmail'
-var userEmail = localStorage.getItem('adminEmail');
-var companyName = localStorage.getItem('company_name');
+          //to get admin email
+          // Assuming you have the email stored in local storage under the key 'adminEmail'
+          // var userEmail = localStorage.getItem('adminEmail');
+          // var companyName = localStorage.getItem('company_name');
+          // var profileImage = localStorage.getItem('profileImage');
 
-// console.log("AdminEMail------------",userEmail);
-// Render the email using EJS
-document.getElementById('emailContainer').innerHTML = `<p class="mb-1 text-black">${userEmail}</p>`;
+          // var profileImageDisplay = document.getElementById('profileImagedisplay');
+          // if (profileImageDisplay) {
+          //   var image = new Image();
+          //   image.src = profileImage;
+          //   image.onload = function () {
+          //     profileImageDisplay.src = profileImage;
+          //     profileImageDisplay.style.width = '50px'; // Set the desired width
+          //     profileImageDisplay.style.height = '50px'; // Set the desired height
+          //   };
+          //   image.onerror = function () {
+          //     console.error("Error loading profile image:", profileImage);
+          //   }
+          // } else {
+          //   console.error("Profile image element not found in the DOM");
+          // }
 
-document.getElementById('emailContainer2').innerHTML = `<p class="mb-1 text-black">${userEmail}</p>`;
+          // console.log("AdminEMail------------", userEmail);
+          // console.log("Profile Image------------", profileImage);
+          // Render the email using EJS
+          // document.getElementById('emailContainer').innerHTML = `<p class="mb-1 text-black">${companyName}</p>`;
+
+
+          // document.getElementById('emailContainer2').innerHTML = `<p class="mb-1 text-black">${companyName}</p>`;
+
         </script>

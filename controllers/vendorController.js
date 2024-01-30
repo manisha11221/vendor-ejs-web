@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const Tech = require("../models/techModel");
 const Developer = require("../models/developerModel");
 const Technology = require("../models/techModel");
+const path = require("path")
 // const storage = multer.memoryStorage(); 
 const upload = require('../middlewares/multerMiddleware')
 
@@ -429,6 +430,8 @@ exports.getvendorById = async (req, res) => {
   }
 };
 
+
+//vendor logout
 exports.logoutVendor = async (req, res, next) => {
   try {
     // Get the token from the request headers

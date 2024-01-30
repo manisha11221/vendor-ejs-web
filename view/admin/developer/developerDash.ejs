@@ -46,14 +46,14 @@ include('../../layouts/admin.ejs') %>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const tokens = localStorage.getItem("adminToken");
-
+    
     if (!tokens) {
       // Redirect to the login page if the token is not present
       window.location.href = "/login";
       return; // Add this line to prevent further execution if not logged in
     }
 
-    fetch("http://localhost:3000/developer/get-devAll")
+    fetch("http://localhost:3000/developer/getDeveloperall-with-vednor")
       .then((response) => response.json())
       .then((data) => {
         displayDevelopers(data.dataArr);

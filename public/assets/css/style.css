@@ -21396,3 +21396,8 @@ div.dataTables_wrapper div.dataTables_length select{
   padding: 20px;
   border-radius: 5px;
 }
+.profile-image {
+  width: 40px;
+  height: 40px; /* Set the desired height */
+  /* Add any additional styling as needed */
+}
