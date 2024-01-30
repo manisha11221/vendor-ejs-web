@@ -3164,6 +3164,10 @@ progress {
   margin-left: auto;
 }
 
+.containerModel {
+  width: 1500px;
+}
+
 @media (min-width: 576px) {
 
   .container,
@@ -21358,6 +21362,13 @@ dl li {
 #loginnn{
   width: 1700px;
 }
+
+@media screen and (max-width:991px) {
+  #loginnn {
+    width: auto !important;
+  }
+}
+
 /*# sourceMappingURL=style.css.map */
 
 .button-all{

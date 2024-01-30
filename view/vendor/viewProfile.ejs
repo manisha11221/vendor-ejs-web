@@ -1,6 +1,6 @@
 <%- include('../layouts/header.ejs') %>
   <%- include('../layouts/vendor.ejs') %>
-
+  <% const BASE_URL = process.env.BASE_URL %>
     <!-- View Profile Section -->
     <data class="card mb-3 ml-3 mr-3">
       <div class="card-body">
@@ -91,13 +91,13 @@
 
     <div class="main" id="editProfileModal">
       <div class="main">
-        <div class="container" style="width: 1500px; margin-top: 3.5rem;">
+        <div class="container" style="width: 800px; margin-top: 3.5rem;">
           <div class="card">
             <div class="card-body">
               <h2 class="card-title mb-4">Edit Profile</h2>
               <div id="errorMessageContainer"></div>
 
-              <form action="/vendor/edit-Profile" method="post" enctype="multipart/form-data" id="editProfileForm">
+              <form  id="editProfileForm">
 
                 <div class="mb-3">
                   <label for="profileImage" class="form-label">ProfileImage:</label>
@@ -140,7 +140,7 @@
                   <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
                 </div>
 
-                <button type="button" class="btn btn-primary" id="saveChangesBtn">
+                <button class="btn btn-primary" id="saveChangesBtn">
                   Save Changes
                 </button>
               </form>
@@ -191,7 +191,7 @@
         const fetchVendorData = async () => {
           try {
             const response = await fetch(
-              `http://localhost:3000/vendor/view-Profile/${VendorId}`,
+              `<%= BASE_URL %>/vendor/view-Profile/${VendorId}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -289,7 +289,7 @@
             formData.append("vendorId", VendorId);
 
             const response = await fetch(
-              "http://localhost:3000/vendor/edit-Profile",
+              "<%= BASE_URL %>/vendor/edit-Profile",
               {
                 method: "POST",
                 headers: {
@@ -315,7 +315,7 @@
         const fetchVendorDataInForm = async () => {
           try {
             const response = await fetch(
-              `http://localhost:3000/vendor/view-Profile/${VendorId}`,
+              `<%= BASE_URL %>/vendor/view-Profile/${VendorId}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,

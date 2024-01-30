@@ -1,4 +1,5 @@
 <%- include('layouts/header.ejs') %>
+<% const BASE_URL = process.env.BASE_URL %>
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper full-page-wrapper">
     <div class="content-wrapper d-flex align-items-center auth">
@@ -6,7 +7,8 @@
         <div class="col-lg-4 mx-auto d-flex align-items-center justify-content-between">
           <div class="auth-form-light text-left p-5"  id="loginnn">
             <div class="brand-logo">
-              <img src="../public/assets/images/takedev.svg" />
+              <img src="<%= url %>/assets/images/takedevbg.png"
+            alt="logo" />
             </div>
             <h6 class="font-weight-light">Sign in to continue.</h6>
             
@@ -118,7 +120,7 @@
 // }
 
 function signInAdmin(formData) {
-  fetch("http://localhost:3000/admin/login", {
+  fetch("<%= BASE_URL %>/admin/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -157,7 +159,7 @@ function signInAdmin(formData) {
   function signInVendor(formData) {
 
 
-  fetch("http://localhost:3000/vendor/login-vendor", {
+  fetch("<%= BASE_URL %>/vendor/login-vendor", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

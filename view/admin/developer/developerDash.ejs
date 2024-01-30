@@ -1,7 +1,7 @@
 <!-- developerDash.ejs -->
 <%- include('../../layouts/header.ejs') %> \
 <%- include('../../layouts/admin.ejs') %>
-
+<% const BASE_URL = process.env.BASE_URL %>
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
@@ -38,7 +38,7 @@
         <!-- Inline script to fetch and populate data -->
         <script>
           document.addEventListener("DOMContentLoaded", function () {
-            fetch("http://localhost:3000/developer/get-devAll")
+            fetch("<%= BASE_URL %>/developer/get-devAll")
               .then((response) => response.json())
               .then((data) => {
                 displayDevelopers(data.dataArr);

@@ -1,6 +1,6 @@
 <%- include('../layouts/header.ejs') %> 
 <%- include('../layouts/vendor.ejs') %>
-
+<% const BASE_URL = process.env.BASE_URL %>
 <div class="main">
   <div class="container mb-5 col-md-6">
     <div class="card">
@@ -150,7 +150,7 @@
   const fetchVendorData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/vendor/get-Vendors-by-id/${VendorId}`,
+        `<%= BASE_URL %>/vendor/get-Vendors-by-id/${VendorId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -227,7 +227,7 @@
       formData.append("vendorId", VendorId);
 
       const response = await fetch(
-        "http://localhost:3000/vendor/edit-Profile",
+        "<%= BASE_URL %>/vendor/edit-Profile",
         {
           method: "POST",
           headers: {

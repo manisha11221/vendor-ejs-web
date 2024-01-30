@@ -1,7 +1,6 @@
 <%- include('../layouts/header.ejs') %>
   <%- include('../layouts/vendor.ejs') %>
-
-
+<% const BASE_URL = process.env.BASE_URL %>
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper">
         <div class="main-panel">
@@ -253,7 +252,7 @@
 
           function fetchDevelopers() {
             console.log("Fetching developers...");
-            fetch('http://localhost:3000/developer/get-devAll', {
+            fetch('<%= BASE_URL %>/developer/get-devAll', {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -276,6 +275,47 @@
             link.innerText = text;
             return link.outerHTML;
           }
+
+          function deleteDeveloper(developerId) {
+            const confirmation = confirm('Are you sure you want to delete this developer?');
+            if (confirmation) {
+              fetch(`<%= BASE_URL %>/developer/delete-dev/${developerId}`, {
+                method: 'DELETE',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+                .then(response => response.json())
+                .then(data => {
+                  handleApiResponse(data);
+                  fetchDevelopers();
+                })
+                .catch(handleApiError);
+            }
+          }
+
+          function createDeleteButton(developerId) {
+            console.log("createDeleteButton...............")
+            const button = document.createElement('button');
+            button.className = 'btn btn-danger btn-sm ml-2';
+            button.innerText = 'Delete';
+            button.addEventListener('click', () => deleteDeveloper(developerId));
+            return button;
+          }
+
+          
+
+          function createUpdateButton(developerId) {
+            const button = document.createElement('button');
+            button.className = 'btn btn-success btn-sm';
+            button.innerText = 'Update';
+            button.addEventListener('click', () => updateDeveloper(developerId));
+            return button;
+          }
+
+       
+
+          
 
           function addDeveloper() {
             const developerName = document.getElementById('developerName').value;
@@ -300,7 +340,7 @@
               linkedInLink: linkedInLink
             };
             console.log("requestData", requestData);
-            fetch('http://localhost:3000/developer/add-dev', {
+            fetch('<%= BASE_URL %>/developer/add-dev', {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -338,26 +378,6 @@
             window.location.href = "/login";
           }
 
-          function openUpdateModal(developerId) {
-      fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById('updateDeveloperName').value = data.name;
-          document.getElementById('updateExperience').value = data.experience;
-          document.getElementById('updateTechnology').value = data.technology.join(', ');
-          // Populate other fields accordingly
-          document.getElementById('updateDeveloperId').value = developerId;
-        })
-        .catch(handleApiError);
-    }
-    
-
-
-
 
           function displayDevelopers(developers) {
             if (!developers || !Array.isArray(developers)) {
@@ -383,6 +403,8 @@
                 createLinkCell(developer.portfolio, 'Portfolio'),
                 createLinkCell(developer.gitHubUrl, 'GitHub'),
                 createLinkCell(developer.linkedInLink, 'LinkedIn'),
+                createUpdateButton(developer._id).outerHTML,
+                createDeleteButton(developer._id).outerHTML,
               ];
 
               cells.forEach((cell, index) => {

@@ -1,6 +1,6 @@
 <%- include('../layouts/header.ejs') %> 
 <%- include('../layouts/vendor.ejs') %>
-
+<% const BASE_URL = process.env.BASE_URL %>
 <div class="container-scroller">
   <!-- Other parts of the code remain unchanged -->
 
@@ -52,7 +52,7 @@
 
       const tokenss = localStorage.getItem("vendorToken");
 
-      fetch("http://localhost:3000/vendor/developer-count", {
+      fetch("<%= BASE_URL %>/vendor/developer-count", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenss}`,
@@ -67,7 +67,7 @@
           console.error("Error fetching developer count:", error)
         );
 
-      fetch("http://localhost:3000/vendor/count-Tech", {
+      fetch("<%= BASE_URL %>/vendor/count-Tech", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenss}`,

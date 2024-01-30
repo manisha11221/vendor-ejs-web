@@ -1,6 +1,6 @@
 <%- include('../layouts/header.ejs') %> 
 <%- include('../layouts/vendor.ejs') %>
-
+<% const BASE_URL = process.env.BASE_URL %>
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper">
         <div class="main-panel">
@@ -62,7 +62,7 @@
           }
 
           // Fetch technology data
-          fetch("http://localhost:3000/technology/get-technology", {
+          fetch("<%= BASE_URL %>/technology/get-technology", {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${tokens}`,
@@ -110,7 +110,7 @@
 
           // Function to fetch and refresh technologies
           function fetchTechnologies() {
-            fetch("http://localhost:3000/technology/get-technology", {
+            fetch("<%= BASE_URL %>/technology/get-technology", {
               method: "GET",
               headers: {
                 "Authorization": `Bearer ${tokens}`,
@@ -134,7 +134,7 @@
             console.log("........tech data", vendorId);
 
             try {
-              const response = await fetch(`http://localhost:3000/vendor/add-tech-by-vendor/${vendorId}`, {
+              const response = await fetch(`<%= BASE_URL %>/vendor/add-tech-by-vendor/${vendorId}`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",

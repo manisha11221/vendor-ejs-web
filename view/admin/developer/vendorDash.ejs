@@ -1,7 +1,7 @@
 <!-- vendorDash.ejs -->
 <%- include('../../layouts/header.ejs') %> <%-
 include('../../layouts/admin.ejs') %>
-
+<% const BASE_URL = process.env.BASE_URL %>
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
@@ -90,7 +90,7 @@ include('../../layouts/admin.ejs') %>
  
  
   document.addEventListener("DOMContentLoaded", function () {
-    fetch("http://localhost:3000/vendor/get-all-Vendors")
+    fetch("<%= BASE_URL %>/vendor/get-all-Vendors")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -127,7 +127,7 @@ include('../../layouts/admin.ejs') %>
 
             // Call the developer API
             fetch(
-              `http://localhost:3000/developer/get-by-vendor/${selectedVendor._id}`
+              `<%= BASE_URL %>/developer/get-by-vendor/${selectedVendor._id}`
             )
               .then((response) => {
                 if (!response.ok) {
