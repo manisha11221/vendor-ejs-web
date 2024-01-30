@@ -63,6 +63,7 @@
 
           // Fetch technology data
           fetch("http://localhost:3000/technology/get-technology", {
+            method: "GET",
             headers: {
               "Authorization": `Bearer ${tokens}`,
             },
@@ -110,6 +111,7 @@
           // Function to fetch and refresh technologies
           function fetchTechnologies() {
             fetch("http://localhost:3000/technology/get-technology", {
+              method: "GET",
               headers: {
                 "Authorization": `Bearer ${tokens}`,
               },
@@ -133,6 +135,7 @@
 
             try {
               const response = await fetch(`http://localhost:3000/vendor/add-tech-by-vendor/${vendorId}`, {
+                method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                   "Authorization": `Bearer ${tokens}`,
