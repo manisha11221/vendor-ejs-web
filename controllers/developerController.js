@@ -4,6 +4,7 @@ const vendor = require("../models/vendorModel");
 const upload = require('../middlewares/multerMiddleware');
 
 exports.addDeveloper = async (req, res) => {
+  console.log("req",req);
   try {
     const {
       name,
@@ -38,8 +39,10 @@ exports.addDeveloper = async (req, res) => {
     });
 
       if (req.file) {
-        developer.resume = req.file.path;
+        developer.resume = `http://localhost:3000/uploads/${req.file.filename}`;
       }
+      console.log("req.file.path:", req.file);
+
 
       await developer.save();
 
