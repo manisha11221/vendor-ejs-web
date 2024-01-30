@@ -1,7 +1,13 @@
 <!-- developerDash.ejs -->
+<<<<<<< HEAD
 <%- include('../../layouts/header.ejs') %> <%-
 include('../../layouts/admin.ejs') %>
 
+=======
+<%- include('../../layouts/header.ejs') %> \
+<%- include('../../layouts/admin.ejs') %>
+<% const BASE_URL = process.env.BASE_URL %>
+>>>>>>> 9586843311133c649caa3a361bcc89aa1af00ba7
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
@@ -37,6 +43,50 @@ include('../../layouts/admin.ejs') %>
         </div>
 
         <!-- Inline script to fetch and populate data -->
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            fetch("<%= BASE_URL %>/developer/get-devAll")
+              .then((response) => response.json())
+              .then((data) => {
+                displayDevelopers(data.dataArr);
+                // Initialize DataTable
+                $("#developerTable").DataTable();
+              })
+              .catch((error) => {
+                console.error("Error fetching data:", error);
+              });
+
+            function displayDevelopers(dataArr) {
+              const table = $("#developerTable").DataTable();
+              dataArr.forEach((data, index) => {
+                const developer = data.developer;
+                const vendor = data.vendor;
+
+                // Add more columns as needed
+                table.row
+                  .add([
+                    index + 1,
+                    developer.name,
+                    developer.technology,
+                    developer.experience,
+                    vendor ? vendor.email : "N/A",
+                    vendor ? vendor.company_name : "N/A",
+                    // Add one more column if needed
+                  ])
+                  .draw();
+              });
+            }
+          });
+
+          const tokens = localStorage.getItem("adminToken");
+
+          if (!tokens) {
+            // Redirect to the login page if the token is not present
+            window.location.href = "/login";
+          }
+        </script>
+
+        <%- include('../../layouts/footer.ejs') %>
       </div>
     </div>
   </div>

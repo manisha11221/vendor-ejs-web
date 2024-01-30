@@ -1,5 +1,6 @@
 <%- include('../layouts/header.ejs') %>
-<% const url = 'http://localhost:3000'; %>
+<!-- <% const url = 'http://localhost:3000'; %> -->
+<% const BASE_URL = process.env.BASE_URL %>
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper full-page-wrapper">
     <div class="content-wrapper d-flex align-items-center auth">
@@ -7,7 +8,7 @@
         <div class="col-lg-4 mx-auto d-flex align-items-center justify-content-between">
           <div class="auth-form-light text-left p-5" id="loginnn">
             <div class="brand-logo">
-              <img src="<%= url %>/assets/images/takedevbg.png" alt="logo" />
+              <img src="<%= BASE_URL %>/assets/images/takedevbg.png" alt="logo" />
             </div>
             <h6 class="font-weight-light">Sign Up in to continue.</h6>
             <div id="errorMessage" class="alert alert-danger mt-3 d-none"></div>
@@ -83,7 +84,7 @@
     }
 
     // Continue with fetch request
-    fetch("http://localhost:3000/vendor/request-otp", {
+    fetch("<%= BASE_URL %>/vendor/request-otp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

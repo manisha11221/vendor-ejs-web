@@ -1,6 +1,6 @@
 <%- include('../../layouts/header.ejs') %> 
 <%- include('../../layouts/admin.ejs') %>
-
+<% const BASE_URL = process.env.BASE_URL %>
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
@@ -113,7 +113,7 @@
     async function fetchTechnologies() {
       try {
         const response = await fetch(
-          "http://localhost:3000/technology/get-technology"
+          "<%= BASE_URL %>/technology/get-technology"
         );
         const data = await response.json();
 
@@ -185,7 +185,7 @@
       // Example logic to fetch existing data and open the modal
       try {
         const response = await fetch(
-          `http://localhost:3000/technology/get-TechnologyById/${technologyId}`
+          `<%= BASE_URL %>/technology/get-TechnologyById/${technologyId}`
         );
         const data = await response.json();
 
@@ -212,7 +212,7 @@
             const updatedTechnologyName = document.getElementById(
               "updatedTechnologyName"
             ).value;
-            const response = await fetch(`http://localhost:3000/technology/edit-technology/${technologyId}`, {
+            const response = await fetch(`<%= BASE_URL %>/technology/edit-technology/${technologyId}`, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -242,7 +242,7 @@
     // Function to delete a technology
     async function deleteTechnology(technologyId) {
       try {
-        const response = await fetch(`http://localhost:3000/technology/delete-technology/${technologyId}`, {
+        const response = await fetch(`<%= BASE_URL %>/technology/delete-technology/${technologyId}`, {
           method: "DELETE",
         });
         const data = await response.json();

@@ -1,5 +1,5 @@
 <%- include('../layouts/header.ejs') %> <%- include('../layouts/vendor.ejs') %>
-
+<% const BASE_URL = process.env.BASE_URL %>
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
@@ -341,7 +341,7 @@
     $("#developerFormContainer").toggle();
   });
     // Call the developer API
-    fetch("http://localhost:3000/developer/get-devAll")
+    fetch("<%= BASE_URL %>/developer/get-devAll")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
