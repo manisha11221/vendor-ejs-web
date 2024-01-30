@@ -38,7 +38,7 @@
         <!-- Inline script to fetch and populate data -->
         <script>
           document.addEventListener("DOMContentLoaded", function () {
-            fetch("http://localhost:3000/developer/get-devAll/")
+            fetch("http://localhost:3000/developer/get-devAll")
               .then((response) => response.json())
               .then((data) => {
                 displayDevelopers(data.dataArr);

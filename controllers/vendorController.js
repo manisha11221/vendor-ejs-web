@@ -238,7 +238,9 @@ exports.loginVendor = async (req, res) => {
     // Find the vendor with the provided email
     const vendor = await Vendor.findOne({ email });
 
+    
     if (!vendor) {
+      console.log("after vendor......");
       return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
 
@@ -246,6 +248,7 @@ exports.loginVendor = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, vendor.password);
 
     if (!isPasswordValid) {
+      
       return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
 

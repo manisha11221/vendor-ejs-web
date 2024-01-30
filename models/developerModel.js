@@ -31,6 +31,7 @@ const developerSchema = new mongoose.Schema({
     type: String, // "part-time", "full-time", or any other values you want to support
     default: "full-time", 
   },
+
   rate: {
     type: Number,
     required: true,

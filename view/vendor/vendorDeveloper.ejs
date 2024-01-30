@@ -339,57 +339,22 @@
           }
 
           function openUpdateModal(developerId) {
-            fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-              .then(response => response.json())
-              .then(data => {
-                document.getElementById('updateDeveloperName').value = data.name;
-                document.getElementById('updateExperience').value = data.experience;
-                document.getElementById('updateTechnology').value = data.technology.join(', ');
-                // Populate other fields accordingly
-                document.getElementById('updateDeveloperId').value = developerId;
-              })
-              .catch(handleApiError);
-          }
-
-          function deleteDeveloper(developerId) {
-            const confirmDelete = confirm('Are you sure you want to delete this developer?');
-            if (confirmDelete) {
-              fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
-                method: 'DELETE',
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              })
-                .then(response => response.json())
-                .then(data => {
-                  handleApiResponse(data);
-                  fetchDevelopers();
-                })
-                .catch(handleApiError);
-            }
-          }
-
-          const updateButton = document.createElement('button');
-          updateButton.innerText = 'Update';
-          updateButton.classList.add('btn', 'btn-warning');
-          updateButton.setAttribute('data-toggle', 'modal');
-          updateButton.setAttribute('data-target', '#updateDeveloperModal');
-          updateButton.addEventListener('click', () => openUpdateModal(developer._id));
-
-          const deleteButton = document.createElement('button');
-          deleteButton.innerText = 'Delete';
-          deleteButton.classList.add('btn', 'btn-danger');
-          deleteButton.addEventListener('click', () => deleteDeveloper(developer._id));
-
-          const updateCell = newRow.insertCell(cells.length);
-          updateCell.appendChild(updateButton);
-
-          const deleteCell = newRow.insertCell(cells.length + 1);
-          deleteCell.appendChild(deleteButton);
+      fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('updateDeveloperName').value = data.name;
+          document.getElementById('updateExperience').value = data.experience;
+          document.getElementById('updateTechnology').value = data.technology.join(', ');
+          // Populate other fields accordingly
+          document.getElementById('updateDeveloperId').value = developerId;
+        })
+        .catch(handleApiError);
+    }
+    
 
 
 
@@ -428,11 +393,5 @@
             $('#developerTable').DataTable();
           }
         });
-
-
-
-
-
-       
 
       </script>
