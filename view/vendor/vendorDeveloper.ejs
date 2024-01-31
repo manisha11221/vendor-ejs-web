@@ -1,18 +1,182 @@
-<%- include('../layouts/header.ejs') %>
-  <%- include('../layouts/vendor.ejs') %>
-    <% const BASE_URL=process.env.BASE_URL %>
-      <div class="container-scroller">
-        <div class="container-fluid page-body-wrapper">
-          <div class="main-panel">
-            <div class="content-wrapperrr">
-              <div class="page-header">
-                <h3 class="page-title">Developer Dashboard</h3>
-              </div>
+<%- include('../layouts/header.ejs') %> 
+<%- include('../layouts/vendor.ejs') %>
+<% const BASE_URL = process.env.BASE_URL %>
 
-              <!-- Add button to toggle developer form -->
-              <div class="mb-3">
-                <button id="toggleDeveloperForm" class="btn btn-primary">
-                  Add Developer
+<style>
+  .action-buttons {
+    display: flex;
+    gap: 10px; /* Adjust the gap between buttons as needed */
+  }
+</style>
+<div class="container-scroller">
+  <div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+      <div class="content-wrapperrr">
+        <div class="page-header">
+          <h3 class="page-title">Developer Dashboard</h3>
+        </div>
+
+        <!-- Add button to toggle developer form -->
+        <div class="mb-3">
+          <button id="toggleDeveloperForm" class="btn btn-primary">
+            Add Developer
+          </button>
+        </div>
+
+        <!-- Developer form initially hidden -->
+        <div id="developerFormContainer" style="display: none">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Create Developer</h4>
+              <form id="createDeveloperForm" enctype="multipart/form-data">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="developerName">Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="developerName"
+                        placeholder="Enter name"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="experience">Experience</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="experience"
+                        placeholder="Enter experience"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <!-- <label for="simpleDropdown">Select a Technologies:</label>
+                      <select id="technology" multiple="multiple"></select> -->
+
+                      <label for="simpleDropdown">Select a Technologies:</label>
+                      <select
+                        id="choices-multiple-remove-button"
+                        placeholder="please sectect the technologies"
+                        multiple
+                      >
+                        <div
+                          class="choices__list choices__list--multiple"
+                          style="
+                            background-color: #b66dff !important;
+                            border: 1px solid #b66dff !important;
+                          "
+                        >
+                          <div
+                            class="choices__item choices__item--selectable"
+                            data-item=""
+                            data-id="1"
+                            data-value="Laravel"
+                            data-custom-properties="null"
+                            data-deletable=""
+                            aria-selected="true"
+                            style="
+                              background-color: #b66dff !important;
+                              border: 1px solid #b66dff !important;
+                            "
+                          >
+                            Laravel
+                          </div>
+                        </div>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">Upload Resume</label>
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="resume"
+                        placeholder="upload resume"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">Portfolio Link</label>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="portfolio"
+                        placeholder="portfolio Url"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">GitHubUrl Link</label>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="gitHubUrl"
+                        placeholder="GitHub Url"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">linkedIn Link</label>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="linkedInLink"
+                        placeholder="linkedIn Url"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-check">
+                      <input
+                        type="radio"
+                        class="form-check-input"
+                        id="parttime"
+                        name="employment_type"
+                        value="parttime"
+                      />
+                      <label class="form-check-label" for="parttime"
+                        >Part Time</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        type="radio"
+                        class="form-check-input"
+                        id="fulltime"
+                        name="employment_type"
+                        value="fulltime"
+                      />
+                      <label class="form-check-label" for="fulltime"
+                        >Full Time</label
+                      >
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="rate">Rate</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="rate"
+                        placeholder="Enter hourly rate"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Create Developer
                 </button>
               </div>
 
@@ -132,102 +296,150 @@
         </div>
       </div>
 
-
-      <div class="container mt-5">
-        <!-- <button id="openModalBtn" class="btn btn-primary">Open Modal</button> -->
-
-        <!-- Modal -->
-        <div class="modal" id="updateDeveloperModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-
-              <!-- Modal Header -->
-              <div class="modal-header">
-                <h5 class="modal-title">Update Developer</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+<!-- update table -->
+<div class="modal" id="updateDeveloperModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Developer</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="updateDeveloperForm" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateDeveloperName">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="updateDeveloperName"
+                  placeholder="Enter name"
+                  required
+                  name="name"
+                />
               </div>
-
-              <!-- Modal Body -->
-              <div class="modal-body">
-                <form id="updateDeveloperForm">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="updateDeveloperName">Name</label>
-                        <input type="text" class="form-control" id="updateDeveloperName" placeholder="Enter name"
-                          required />
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="updateExperience">Experience</label>
-                        <input type="number" class="form-control" id="updateExperience" placeholder="Enter experience"
-                          required />
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="updateTechnology">Technology</label>
-                        <input type="text" class="form-control" id="updateTechnology" placeholder="Enter technology"
-                          required />
-                        <small class="form-text text-muted">Enter technologies as a comma-separated list (e.g., Node.js,
-                          Laravel)</small>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="updateResume">Upload Resume</label>
-                        <input type="file" class="form-control" id="updateResume" placeholder="upload resume" />
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="updatePortfolio">Portfolio Link</label>
-                        <input type="url" class="form-control" id="updatePortfolio" placeholder="portfolio Url" />
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="updateGitHubUrl">GitHubUrl Link</label>
-                        <input type="url" class="form-control" id="updateGitHubUrl" placeholder="GitHub Url" />
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="updateLinkedInLink">LinkedIn Link</label>
-                        <input type="url" class="form-control" id="updateLinkedInLink" placeholder="LinkedIn Url" />
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-check">
-                        <input type="radio" class="form-check-input" id="updatePartTime" name="updateEmploymentType"
-                          value="parttime" />
-                        <label class="form-check-label" for="updatePartTime">Part Time</label>
-                      </div>
-                      <div class="form-check">
-                        <input type="radio" class="form-check-input" id="updateFullTime" name="updateEmploymentType"
-                          value="fulltime" />
-                        <label class="form-check-label" for="updateFullTime">Full Time</label>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="updateRate">Rate</label>
-                        <input type="number" class="form-control" id="updateRate" placeholder="Enter hourly rate" />
-                      </div>
-                    </div>
-                  </div>
-                  <input type="hidden" id="updateDeveloperId" />
-                  <button type="submit" id="update" class="btn btn-primary ">
-                    Update Developer
-                  </button>
-                </form>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateExperience">Experience</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="updateExperience"
+                  placeholder="Enter experience"
+                  required
+                  name="experience"
+                />
               </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateTechnology">Technology</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="updateTechnology"
+                  placeholder="Enter technology"
+                  required
+                  name="technology"
+                />
+                <small class="form-text text-muted"
+                  >Enter technologies as a comma-separated list (e.g., Node.js,
+                  Laravel)</small
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateResume">Upload Resume</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="updateResume"
+                  accept=".pdf, .doc, .docx"
+                  name="resume"
+                />
+                <input type="hidden" id="updateResumePath" value="" />
+              </div>
+            </div>
 
-              <!-- Modal Footer -->
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()"
-                  data-dismiss="modal">Close</button>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updatePortfolio">Portfolio Link</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="updatePortfolio"
+                  placeholder="portfolio Url"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateGitHubUrl">GitHubUrl Link</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="updateGitHubUrl"
+                  placeholder="GitHub Url"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateLinkedInLink">LinkedIn Link</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="updateLinkedInLink"
+                  placeholder="LinkedIn Url"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="updatePartTime"
+                  name="updateEmploymentType"
+                  value="parttime"
+                />
+                <label class="form-check-label" for="updatePartTime"
+                  >Part Time</label
+                >
+              </div>
+              <div class="form-check">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="updateFullTime"
+                  name="updateEmploymentType"
+                  value="fulltime"
+                />
+                <label class="form-check-label" for="updateFullTime"
+                  >Full Time</label
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateRate">Rate</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="updateRate"
+                  placeholder="Enter hourly rate"
+                  name="rate"
+                />
               </div>
             </div>
           </div>
@@ -235,277 +447,336 @@
       </div>
 
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const token = localStorage.getItem("vendorToken");
 
-      <div class="container mt-5">
-        <button id="openModalBtn" class="btn btn-primary">Open Modal</button>
+    if (!token) {
+      window.location.href = "/login";
+    }
 
-        <!-- Modal -->
-        <div class="modal" id="myModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
+    $("#toggleDeveloperForm").click(function () {
+      $("#developerFormContainer").toggle();
+    });
 
-              <!-- Modal Header -->
-              <div class="modal-header">
-                <h4 class="modal-title">Modal Title</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-              </div>
+    fetch("http://localhost:3000/developer/get-devAll")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          console.log("data::::::???", data.developers);
 
-              <!-- Modal Body -->
-              <div class="modal-body">
-                <p>This is the modal content.</p>
-              </div>
-
-              <!-- Modal Footer -->
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()"
-                  data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <%- include('../layouts/footer.ejs') %>
-        <script>
-          const tokens = localStorage.getItem("vendorToken");
-
-          function handleError(error) {
-            console.error('Error:', error);
+          for (const resume of data.developers) {
+            console.log("resume", resume.resume);
           }
 
-          function updateDeveloper(developerId) {
-            fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
-              headers: {
-                Authorization: `Bearer ${tokens}`,
-              },
-            })
-              .then(response => response.json())
-              .then(data => {
-                const updatedDeveloperNameInput = document.getElementById('updateDeveloperName');
-                const updatedExperienceInput = document.getElementById('updateExperience');
-                const updatedTechnologyInput = document.getElementById('updateTechnology');
-                const updatedResumeInput = document.getElementById('updateResume');
-                const updatedPortfolioInput = document.getElementById('updatePortfolio');
-                const updatedGitHubUrlInput = document.getElementById('updateGitHubUrl');
-                const updatedLinkedInLinkInput = document.getElementById('updateLinkedInLink');
-                const updatedPartTimeInput = document.getElementById('updatePartTime');
-                const updatedFullTimeInput = document.getElementById('updateFullTime');
-                const updatedRateInput = document.getElementById('updateRate');
+          var developerTable = $("#developerTableBody").DataTable();
 
-                updatedDeveloperNameInput.value = data.developer.name;
-                updatedExperienceInput.value = data.developer.experience;
-                updatedTechnologyInput.value = data.developer.technology.join(', ');
-                updatedResumeInput.value = data.developer.resume;
-                updatedPortfolioInput.value = data.developer.portfolio;
-                updatedGitHubUrlInput.value = data.developer.gitHubUrl;
-                updatedLinkedInLinkInput.value = data.developer.linkedInLink;
-                updatedPartTimeInput.checked = data.developer.employment_type === 'parttime';
-                updatedFullTimeInput.checked = data.developer.employment_type === 'fulltime';
-                updatedRateInput.value = data.developer.rate;
+          data.developers.forEach(function (developer, index) {
+            const actionButtons = `<div class="action-buttons">
+                                  <button class="Edit-button btn btn-info" onclick="updateDeveloper('${developer._id}')">Edit</button>
+                                  <button class="Delete-button btn btn-danger" onclick="deleteDeveloper('${developer._id}')">Delete</button>
+                                </div>`;
 
-                $('#updateDeveloperModal').modal('show');
-              })
-              .catch(handleError);
+            developerTable.row
+              .add([
+                index + 1,
+                developer.name,
+                developer.technology,
+                developer.experience,
+                developer.rate,
+                developer.resume
+                  ? `<a href="${developer.resume}" class="resume-link" target="_blank">Resume</a>`
+                  : "N/A",
 
-            document.getElementById('updateDeveloperForm').addEventListener('submit', function (event) {
-              $('#updateDeveloperModal').modal('hide');
-              event.preventDefault();
+                developer.available,
+                developer.portfolio
+                  ? `<a href="${developer.portfolio}" target="_blank">Portfolio Link</a>`
+                  : "N/A",
+                developer.gitHubUrl
+                  ? `<a href="${developer.gitHubUrl}" target="_blank">GitHub Link</a>`
+                  : "N/A",
+                developer.linkedInLink
+                  ? `<a href="${developer.linkedInLink}" target="_blank">LinkedIn Profile</a>`
+                  : "N/A",
+                actionButtons,
+              ])
+              .draw();
+          });
+        } else {
+          console.error("API response indicates failure:", data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching developers:", error);
+      });
 
-              const updatedDeveloperName = document.getElementById('updateDeveloperName').value;
-              const updatedExperience = document.getElementById('updateExperience').value;
-              const updatedTechnology = document.getElementById('updateTechnology').value.split(',').map(item => item.trim());
-              const updatedResume = document.getElementById('updateResume').value;
-              const updatedPortfolio = document.getElementById('updatePortfolio').value;
-              const updatedGitHubUrl = document.getElementById('updateGitHubUrl').value;
-              const updatedLinkedInLink = document.getElementById('updateLinkedInLink').value;
-              const updatedPartTime = document.getElementById('updatePartTime').checked;
-              const updatedFullTime = document.getElementById('updateFullTime').checked;
-              const updatedRate = document.getElementById('updateRate').value;
+    $("#createDeveloperForm").submit(function (event) {
+      event.preventDefault();
 
-              const requestData = {
-                name: updatedDeveloperName,
-                experience: updatedExperience,
-                technology: updatedTechnology,
-                resume: updatedResume,
-                portfolio: updatedPortfolio,
-                gitHubUrl: updatedGitHubUrl,
-                linkedInLink: updatedLinkedInLink,
-                employment_type: updatedPartTime ? 'parttime' : (updatedFullTime ? 'fulltime' : ''),
-                rate: updatedRate
-              };
+      const name = $("#developerName").val();
+      const experience = $("#experience").val();
+      const technologies = $("#choices-multiple-remove-button").val();
+      const resume = $("#resume")[0].files[0];
+      const portfolio = $("#portfolio").val();
+      const gitHubUrl = $("#gitHubUrl").val();
+      const linkedInLink = $("#linkedInLink").val();
+      const employmentType = $("input[name='employment_type']:checked").val();
+      const rate = $("#rate").val();
 
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("experience", experience);
+      formData.append("technology", technologies);
+      formData.append("resume", resume);
+      formData.append("portfolio", portfolio);
+      formData.append("gitHubUrl", gitHubUrl);
+      formData.append("linkedInLink", linkedInLink);
+      formData.append("employmentType", employmentType);
+      formData.append("rate", rate);
 
-              fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
-                method: 'PUT',
-                headers: {
-                  Authorization: `Bearer ${tokens}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
-              })
-                .then(response => response.json())
-                .then(data => {
-                  handleApiResponse(data);
-                  // fetchDevelopers();
-                  document.getElementById('update').addEventListener('click', function () {
-                    $('#updateDeveloperModal').modal('hide');
-                  });
-                })
-                .catch(handleApiError);
-            });
+      fetch("http://localhost:3000/developer/add-dev", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("vendorToken")}`,
+        },
+        body: formData,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
           }
-
-          function handleApiResponse(data) {
-            console.log(data);
+          return response.json();
+        })
+        .then((data) => {
+          if (data.success) {
+            console.log("Developer added successfully:", data);
+            location.reload();
+          } else {
+            console.error("API response indicates failure:", data.message);
+            location.reload();
           }
+        })
+        .catch((error) => {
+          console.error("Error adding developer:", error);
+        });
+    });
 
-          function handleApiError(error) {
-            console.error('API Request Error:', error);
-          }
+    fetch("http://localhost:3000/technology/get-technology")
+      .then((response) => response.json())
+      .then((data) => {
+        const technologyDropdown = $("#choices-multiple-remove-button");
 
-          function deleteDeveloper(developerId) {
-            fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
-              method: 'DELETE',
-              headers: {
-                Authorization: `Bearer ${tokens}`,
-                'Content-Type': 'application/json',
-              },
-            })
-              .then(response => response.json())
-              .then(data => {
-                handleApiResponse(data);
-                fetchDevelopers();
-              })
-              .catch(handleError);
-          }
+        technologyDropdown.empty();
 
-          document.addEventListener('DOMContentLoaded', function () {
-            const token = localStorage.getItem("vendorToken");
-            const toggleDeveloperFormButton = document.getElementById('toggleDeveloperForm');
-            const developerFormContainer = document.getElementById('developerFormContainer');
-            const createDeveloperForm = document.getElementById('createDeveloperForm');
-            const developerTableBody = document.getElementById('developerTableBody');
+        data.technology.forEach((tech) => {
+          if (tech.hasOwnProperty("name")) {
+            const existingOption = technologyDropdown.find(
+              `option[value="${tech.name}"]`
+            );
 
-            toggleDeveloperFormButton.addEventListener('click', toggleDeveloperForm);
-            createDeveloperForm.addEventListener('submit', function (event) {
-              event.preventDefault();
-              addDeveloper();
-            });
-
-            fetchDevelopers();
-
-            function toggleDeveloperForm() {
-              developerFormContainer.style.display = developerFormContainer.style.display === 'none' ? 'block' : 'none';
+            if (!existingOption.length) {
+              const newOption = document.createElement("option");
+              newOption.value = tech.name;
+              newOption.text = tech.name;
+              technologyDropdown.append(newOption);
             }
+          }
+        });
 
-            function fetchDevelopers() {
-              fetch('http://localhost:3000/developer/get-devAll', {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              })
-                .then(response => response.json())
-                .then(data => {
-                  displayDevelopers(data.developers);
-                  // Initialize DataTable after populating the table
-                  $('#developerTable').DataTable();
-                })
-                .catch(handleError);
-            }
+        technologyDropdown.attr("multiple", "multiple");
 
-            function displayDevelopers(developers) {
-              developerTableBody.innerHTML = '';
+        var multipleCancelButton = new Choices(
+          "#choices-multiple-remove-button",
+          {
+            removeItemButton: true,
+            maxItemCount: 5,
+            searchResultLimit: 5,
+            renderChoiceLimit: 5,
+          }
+        );
+      });
+  });
 
-              let serialNumber = 1;
+  function updateDeveloper(developerId) {
+    console.log("developerId", developerId);
 
-              developers.forEach(developer => {
-                const newRow = developerTableBody.insertRow(developerTableBody.rows.length);
-                newRow.id = `developerRow_${developer._id}`;
+    fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("data:::::::::::.", data);
+        const updatedDeveloperNameInput = document.getElementById(
+          "updateDeveloperName"
+        );
+        const updatedExperienceInput =
+          document.getElementById("updateExperience");
+        const updatedTechnologyInput =
+          document.getElementById("updateTechnology");
+        const updatedResumeInput = document.getElementById("updateResume");
+        const updatedResumePathInput =
+          document.getElementById("updateResumePath");
 
-                const cells = [
-                  serialNumber++,
-                  developer.name,
-                  developer.technology.join(', '),
-                  developer.experience,
-                  developer.rate,
-                  developer.resume,
-                  developer.available ? 'Yes' : 'No',
-                  developer.portfolio,
-                  developer.gitHubUrl,
-                  developer.linkedInLink
-                ];
+        const updatedPortfolioInput =
+          document.getElementById("updatePortfolio");
 
-                cells.forEach((cell, index) => {
-                  const newCell = newRow.insertCell(index);
-                  newCell.innerHTML = cell;
-                });
+        const updatedGitHubUrlInput =
+          document.getElementById("updateGitHubUrl");
+        console.log("updatedGitHubUrlInput", updatedGitHubUrlInput);
+        const updatedLinkedInLinkInput =
+          document.getElementById("updateLinkedInLink");
+        console.log("updatedLinkedInLinkInput", updatedLinkedInLinkInput);
+        const updatedPartTimeInput = document.getElementById("updatePartTime");
+        const updatedFullTimeInput = document.getElementById("updateFullTime");
+        const updatedRateInput = document.getElementById("updateRate");
 
-                const actionCell = newRow.insertCell(cells.length);
-                actionCell.innerHTML = `<button class="btn btn-warning mx-3" onclick="updateDeveloper('${developer._id}')" id="openModalBtn">Update</button>` +
-                  `<button class="btn btn-danger ml-2" onclick="deleteDeveloper('${developer._id}')">Delete</button>`;
+        updatedDeveloperNameInput.value = data.developer.name;
+        console.log(
+          "updatedDeveloperNameInput::",
+          updatedDeveloperNameInput.value
+        );
+        updatedExperienceInput.value = data.developer.experience;
+        updatedTechnologyInput.value = data.developer.technology.join(", ");
+        updatedResumeInput.value = updatedResumePathInput.value;
+
+        updatedResumePathInput.value = data.developer.resume;
+        console.log("updatedResumeInput:::", updatedResumePathInput);
+        updatedPortfolioInput.value = data.developer.portfolio;
+        updatedGitHubUrlInput.value = data.developer.gitHubUrl;
+        updatedLinkedInLinkInput.value = data.developer.linkedInLink;
+        updatedPartTimeInput.checked =
+          data.developer.employment_type === "parttime";
+        updatedFullTimeInput.checked =
+          data.developer.employment_type === "fulltime";
+        updatedRateInput.value = data.developer.rate;
+
+        $("#updateDeveloperModal").modal("show");
+      })
+      .catch(handleError);
+
+    document
+      .getElementById("updateDeveloperForm")
+      .addEventListener("submit", function (event) {
+        // $('#updateDeveloperModal').modal('hide');
+        event.preventDefault();
+
+        const updatedDeveloperName = document.getElementById(
+          "updateDeveloperName"
+        ).value;
+        const updatedExperience =
+          document.getElementById("updateExperience").value;
+        const updatedTechnology = document
+          .getElementById("updateTechnology")
+          .value.split(",")
+          .map((item) => item.trim());
+        const updatedResumeInput = document.getElementById("updateResume");
+        const updatedResumePathInput =
+          document.getElementById("updateResumePath");
+        const updatedResume = updatedResumeInput.files[0];
+        const updatedPortfolio =
+          document.getElementById("updatePortfolio").value;
+        const updatedGitHubUrl =
+          document.getElementById("updateGitHubUrl").value;
+        const updatedLinkedInLink =
+          document.getElementById("updateLinkedInLink").value;
+        const updatedPartTime =
+          document.getElementById("updatePartTime").checked;
+        const updatedFullTime =
+          document.getElementById("updateFullTime").checked;
+        const updatedRate = document.getElementById("updateRate").value;
+
+        const formData = new FormData();
+        formData.append("name", updatedDeveloperName);
+        formData.append("experience", updatedExperience);
+        formData.append("technology", updatedTechnology);
+        formData.append(
+          "resume",
+          updatedResume || updatedResumePathInput.value
+        );
+        formData.append("portfolio", updatedPortfolio);
+        formData.append("gitHubUrl", updatedGitHubUrl);
+        formData.append("linkedInLink", updatedLinkedInLink);
+        formData.append(
+          "employment_type",
+          updatedPartTime ? "parttime" : updatedFullTime ? "fulltime" : ""
+        );
+        formData.append("rate", updatedRate);
+
+        fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        })
+          .then((response) => {
+            console.log(response.status); 
+            return response.text(); 
+          })
+          .then((data) => {
+            console.log(data); 
+            return JSON.parse(data); 
+          })
+          .then((parsedData) => {
+            handleApiResponse(parsedData);
+            document
+              .getElementById("update")
+              .addEventListener("click", function () {
+                $("#updateDeveloperModal").modal("hide");
               });
+          })
+          .catch(handleApiError);
 
-              // Initialize DataTable after populating the table
-              $('#developerTable').DataTable();
-            }
+        event.preventDefault();
+      });
+  }
 
-            function addDeveloper() {
-              const developerName = document.getElementById('developerName').value;
-              const experience = document.getElementById('experience').value;
-              const technology = document.getElementById('technology').value.split(',').map(item => item.trim());
-              const resume = document.getElementById('resume').value;
-              const portfolio = document.getElementById('portfolio').value;
-              const gitHubUrl = document.getElementById('gitHubUrl').value;
-              const linkedInLink = document.getElementById('linkedInLink').value;
-              const partTime = document.getElementById('parttime').checked;
-              const fullTime = document.getElementById('fulltime').checked;
-              const rate = document.getElementById('rate').value;
+  function handleApiResponse(data) {
+    if (data.success) {
+        console.log("Developer updated successfully:", data);
+        console.log("Updated Developer Data:", data.updatedDeveloper);
+    } else {
+        console.error("API response indicates failure:", data.message);
+    }
+}
 
-              const requestData = {
-                name: developerName,
-                experience: experience,
-                technology: technology,
-                resume: resume,
-                portfolio: portfolio,
-                gitHubUrl: gitHubUrl,
-                linkedInLink: linkedInLink,
-                employment_type: partTime ? 'parttime' : (fullTime ? 'fulltime' : ''),
-                rate: rate
-              };
 
-              fetch('http://localhost:3000/developer/add-dev', {
-                method: 'POST',
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
-              })
-                .then(response => response.json())
-                .then(data => {
-                  handleApiResponse(data);
-                  fetchDevelopers();
-                  toggleDeveloperForm();
-                })
-                .catch(handleApiError);
-            }
+  function handleApiError(error) {
+    console.error("API Request Error:", error);
+  }
 
-            if (!tokens) {
-              window.location.href = "/login";
-            }
-          });
+  function deleteDeveloper(developerId) {
+    fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        handleApiResponse(data);
+        window.location.reload(); // Reload the page after deletion
+      })
+      .catch((error) => {
+        handleError(error);
+        // Handle any additional error handling here
+      });
+  }
 
-        </script>
-
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <script>
-          document.getElementById('openModalBtn').addEventListener('click', function () {
-            $('#updateDeveloperModal').modal('show');
-          });
-
-          function closeModal() {
-            $('#updateDeveloperModal').modal('hide');
-          }
-        </script>
+  function handleError(error) {
+    console.error("Error:", error);
+  }
+</script>

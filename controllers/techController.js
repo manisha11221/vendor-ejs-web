@@ -20,7 +20,7 @@ exports.addTechnology = async (req, res) => {
 
 //get all technology
 exports.getTechnology = async (req, res) => {
-  console.log("TechIn co0nroller.......");
+  // console.log("TechIn co0nroller.......");
   try {
     const technology = await Technology.find();
     console.log("tech", technology);
