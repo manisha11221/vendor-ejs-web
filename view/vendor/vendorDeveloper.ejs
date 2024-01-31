@@ -602,6 +602,11 @@
       });
   });
 
+  document.querySelector('#updateDeveloperModal .close').addEventListener('click', function () {
+    $("#updateDeveloperModal").modal("hide");
+    window.location.reload();
+    });
+
   function updateDeveloper(developerId) {
     console.log("developerId", developerId);
 
@@ -670,6 +675,7 @@
         const updatedDeveloperName = document.getElementById(
           "updateDeveloperName"
         ).value;
+        console.log("updatedDeveloperName", updatedDeveloperName);
         const updatedExperience =
           document.getElementById("updateExperience").value;
         const updatedTechnology = document
@@ -709,6 +715,8 @@
         );
         formData.append("rate", updatedRate);
 
+        console.log("formDta", formData);
+
         fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
           method: "PUT",
           headers: {
@@ -717,36 +725,39 @@
           body: formData,
         })
           .then((response) => {
-            console.log(response.status); 
-            return response.text(); 
-          })
-          .then((data) => {
-            console.log(data); 
-            return JSON.parse(data); 
+            console.log(response.status);
+            if (!response.ok) {
+              throw new Error("API request failed");
+            }
+            return response.json();
           })
           .then((parsedData) => {
             handleApiResponse(parsedData);
             document
               .getElementById("update")
               .addEventListener("click", function () {
+                console.log("developerIdttttt:::::", developerId);
                 $("#updateDeveloperModal").modal("hide");
+                 window.location.reload(); 
               });
           })
-          .catch(handleApiError);
+          .catch((error) => {
+            console.error("API request error:", error);
+            handleApiError(error);
+          });
 
-        event.preventDefault();
+        // event.preventDefault();
       });
   }
 
   function handleApiResponse(data) {
     if (data.success) {
-        console.log("Developer updated successfully:", data);
-        console.log("Updated Developer Data:", data.updatedDeveloper);
+      console.log("Developer updated successfully:", data);
+      console.log("Updated Developer Data:", data.updatedDeveloper);
     } else {
-        console.error("API response indicates failure:", data.message);
+      console.error("API response indicates failure:", data.message);
     }
-}
-
+  }
 
   function handleApiError(error) {
     console.error("API Request Error:", error);
