@@ -16,7 +16,7 @@ router.post('/register', vendorController.verifyOTP);
 router.post('/set-Password/:id', vendorController.setPassword);
 router.post('/login-vendor', vendorController.loginVendor);
 router.post('/edit-Profile',multerMiddleware.single('profileImage'), vendorController.editProfile);
-router.get('/view-Profile/:id',vendorController.viewProfile)
+router.get('/view-Profile/:id',multerMiddleware.single('profilePhoto '),vendorController.viewProfile)
 router.post('/reset-password', vendorController.resetPassword);
 router.get('/get-all-Vendors', vendorController.getAllVendors);
 router.get('/get-Vendors-by-id/:id', vendorController.getvendorById);

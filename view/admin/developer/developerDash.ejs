@@ -23,6 +23,7 @@
                         <th>Name</th>
                         <th>Technology</th>
                         <th>Experience</th>
+                        <th>Resume</th>
                         <th>vendor_Email</th>
                         <th>vendor_Company</th>
                       </tr>
@@ -84,3 +85,57 @@
     </div>
   </div>
 </div>
+<%- include('../../layouts/footer.ejs') %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tokens = localStorage.getItem("adminToken");
+    
+    if (!tokens) {
+      // Redirect to the login page if the token is not present
+      window.location.href = "/login";
+      return; // Add this line to prevent further execution if not logged in
+    }
+
+    fetch("http://localhost:3000/developer/getDeveloperall-with-vednor")
+      .then((response) => response.json())
+      .then((data) => {
+        displayDevelopers(data.dataArr);
+
+        // Initialize DataTable after data is fetched and displayed
+        const table = $("#developerTable").DataTable();
+
+        // Use event delegation to handle clicks on resume links
+        $("#developerTable").on("click", ".resume-link", function (e) {
+          e.preventDefault();
+          const resumeUrl = $(this).data("resume");
+          window.open(resumeUrl, "_blank");
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+
+    function displayDevelopers(dataArr) {
+      const table = $("#developerTable").DataTable();
+      dataArr.forEach((data, index) => {
+        const developer = data.developer;
+        const vendor = data.vendor;
+
+        table.row
+          .add([
+            index + 1,
+            developer.name,
+            developer.technology,
+            developer.experience,
+            developer.resume
+              ? `<a href="#" class="resume-link" data-resume="${developer.resume}">Resume</a>`
+              : "N/A",
+            vendor ? vendor.email : "N/A",
+            vendor ? vendor.company_name : "N/A",
+          ])
+          .draw();
+      });
+    }
+  });
+</script>

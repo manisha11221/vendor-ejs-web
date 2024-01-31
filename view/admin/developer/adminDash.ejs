@@ -1,72 +1,105 @@
-<%- include('../../layouts/header.ejs') %> 
-<%- include('../../layouts/admin.ejs') %>
-<div class="container-scroller">
-  <div class="main-panel">
-    <div class="content-wrapper">
-      <div class="row">
-        <div class="page-header">
-          <h3 class="page-title">Admin Dashboard</h3>
-        </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title">Developer Count</h4>
-              <p class="card-text">
-                Total Developers: <span id="developerCount">0</span>
-              </p>
+<%- include('../../layouts/header.ejs') %>
+  <%- include('../../layouts/admin.ejs') %>
+
+
+  <div class="container-scroller">
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="row">
+          <div class="page-header">
+            <h3 class="page-title">Admin Dashboard</h3>
+          </div>
+          <div class="col-md-6" onclick="redirectToDeveloperDashboard()">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <div class="align-self-center">
+                    <h4 class="card-title">
+                      <p class="card-text" style="font-size: 30px;">
+                        Total Developers: <span id="developerCount">0</span>
+                      </p>
+                    </h4>
+                  </div>
+                  <div>
+                    <i class="mdi mdi-laptop menu-icon " style="font-size: 70px;"></i>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title">Vendor Count</h4>
-              <p class="card-text">
-                Total Vendors: <span id="vendorCount">0</span>
-              </p>
+  
+          <div class="col-md-6" onclick="redirectToVendorDashboard()">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <div class="align-self-center">
+                    <h4 class="card-title">
+                      <p class="card-text" style="font-size: 30px;">
+                        Total Vendors: <span id="vendorCount">0</span>
+                      </p>
+                    </h4>
+                  </div>
+                  <div>
+                    <i class="mdi mdi-store menu-icon" style="font-size: 70px;"></i>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<%- include('../../layouts/footer.ejs') %>
-<script>
-  // const token = localStorage.getItem("adminToken");
+  
+    <%- include('../../layouts/footer.ejs') %>
+      <script>
+        // const token = localStorage.getItem("adminToken");
 
-  // Fetch and update developer count
+        // Fetch and update developer count
 
-  fetch("/admin/count-developer", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.text())
-    .then((count) => {
-      document.getElementById("developerCount").innerText = count;
-    })
-    .catch((error) => console.error("Error fetching developer count:", error));
+        console.log('-------------------');
 
-  // Fetch and update vendor count
-  fetch("/admin/count-vendor", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.text())
-    .then((count) => {
-      document.getElementById("vendorCount").innerText = count;
-    })
-    .catch((error) => console.error("Error fetching vendor count:", error));
+        // Function to redirect to Developer Dashboard
+        function redirectToDeveloperDashboard() {
+          console.log("-----------------------");
+          window.location.href = "/developerDash";
+        }
 
-  // Redirect to login page if token is not present
-  if (!token) {
-    window.location.href = "/login";
-  }
-</script>
+        // Function to redirect to Vendor Dashboard
+        function redirectToVendorDashboard() {
+          window.location.href = "/vendorDash";
+        }
+        // const token = localStorage.getItem("adminToken");
+
+        fetch("/admin/count-developer", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.text())
+          .then((count) => {
+            document.getElementById("developerCount").innerText = count;
+          })
+          .catch((error) => console.error("Error fetching developer count:", error));
+
+        // Fetch and update vendor count
+        fetch("/admin/count-vendor", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.text())
+          .then((count) => {
+            document.getElementById("vendorCount").innerText = count;
+          })
+          .catch((error) => console.error("Error fetching vendor count:", error));
+
+        // Redirect to login page if token is not present
+        if (!token) {
+          window.location.href = "/login";
+        }
+      </script>

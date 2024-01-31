@@ -289,12 +289,12 @@ exports.loginVendor = async (req, res) => {
 
 
 exports.editProfile = async (req, res) => {
+  console.log("........",req);
   try {
-    const { email, company_name, website_link, contact, gst_number, address ,team_size} = req.body;
+    const { email, company_name, website_link, contact, gst_number, address ,team_size,profileImage} = req.body;
     const { authorization } = req.headers;
 
-    // ... your existing authorization code
-
+   
     const vendor = await Vendor.findOne({ email });
 
     if (!vendor) {
@@ -315,6 +315,7 @@ exports.editProfile = async (req, res) => {
 
         vendor.profileImage = `${BASE_URL}/uploads/${req.file.filename}`;
     }
+
 
     await vendor.save();
 

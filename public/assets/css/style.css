@@ -20091,6 +20091,7 @@ dl li {
 .table> :not(:last-child)> :last-child>*,
 .jsgrid .jsgrid-table> :not(:last-child)> :last-child>* {
   border-bottom-color: #ebedf2;
+  width: 32.68799999999999px;
 }
 
 .table> :not(:first-child),

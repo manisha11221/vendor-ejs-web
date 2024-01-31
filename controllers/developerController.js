@@ -4,6 +4,7 @@ const vendor = require("../models/vendorModel");
 const upload = require('../middlewares/multerMiddleware');
 
 exports.addDeveloper = async (req, res) => {
+  console.log("req",req);
   try {
     const {
       name,
@@ -38,8 +39,10 @@ exports.addDeveloper = async (req, res) => {
     });
 
       if (req.file) {
-        developer.resume = req.file.path;
+        developer.resume = `http://localhost:3000/uploads/${req.file.filename}`;
       }
+      console.log("req.file.path:", req.file);
+
 
       await developer.save();
 
@@ -80,9 +83,10 @@ exports.getDeveloperById = async (req, res) => {
   }
 };
 
-//get all
-exports.getDeveloperAll = async (req, res) => {
+//get all dev In vendor pannel
+exports.getDeveloperAllWithVednor = async (req, res) => {
   try {
+    console.log("calling from js");
     const developers = await Developer.find();
     let dataArr = [];
 
@@ -114,28 +118,18 @@ exports.getDeveloperAll = async (req, res) => {
   }
 };
 
-//view by vendor
-// exports.getByVendor = async (req, res) => {
-//   try {
-//     console.log("hsssssssssssss",);
-//     // Check if req.user is available and has _id property
-//     if (!req.user || !req.user._id) {
-//       return res.status(400).json({ message: 'Invalid user information' });
-//     }
+//get ALl 
+exports.getDeveloperAll = async (req, res) => {
+  try {
+    const developers = await Developer.find();
 
-//     const vendorId = req.user._id;
-//     console.log('Vendor ID:', vendorId);
-
-//     // Use async/await with try-catch for better error handling
-//     const developers = await Developer.find({ vendorId });
-
-//     console.log('Developer data:', developers);
-//     res.json({ developers });
-//   } catch (error) {
-//     console.error('Get Developers by Vendor Error:', error.message);
-//     res.status(500).json({ message: 'Internal Server Error' });
-//   }
-// };
+    console.log("mmmm", developers);
+    res.json({ success: true, developers });
+  } catch (error) {
+    console.error("Get All Developers Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 
 exports.getByVendor = async (req, res) => {

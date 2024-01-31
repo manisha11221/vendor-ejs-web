@@ -1,279 +1,282 @@
-<%- include('../../layouts/header.ejs') %> 
-<%- include('../../layouts/admin.ejs') %>
-<% const BASE_URL = process.env.BASE_URL %>
-<div class="container-scroller">
-  <div class="container-fluid page-body-wrapper">
-    <div class="main-panel">
-      <div class="content-wrapperrr">
-        <div class="page-header">
-          <h3 class="page-title">Technology</h3>
-        </div>
+<%- include('../../layouts/header.ejs') %>
+  <%- include('../../layouts/admin.ejs') %>
+    <% const BASE_URL=process.env.BASE_URL %>
+    <style>
+      .edit-button,
+      .delete-button {
+        padding: 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+    
+      .edit-button:hover,
+      .delete-button:hover {
+        background: none;
+      }
+    </style>
+    
+      <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper">
+          <div class="main-panel">
+            <div class="content-wrapperrr">
+              <div class="page-header">
+                <h3 class="page-title">Technology</h3>
+              </div>
 
-        <!-- Add button to toggle technology form -->
-        <div class="mb-3">
-          <button id="toggleTechnologyForm" class="btn btn-primary">
-            Add Technology
-          </button>
-        </div>
+              <!-- Add button to toggle technology form -->
+              <div class="mb-3">
+                <button id="toggleTechnologyForm" class="btn btn-primary">
+                  Add Technology
+                </button>
+              </div>
 
-        <!-- Technology form initially hidden -->
-        <div id="technologyFormContainer" style="display: none">
-          <div class="card col-md-6">
-            <div class="card-body">
-              <h4 class="card-title">Add Technology</h4>
-              <form id="addTechnologyForm">
+              <!-- Technology form initially hidden -->
+              <div id="technologyFormContainer" style="display: none">
+                <div class="card col-md-6">
+                  <div class="card-body">
+                    <h4 class="card-title">Add Technology</h4>
+                    <form id="addTechnologyForm">
+                      <div class="form-group">
+                        <label for="technologyName">Technology Name</label>
+                        <input type="text" class="form-control" id="technologyName" placeholder="Enter technology name"
+                          required />
+                      </div>
+                      <button type="submit" class="btn btn-primary">
+                        Create Technology
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card mt-3 mb-5">
+                <div class="card-body">
+                  <h4 class="card-title">All Technologies</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="technologyTable">
+                      <thead>
+                        <tr>
+                          <th>Sr.No</th>
+                          <th>Technology Name</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="technologyTableBody">
+                       
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for updating technology -->
+      <div class="modal mt-4" id="updateTechnologyModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Update Technology</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeUpdateModalButton">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="updateTechnologyForm">
                 <div class="form-group">
-                  <label for="technologyName">Technology Name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="technologyName"
-                    placeholder="Enter technology name"
-                    required
-                  />
+                  <label for="updatedTechnologyName">Technology Name</label>
+                  <input type="text" class="form-control" id="updatedTechnologyName" required />
                 </div>
                 <button type="submit" class="btn btn-primary">
-                  Create Technology
+                  Update Technology
                 </button>
               </form>
             </div>
           </div>
         </div>
-
-        <div class="card mt-3 mb-5">
-          <div class="card-body">
-            <h4 class="card-title">All Technologies</h4>
-            <div class="table-responsive">
-              <table class="table table-striped" id="technologyTable">
-                <thead>
-                  <tr>
-                    <th>Sr.No</th>
-                    <th>Technology Name</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="technologyTableBody">
-                  <!-- Table rows will be dynamically populated here -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<!-- Modal for updating technology -->
-<div class="modal mt-4" id="updateTechnologyModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Update Technology</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          id="closeUpdateModalButton"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="updateTechnologyForm">
-          <div class="form-group">
-            <label for="updatedTechnologyName">Technology Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="updatedTechnologyName"
-              required
-            />
-          </div>
-          <button type="submit" class="btn btn-primary">
-            Update Technology
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+      <%- include('../../layouts/footer.ejs') %>
 
-<%- include('../../layouts/footer.ejs') %>
+        <!-- Add your other scripts here -->
 
-<!-- Add your other scripts here -->
+        <script>
+          // Initialize DataTable
+          $(document).ready(function () {
+            const dataTable = $("#technologyTable").DataTable();
 
-<script>
-  // Initialize DataTable
-  $(document).ready(function () {
-    const dataTable = $("#technologyTable").DataTable();
+            // Function to fetch and display technologies
+            async function fetchTechnologies() {
+              try {
+                const response = await fetch(
+                  "<%= BASE_URL %>/technology/get-technology"
+                );
+                const data = await response.json();
 
-    // Function to fetch and display technologies
-    async function fetchTechnologies() {
-      try {
-        const response = await fetch(
-          "<%= BASE_URL %>/technology/get-technology"
-        );
-        const data = await response.json();
+                if (data.success) {
+                  dataTable.clear().draw();
 
-        if (data.success) {
-          dataTable.clear().draw();
+                  data.technology.forEach((tech, index) => {
+                    const rowData = [
+                      index + 1,
+                      tech.name,
+                      `<button class="btn edit-button mr-4 "  data-toggle="tooltip" data-placement="top" title="Update">
+    <i class="mdi mdi-update menu-icon"style="font-size: 30px; color:#b66dff;"></i>
+  </button>
+  <button class="btn delete-button" data-toggle="tooltip" data-placement="top" title="Delete">
+    <i class="mdi mdi-delete menu-icon" style="font-size: 30px;color:#b66dff"></i>
+  </button>`, ,
+                    ];
 
-          data.technology.forEach((tech, index) => {
-            const rowData = [
-              index + 1,
-              tech.name,
-              `<button class="btn btn-info edit-button">Edit</button>
-         <button class="btn btn-danger delete-button">Delete</button>`,
-            ];
+                    dataTable.row.add(rowData).draw();
 
-            dataTable.row.add(rowData).draw();
+                    // Get the last added row
+                    const lastRow = dataTable.row(index).node();
 
-            // Get the last added row
-            const lastRow = dataTable.row(index).node();
+                    // Add event listeners to the buttons in the last row
+                    const editButton = lastRow.querySelector(".edit-button");
+                    const deleteButton = lastRow.querySelector(".delete-button");
 
-            // Add event listeners to the buttons in the last row
-            const editButton = lastRow.querySelector(".edit-button");
-            const deleteButton = lastRow.querySelector(".delete-button");
-
-            editButton.addEventListener("click", () =>
-              editTechnology(tech._id)
-            );
-            deleteButton.addEventListener("click", () =>
-              deleteTechnology(tech._id)
-            );
-          });
-        } else {
-          console.error("Failed to fetch technologies:", data.message);
-        }
-      } catch (error) {
-        console.error("Fetch Technologies Error:", error);
-      }
-    }
-
-    // Function to add a new technology
-    async function addTechnology() {
-      try {
-        const technologyName = document.getElementById("technologyName").value;
-        const response = await fetch("/api/technology", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: technologyName,
-            status: "Active",
-          }),
-        });
-        const data = await response.json();
-
-        if (data.technology) {
-          // Clear the input field
-          document.getElementById("technologyName").value = "";
-          // Fetch and display updated technologies
-          fetchTechnologies();
-        } else {
-          console.error("Failed to add technology:", data.message);
-        }
-      } catch (error) {
-        console.error("Add Technology Error:", error);
-      }
-    }
-
-    async function editTechnology(technologyId) {
-      // Example logic to fetch existing data and open the modal
-      try {
-        const response = await fetch(
-          `<%= BASE_URL %>/technology/get-TechnologyById/${technologyId}`
-        );
-        const data = await response.json();
-
-        if (data.technology) {
-          document.getElementById("updatedTechnologyName").value =
-            data.technology.name;
-
-          // Open the modal
-          $("#updateTechnologyModal").modal("show");
-        } else {
-          console.error("Technology not found:", data.message);
-        }
-      } catch (error) {
-        console.error("Fetch Technology Error:", error);
-      }
-
-      // Example logic for updating technology after clicking "Update Technology" in the modal
-      document
-        .getElementById("updateTechnologyForm")
-        .addEventListener("submit", async function (event) {
-          event.preventDefault();
-
-          try {
-            const updatedTechnologyName = document.getElementById(
-              "updatedTechnologyName"
-            ).value;
-            const response = await fetch(`<%= BASE_URL %>/technology/edit-technology/${technologyId}`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                name: updatedTechnologyName,
-                // Add other fields if needed
-              }),
-            });
-            const data = await response.json();
-
-            if (data.technology) {
-              // Close the modal
-              $("#updateTechnologyModal").modal("hide");
-
-              // Fetch and display updated technologies
-              fetchTechnologies();
-            } else {
-              console.error("Failed to update technology:", data.message);
+                    editButton.addEventListener("click", () =>
+                      editTechnology(tech._id)
+                    );
+                    deleteButton.addEventListener("click", () =>
+                      deleteTechnology(tech._id)
+                    );
+                  });
+                } else {
+                  console.error("Failed to fetch technologies:", data.message);
+                }
+              } catch (error) {
+                console.error("Fetch Technologies Error:", error);
+              }
             }
-          } catch (error) {
-            console.error("Update Technology Error:", error);
-          }
-        });
-    }
 
-    // Function to delete a technology
-    async function deleteTechnology(technologyId) {
-      try {
-        const response = await fetch(`<%= BASE_URL %>/technology/delete-technology/${technologyId}`, {
-          method: "DELETE",
-        });
-        const data = await response.json();
+            // Function to add a new technology
+            async function addTechnology() {
+              try {
+                const technologyName = document.getElementById("technologyName").value;
+                const response = await fetch("/api/technology", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    name: technologyName,
+                    status: "Active",
+                  }),
+                });
+                const data = await response.json();
 
-        if (data.deletedTechnology) {
-          // Fetch and display updated technologies
-          fetchTechnologies();
-        } else {
-          console.error("Failed to delete technology:", data.message);
-        }
-      } catch (error) {
-        console.error("Delete Technology Error:", error);
-      }
-    }
+                if (data.technology) {
+                  // Clear the input field
+                  document.getElementById("technologyName").value = "";
+                  // Fetch and display updated technologies
+                  fetchTechnologies();
+                } else {
+                  console.error("Failed to add technology:", data.message);
+                }
+              } catch (error) {
+                console.error("Add Technology Error:", error);
+              }
+            }
 
-    // Function to toggle the visibility of the "Add Technology" form
-    function toggleTechnologyForm() {
-      const technologyFormContainer = document.getElementById(
-        "technologyFormContainer"
-      );
-      // Toggle the display property
-      technologyFormContainer.style.display =
-        technologyFormContainer.style.display === "none" ? "block" : "none";
-    }
+            async function editTechnology(technologyId) {
+              // Example logic to fetch existing data and open the modal
+              try {
+                const response = await fetch(
+                  `<%= BASE_URL %>/technology/get-TechnologyById/${technologyId}`
+                );
+                const data = await response.json();
 
-    // Add event listener to the button
-    document
-      .getElementById("toggleTechnologyForm")
-      .addEventListener("click", toggleTechnologyForm);
+                if (data.technology) {
+                  document.getElementById("updatedTechnologyName").value =
+                    data.technology.name;
 
-    // Initial fetch and display of technologies
-    fetchTechnologies();
-  });
-</script>
+                  // Open the modal
+                  $("#updateTechnologyModal").modal("show");
+                } else {
+                  console.error("Technology not found:", data.message);
+                }
+              } catch (error) {
+                console.error("Fetch Technology Error:", error);
+              }
+
+              // Example logic for updating technology after clicking "Update Technology" in the modal
+              document
+                .getElementById("updateTechnologyForm")
+                .addEventListener("submit", async function (event) {
+                  event.preventDefault();
+
+                  try {
+                    const updatedTechnologyName = document.getElementById(
+                      "updatedTechnologyName"
+                    ).value;
+                    const response = await fetch(`<%= BASE_URL %>/technology/edit-technology/${technologyId}`, {
+                      method: "PUT",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        name: updatedTechnologyName,
+                        // Add other fields if needed
+                      }),
+                    });
+                    const data = await response.json();
+
+                    if (data.technology) {
+                      // Close the modal
+                      $("#updateTechnologyModal").modal("hide");
+
+                      // Fetch and display updated technologies
+                      fetchTechnologies();
+                    } else {
+                      console.error("Failed to update technology:", data.message);
+                    }
+                  } catch (error) {
+                    console.error("Update Technology Error:", error);
+                  }
+                });
+            }
+
+            // Function to delete a technology
+            async function deleteTechnology(technologyId) {
+              try {
+                const response = await fetch(`<%= BASE_URL %>/technology/delete-technology/${technologyId}`, {
+                  method: "DELETE",
+                });
+                const data = await response.json();
+
+                if (data.deletedTechnology) {
+                  // Fetch and display updated technologies
+                  fetchTechnologies();
+                } else {
+                  console.error("Failed to delete technology:", data.message);
+                }
+              } catch (error) {
+                console.error("Delete Technology Error:", error);
+              }
+            }
+
+            // Function to toggle the visibility of the "Add Technology" form
+            function toggleTechnologyForm() {
+              const technologyFormContainer = document.getElementById(
+                "technologyFormContainer"
+              );
+              // Toggle the display property
+              technologyFormContainer.style.display =
+                technologyFormContainer.style.display === "none" ? "block" : "none";
+            }
+
+            // Add event listener to the button
+            document
+              .getElementById("toggleTechnologyForm")
+              .addEventListener("click", toggleTechnologyForm);
+
+            // Initial fetch and display of technologies
+            fetchTechnologies();
+          });
+        </script>

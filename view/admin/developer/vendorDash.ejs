@@ -36,47 +36,60 @@ include('../../layouts/admin.ejs') %>
               </div>
             </div>
 
-
             <!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
   Launch demo modal
 </button> -->
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">View Developers</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="newDataTableContainer" style="display: none">
-          <h4 class="card-title">Developers</h4>
-          <div class="table-responsive">
-            <table class="table table-striped" id="newDataTable">
-              <thead>
-                <tr>
-                  <th>Sr.No</th>
-                  <th>Name</th>
-                  <th>Technology</th>
-                  <th>Experience</th>
-                  <th>Rate</th>
-                </tr>
-              </thead>
-              <tbody id="newDataTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-     
-    </div>
-  </div>
-</div>
-            
-           
+            <!-- Modal -->
+            <div
+              class="modal fade"
+              id="exampleModalCenter"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="exampleModalCenterTitle"
+              aria-hidden="true"
+            >
+              <div
+                class="modal-dialog modal-dialog-centered modal-lg"
+                role="document"
+              >
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                      View Developers
+                    </h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div id="newDataTableContainer" style="display: none">
+                      <h4 class="card-title">Developers</h4>
+                      <div class="table-responsive">
+                        <table class="table table-striped" id="newDataTable">
+                          <thead>
+                            <tr>
+                              <th>Sr.No</th>
+                              <th>Name</th>
+                              <th>Technology</th>
+                              <th>Experience</th>
+                              <th>Rate</th>
+                            </tr>
+                          </thead>
+                          <tbody id="newDataTableBody"></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -87,8 +100,6 @@ include('../../layouts/admin.ejs') %>
 <%- include('../../layouts/footer.ejs') %>
 
 <script>
- 
- 
   document.addEventListener("DOMContentLoaded", function () {
     fetch("<%= BASE_URL %>/vendor/get-all-Vendors")
       .then((response) => {
@@ -105,7 +116,8 @@ include('../../layouts/admin.ejs') %>
             const developerCount = vendor.developers.length;
 
             // Create a button element for the "View" action
-            const viewButton = `<button class="view-button btn btn-info" data-index="${index}" data-toggle="modal" data-target="#exampleModalCenter">View</button>`;
+            const viewButton = `<button class="view-button btn " data-index="${index}" data-toggle="modal" data-target="#exampleModalCenter">
+              <i class="mdi mdi-eye menu-icon"style="font-size: 30px; color:#b66dff;"></i></button>`;
 
             vendorTable.row
               .add([
@@ -124,6 +136,8 @@ include('../../layouts/admin.ejs') %>
           $("#vendorTable tbody").on("click", ".view-button", function () {
             const rowIndex = $(this).data("index");
             const selectedVendor = data.vendors[rowIndex];
+
+            $('#exampleModalCenter').modal('show');
 
             // Call the developer API
             fetch(
@@ -145,8 +159,9 @@ include('../../layouts/admin.ejs') %>
 
                   // Populate the new data table with developer data
                   developerData.developers.forEach(function (developer, index) {
-                    $("#newDataTable").DataTable().row
-                      .add([
+                    $("#newDataTable")
+                      .DataTable()
+                      .row.add([
                         index + 1,
                         developer.name,
                         developer.technology,
@@ -170,6 +185,7 @@ include('../../layouts/admin.ejs') %>
               .catch((error) => {
                 console.error("Error fetching developer data:", error);
               });
+             
           });
         } else {
           console.error("API response indicates failure:", data.message);
@@ -179,6 +195,20 @@ include('../../layouts/admin.ejs') %>
         console.error("Error fetching vendors:", error);
       });
   });
+
+
+  // Add an event listener for the modal's hidden.bs.modal event
+$('#exampleModalCenter').on('hidden.bs.modal', function () {
+    // Clear the content of the newDataTableBody
+    $("#newDataTableBody").empty();
+
+      // Clear the content of the newDataTable
+      // $("#newDataTable").DataTable().clear().draw();
+    // Optionally, hide the newDataTableContainer
+    // document.getElementById("newDataTableContainer").style.display = "none";
+
+    location.reload();
+});
 
   const tokens = localStorage.getItem("adminToken");
 

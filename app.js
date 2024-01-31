@@ -8,7 +8,7 @@ const devroutes = require("./routes/developerRoutes");
 const ejsRoute = require("./routes/homeEjsRoute");
 const multer = require("multer");
 const cors = require("cors");
-const config = require('./config');
+
 
 const app = express();
 const port = 3000;

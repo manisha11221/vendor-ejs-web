@@ -1,86 +1,110 @@
-<%- include('../layouts/header.ejs') %> 
-<%- include('../layouts/vendor.ejs') %>
-<% const BASE_URL = process.env.BASE_URL %>
-<div class="container-scroller">
-  <!-- Other parts of the code remain unchanged -->
+<%- include('../layouts/header.ejs') %>
+  <%- include('../layouts/vendor.ejs') %>
+    <% const BASE_URL=process.env.BASE_URL %>
+      <div class="container-scroller">
+        <!-- Other parts of the code remain unchanged -->
 
-  <!-- content-wrapper starts -->
-  <div class="main-panel">
-    <div class="content-wrapper">
-      <!-- Add your content here -->
-      <div class="row">
-        <div class="page-header">
-          <h3 class="page-title">Vendor Dashboard</h3>
-        </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title">Developer Count</h4>
-              <!-- Add logic to fetch and display developer count -->
-              <p class="card-text">
-                Total Developers: <span id="developerCount">0</span>
-              </p>
+        <!-- content-wrapper starts -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <!-- Add your content here -->
+            <div class="row">
+              <div class="page-header">
+                <h3 class="page-title">Vendor Dashboard</h3>
+              </div>
+              <div class="col-md-6" onclick="redirectToDeveloperDashboard()">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div class="align-self-center">
+                        <h4 class="card-title">
+                          <p class="card-text" style="font-size: 30px;">
+                            Total Developers: <span id="developerCount">0</span>
+                          </p>
+                        </h4>
+                      </div>
+                      <div>
+                        <i class="mdi mdi-laptop menu-icon " style="font-size: 70px;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+             <div class="col-md-6" onclick="redirectToTechnologyDashboard()">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <div class="align-self-center">
+                    <h4 class="card-title">
+                      <p class="card-text" style="font-size: 30px;">
+                        Total Technologies: <span id="technologyCount">0</span>
+                      </p>
+                    </h4>
+                  </div>
+                  <div>
+                    <i class="mdi mdi-cogs menu-icon" style="font-size: 70px;"></i>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title">Technology Count</h4>
-              <!-- Add logic to fetch and display technology count -->
-              <p class="card-text">
-                Total Technologies: <span id="technologyCount">0</span>
-              </p>
             </div>
+            <!-- End of your content -->
           </div>
+
+          <%- include('../layouts/footer.ejs') %>
+
+            <script>
+
+              function redirectToDeveloperDashboard() {
+                console.log("-----------------------");
+                window.location.href = "/vendor-developer";
+              }
+
+              // Function to redirect to Vendor Dashboard
+              function redirectToTechnologyDashboard() {
+                window.location.href = "/vendor-technology";
+              }
+
+              const tokens = localStorage.getItem("vendorToken");
+
+              if (!tokens) {
+                // Redirect to the login page if the token is not present
+                window.location.href = "/login";
+              }
+
+              const tokenss = localStorage.getItem("vendorToken");
+
+              fetch("<%= BASE_URL %>/vendor/developer-count", {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${tokenss}`,
+                  "Content-Type": "application/json",
+                },
+              })
+                .then((response) => response.text())
+                .then((count) => {
+                  document.getElementById("developerCount").innerText = count;
+                })
+                .catch((error) =>
+                  console.error("Error fetching developer count:", error)
+                );
+
+              fetch("<%= BASE_URL %>/vendor/count-Tech", {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${tokenss}`,
+                  "Content-Type": "application/json",
+                },
+              })
+                .then((response) => response.text())
+                .then((count) => {
+                  document.getElementById("technologyCount").innerText = count;
+                })
+                .catch((error) =>
+                  console.error("Error fetching developer count:", error)
+                );
+            </script>
         </div>
       </div>
-      <!-- End of your content -->
-    </div>
-
-    <%- include('../layouts/footer.ejs') %>
-
-    <script>      
-
-      const tokens = localStorage.getItem("vendorToken");
-
-      if (!tokens) {
-        // Redirect to the login page if the token is not present
-        window.location.href = "/login";
-      }
-
-      const tokenss = localStorage.getItem("vendorToken");
-
-      fetch("<%= BASE_URL %>/vendor/developer-count", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenss}`,
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.text())
-        .then((count) => {
-          document.getElementById("developerCount").innerText = count;
-        })
-        .catch((error) =>
-          console.error("Error fetching developer count:", error)
-        );
-
-      fetch("<%= BASE_URL %>/vendor/count-Tech", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenss}`,
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.text())
-        .then((count) => {
-          document.getElementById("technologyCount").innerText = count;
-        })
-        .catch((error) =>
-          console.error("Error fetching developer count:", error)
-        );
-    </script>
-  </div>
-</div>
