@@ -70,11 +70,13 @@ exports.addDeveloper = async (req, res) => {
 exports.getDeveloperById = async (req, res) => {
   try {
     const developerId = new mongoose.Types.ObjectId(req.params.id);
-    const developer = await Developer.findById(developerId);
 
+    const developer = await Developer.findById(developerId);
+    
     if (!developer) {
       return res.status(404).json({ message: "Developer not found" });
     }
+    console.log("devvvvId",developerId);
 
     res.json({ developer });
   } catch (error) {
@@ -155,15 +157,26 @@ exports.getByVendor = async (req, res) => {
 
 //update developer
 exports.updateDeveloper = async (req, res) => {
+  
   try {
     const developerId = req.params.id;
-    const { name, experience, technology, resume, available, rate } = req.body;
+    const { name, experience, technology, resume, available, rate ,portfolio,gitHubUrl,linkedInLink } = req.body;
+    
+    console.log("reqqqqqqqqqqq",req.body);
+
+    // Convert technologyId to ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(developerId)) {
+      return res.status(400).json({ message: "Invalid developerId" });
+    }
+    const validDeveloperId = new mongoose.Types.ObjectId(developerId);
+    console.log("dddddddddddddddd",developerId);
 
     const updatedDeveloper = await Developer.findByIdAndUpdate(
       developerId,
       { name, experience, technology, resume, available, rate },
       { new: true }
     );
+
 
     if (!updatedDeveloper) {
       return res.status(404).json({ message: "Developer not found" });

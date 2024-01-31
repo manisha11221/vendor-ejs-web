@@ -1,3 +1,477 @@
+<%- include('../layouts/header.ejs') %> <%- include('../layouts/vendor.ejs') %>
+<% const BASE_URL = process.env.BASE_URL %>
+
+
+
+<div class="container-scroller">
+  <div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+      <div class="content-wrapperrr">
+        <div class="page-header">
+          <h3 class="page-title">Developer Dashboard</h3>
+        </div>
+
+        <!-- Add button to toggle developer form -->
+        <div class="mb-3">
+          <button id="toggleDeveloperForm" class="btn btn-primary">
+            Add Developer
+          </button>
+        </div>
+
+        <!-- Developer form initially hidden -->
+        <div id="developerFormContainer" style="display: none">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Create Developer</h4>
+              <form id="createDeveloperForm">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="developerName">Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="developerName"
+                        placeholder="Enter name"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="experience">Experience</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="experience"
+                        placeholder="Enter experience"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <!-- <label for="simpleDropdown">Select a Technologies:</label>
+                      <select id="technology" multiple="multiple"></select> -->
+
+                      <div class="row d-flex justify-content-center mt-100">
+                        <div class="col-md-6">
+                          <select
+                            id="choices-multiple-remove-button"
+                            placeholder="Select upto 5 tags"
+                            multiple
+                          >
+                            <option value="HTML">HTML</option>
+                            <option value="Jquery">Jquery</option>
+                            <option value="CSS">CSS</option>
+                            <option value="Bootstrap 3">Bootstrap 3</option>
+                            <option value="Bootstrap 4">Bootstrap 4</option>
+                            <option value="Java">Java</option>
+                            <option value="Javascript">Javascript</option>
+                            <option value="Angular">Angular</option>
+                            <option value="Python">Python</option>
+                            <option value="Hybris">Hybris</option>
+                            <option value="SQL">SQL</option>
+                            <option value="NOSQL">NOSQL</option>
+                            <option value="NodeJS">NodeJS</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">Upload Resume</label>
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="resume"
+                        placeholder="upload resume"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">Portfolio Link</label>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="portfolio"
+                        placeholder="portfolio Url"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">GitHubUrl Link</label>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="gitHubUrl"
+                        placeholder="GitHub Url"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="resume">linkedIn Link</label>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="linkedInLink"
+                        placeholder="linkedIn Url"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-check">
+                      <input
+                        type="radio"
+                        class="form-check-input"
+                        id="parttime"
+                        name="employment_type"
+                        value="parttime"
+                      />
+                      <label class="form-check-label" for="parttime"
+                        >Part Time</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        type="radio"
+                        class="form-check-input"
+                        id="fulltime"
+                        name="employment_type"
+                        value="fulltime"
+                      />
+                      <label class="form-check-label" for="fulltime"
+                        >Full Time</label
+                      >
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="rate">Rate</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="rate"
+                        placeholder="Enter hourly rate"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Create Developer
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3 mb-5">
+          <div class="card-body">
+            <h4 class="card-title">All Developers</h4>
+            <div class="table-responsive">
+              <table id="developerTableBody" class="display">
+                <thead>
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th>Name</th>
+                    <th>Technology</th>
+                    <th>Experience</th>
+                    <th>Rate</th>
+                    <th>Resume</th>
+                    <th>Available</th>
+                    <th>Portfolio Link</th>
+                    <th>GitHub Link</th>
+                    <th>LinkedIn Link</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Table rows will be added dynamically by DataTables -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- update table -->
+<div class="modal" id="updateDeveloperModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Developer</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="updateDeveloperForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateDeveloperName">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="updateDeveloperName"
+                  placeholder="Enter name"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateExperience">Experience</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="updateExperience"
+                  placeholder="Enter experience"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateTechnology">Technology</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="updateTechnology"
+                  placeholder="Enter technology"
+                  required
+                />
+                <small class="form-text text-muted"
+                  >Enter technologies as a comma-separated list (e.g., Node.js,
+                  Laravel)</small
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateResume">Upload Resume</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="updateResume"
+                  placeholder="upload resume"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updatePortfolio">Portfolio Link</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="updatePortfolio"
+                  placeholder="portfolio Url"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateGitHubUrl">GitHubUrl Link</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="updateGitHubUrl"
+                  placeholder="GitHub Url"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateLinkedInLink">LinkedIn Link</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="updateLinkedInLink"
+                  placeholder="LinkedIn Url"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="updatePartTime"
+                  name="updateEmploymentType"
+                  value="parttime"
+                />
+                <label class="form-check-label" for="updatePartTime"
+                  >Part Time</label
+                >
+              </div>
+              <div class="form-check">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="updateFullTime"
+                  name="updateEmploymentType"
+                  value="fulltime"
+                />
+                <label class="form-check-label" for="updateFullTime"
+                  >Full Time</label
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="updateRate">Rate</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="updateRate"
+                  placeholder="Enter hourly rate"
+                />
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="updateDeveloperId" />
+          <button type="submit" id="update" class="btn btn-primary">
+            Update Developer
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../layouts/footer.ejs') %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    $("#toggleDeveloperForm").click(function () {
+      $("#developerFormContainer").toggle();
+    });
+    fetch("<%= BASE_URL %>/developer/get-devAll")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          var developerTable = $("#developerTableBody").DataTable(); // Initialize DataTables on the table
+
+          data.developers.forEach(function (developer, index) {
+            // Create a button element for the "View" action
+            const viewButton = `<button class="view-button btn btn-info" data-index="${index}">View</button>`;
+
+            // Add rows to the DataTable
+            developerTable.row
+              .add([
+                index + 1,
+                developer.name,
+                developer.technology,
+                developer.experience,
+                developer.rate,
+                developer.resume
+                  ? `<a href="#" class="resume-link" data-resume="${developer.resume}">Resume</a>`
+                  : "N/A",
+                developer.available,
+                developer.portfolio
+                  ? `<a href="${developer.portfolio}" target="_blank">Portfolio Link</a>`
+                  : "N/A",
+                developer.gitHubUrl
+                  ? `<a href="${developer.gitHubUrl}" target="_blank">GitHub Link</a>`
+                  : "N/A",
+                developer.linkedInLink
+                  ? `<a href="${developer.linkedInLink}" target="_blank">LinkedIn Profile</a>`
+                  : "N/A",
+                viewButton,
+                // Other data you want to display
+              ])
+              .draw();
+          });
+
+          fetch("http://localhost:3000/technology/get-technology")
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Technologies:", data);
+
+              // Select the dropdown element
+              const technologyDropdown = $("#technology");
+              technologyDropdown.empty();
+
+              // Iterate over the technologies and add options to the dropdown
+              data.technology.forEach((tech) => {
+                if (tech.hasOwnProperty("name")) {
+                  technologyDropdown.append(
+                    new Option(tech.name, tech.name, false, false)
+                  );
+                }
+              });
+
+              // Enable multiple selection
+              technologyDropdown.attr("multiple", "multiple");
+            })
+            .catch((error) => {
+              console.error("Error fetching technologies:", error);
+            });
+
+          // Add event listener for the "View" button
+        } else {
+          console.error("API response indicates failure:", data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching developers:", error);
+      });
+  });
+
+  const tokens = localStorage.getItem("adminToken");
+
+  if (!tokens) {
+    window.location.href = "/login";
+  }
+
+  $(document).ready(function () {
+    var multipleCancelButton = new Choices("#choices-multiple-remove-button", {
+      removeItemButton: true,
+      maxItemCount: 5,
+      searchResultLimit: 5,
+      renderChoiceLimit: 5,
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <<<<<<< HEAD
   <!-- <div class="main">
       <div class="container mb-5 col-md-6">
