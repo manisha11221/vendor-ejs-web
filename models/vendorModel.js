@@ -6,9 +6,10 @@ const vendorSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  isGoogleAuthenticated: { type: Boolean, default: false },
   password: {
     type: String,
-    required: true,
+    // required: true,
   },
   otp: {
     type: String,

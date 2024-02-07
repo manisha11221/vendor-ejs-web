@@ -153,9 +153,7 @@ include('../../layouts/admin.ejs') %>
                   console.log("Selected Vendor:", selectedVendor);
                   console.log("Developer Data:", developerData.developers);
 
-                  // Clear existing rows in the new data table
-                  // $("#newDataTable").DataTable().clear().draw();
-
+                 
                   // Populate the new data table with developer data
                   developerData.developers.forEach(function (developer, index) {
                     $("#newDataTable")

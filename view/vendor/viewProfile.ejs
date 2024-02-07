@@ -154,7 +154,7 @@
 
       <script>
         const VendorId = localStorage.getItem("vendorId");
-        console.log("vendorId:::", VendorId)
+        // console.log("vendorId:::", VendorId)
 
         const form = document.getElementById("editProfileForm");
         const errorMessageContainer = document.getElementById(
@@ -198,13 +198,13 @@
                 },
               }
             );
-            console.log("response", response);
+            // console.log("response", response);
             if (!response.ok) {
               const errorData = await response.json();
               console.error("Error fetching data:", errorData.message);
             } else {
               const responseData = await response.json();
-              console.log("Fetched Data:", responseData);
+              // console.log("Fetched Data:", responseData);
               document.getElementById("profileImage").src = responseData.vendor.profileImage;
               document.getElementById("email").value = responseData.vendor.email;
               document.getElementById("company_name").value =
@@ -237,7 +237,7 @@
         };
 
         const saveChangesBtn = document.getElementById("saveChangesBtn");
-        console.log("saveChangesBtn", saveChangesBtn);
+        // console.log("saveChangesBtn", saveChangesBtn);
         saveChangesBtn.addEventListener("click", () => {
           closeEditProfileModal();
           handleSaveChanges();

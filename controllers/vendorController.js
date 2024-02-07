@@ -11,12 +11,14 @@ const path = require("path")
 // const storage = multer.memoryStorage(); 
 const upload = require('../middlewares/multerMiddleware')
 const BASE_URL = process.env.BASE_URL
+
+
 // Define email configuration
 const emailConfig = {
   service: "gmail",
   auth: {
-    user: "meetdhameliya08@gmail.com",
-    pass: "hthcazjihwdvrdsq",
+    user: "itsr.manisha@gmail.com",
+    pass: "rnmbuuyrmergcxcb",
   },
 };
 const transporter = nodemailer.createTransport(emailConfig);
@@ -25,20 +27,15 @@ exports.requestOTP = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Check if the email already exists in the database
     const existingVendor = await Vendor.findOne({ email });
-
-    // Get the current date and time
     const currentDate = new Date();
 
-    // Add one day to the current date
     const expirationDate = new Date(currentDate);
     expirationDate.setDate(currentDate.getDate() + 1);
 
-    // Format the expiration date to use in OTP or store it in the database
+ 
     const formattedExpirationDate = expirationDate.toISOString();
 
-    // Generate the OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     const mailOptions = {
@@ -50,11 +47,9 @@ exports.requestOTP = async (req, res) => {
 
     // If the email exists, update the OTP; otherwise, save a new entry
     if (existingVendor) {
-      // Update the existing vendor's OTP in the database
       existingVendor.otp = otp;
       await existingVendor.save();
     } else {
-      // Save the OTP and email to the database for a new vendor
       const vendor = new Vendor({
         email,
         otp,
@@ -63,12 +58,10 @@ exports.requestOTP = async (req, res) => {
       await vendor.save();
     }
 
-    // Send the OTP email
     await transporter.sendMail(mailOptions);
-
-    // Specify the redirect URL in the response
-    const redirectUrl = "http://yourdomain.com/vendor-otpVerify";
+    const redirectUrl = "https://takedevs.abhimilega.com/vendor-otpVerify";
     res.json({ message: "OTP sent successfully", redirectUrl });
+    
   } catch (error) {
     console.error("Request OTP Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -107,26 +100,18 @@ exports.verifyOTP = async (req, res) => {
 //set-password
 exports.setPassword = async (req, res) => {
   try {
-    // console.log("backend------------------");
     const { password, confirmPassword } = req.body;
 
     // Check if passwords match
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
-
-    // Hash the password before saving it to the database
+   
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Get the user ID from the route parameter
+   
     const userId = req.params.id;
 
-    console.log("User ID:", userId);
-
-    // Find the user document in the database based on the user ID
     const vendor = await Vendor.findById(userId);
-
-    console.log("vendor_id", vendor.id);
 
     if (vendor) {
       // Update the user's password and mark as verified
@@ -161,7 +146,7 @@ exports.resetPassword = async (req, res) => {
 
     const isPasswordValid = await bcrypt.compare(old_psw, vendor.password);
 
-    console.log("data", isPasswordValid);
+    // console.log("data", isPasswordValid);
 
     if (!isPasswordValid) {
       return res
@@ -235,16 +220,14 @@ exports.loginVendor = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find the vendor with the provided email
     const vendor = await Vendor.findOne({ email });
 
     
     if (!vendor) {
-      console.log("after vendor......");
+      // console.log("after vendor......");
       return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
 
-    // Validate the provided password
     const isPasswordValid = await bcrypt.compare(password, vendor.password);
 
     if (!isPasswordValid) {
@@ -252,9 +235,8 @@ exports.loginVendor = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
 
-    // Generate a token for the user during login
     const generatedToken = jwt.sign(
-      { email: vendor.email, _id: vendor._id, role: "vendor" }, // Include the role in the token
+      { email: vendor.email, _id: vendor._id, role: "vendor" }, 
       "vendor-token",
     );
 
@@ -279,7 +261,7 @@ exports.loginVendor = async (req, res) => {
     // res.render('vendor/editProfile.ejs', { vendor, redirectTo: "/vendor-dashboard" });
 
     // res.render('vendor/editProfile.ejs', { vendor });
-    console.log("-----------Vendorrr",vendor);
+    // console.log("-----------Vendorrr",vendor);
 
   } catch (error) {
     console.error("Login Error:", error);
@@ -289,7 +271,7 @@ exports.loginVendor = async (req, res) => {
 
 
 exports.editProfile = async (req, res) => {
-  console.log("........",req);
+  // console.log("........",req);
   try {
     const { email, company_name, website_link, contact, gst_number, address ,team_size,profileImage} = req.body;
     const { authorization } = req.headers;
@@ -311,7 +293,7 @@ exports.editProfile = async (req, res) => {
 
     if (req.file) {
       const filePath = path.join('public/uploads', req.file.filename);
-      console.log("filePath" , req.file.filename);
+      // console.log("filePath" , req.file.filename);
 
         vendor.profileImage = `${BASE_URL}/uploads/${req.file.filename}`;
     }

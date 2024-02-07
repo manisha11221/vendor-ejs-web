@@ -25,6 +25,8 @@
         <!-- Developer form initially hidden -->
         <div id="developerFormContainer" style="display: none">
           <div class="card">
+            <div id="formError" class="alert alert-danger" style="display: none;"></div>
+            <div id="validationMessages" class="alert alert-danger" style="display: none;"></div>
             <div class="card-body">
               <h4 class="card-title">Create Developer</h4>
               <form id="createDeveloperForm" enctype="multipart/form-data">
@@ -64,28 +66,6 @@
                         placeholder="please sectect the technologies"
                         multiple
                       >
-                        <div
-                          class="choices__list choices__list--multiple"
-                          style="
-                            background-color: #b66dff !important;
-                            border: 1px solid #b66dff !important;
-                          "
-                        >
-                          <div
-                            class="choices__item choices__item--selectable"
-                            data-item=""
-                            data-id="1"
-                            data-value="Laravel"
-                            data-custom-properties="null"
-                            data-deletable=""
-                            aria-selected="true"
-                            style="
-                              background-color: #b66dff !important;
-                              border: 1px solid #b66dff !important;
-                            "
-                          >
-                            Laravel
-                          </div>
                         </div>
                       </select>
                     </div>
@@ -261,14 +241,7 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="updateTechnology">Technology</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="updateTechnology"
-                  placeholder="Enter technology"
-                  required
-                  name="technology"
-                />
+                <input type="text" class="form-control" id="updateTechnology" placeholder="Enter technology" required name="technology" />
                 <small class="form-text text-muted"
                   >Enter technologies as a comma-separated list (e.g., Node.js,
                   Laravel)</small
@@ -394,20 +367,15 @@
       })
       .then((data) => {
         if (data.success) {
-          console.log("data::::::???", data.developers);
-
           for (const resume of data.developers) {
-            console.log("resume", resume.resume);
+
           }
-
           var developerTable = $("#developerTableBody").DataTable();
-
           data.developers.forEach(function (developer, index) {
             const actionButtons = `<div class="action-buttons">
                                   <button class="Edit-button btn btn-info" onclick="updateDeveloper('${developer._id}')">Edit</button>
                                   <button class="Delete-button btn btn-danger" onclick="deleteDeveloper('${developer._id}')">Delete</button>
                                 </div>`;
-
             developerTable.row
               .add([
                 index + 1,
@@ -454,6 +422,7 @@
       const employmentType = $("input[name='employment_type']:checked").val();
       const rate = $("#rate").val();
 
+      
       const formData = new FormData();
       formData.append("name", name);
       formData.append("experience", experience);
@@ -533,161 +502,128 @@
     window.location.reload();
     });
 
+
+
   function updateDeveloper(developerId) {
-    console.log("developerId", developerId);
-
-    fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    console.log("Updating developer with ID:", developerId);
+  fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch developer data");
+      }
+      return response.json();
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("data:::::::::::.", data);
-        const updatedDeveloperNameInput = document.getElementById(
-          "updateDeveloperName"
-        );
-        const updatedExperienceInput =
-          document.getElementById("updateExperience");
-        const updatedTechnologyInput =
-          document.getElementById("updateTechnology");
-        const updatedResumeInput = document.getElementById("updateResume");
-        const updatedResumePathInput =
-          document.getElementById("updateResumePath");
+    .then((data) => {
+      const {
+        name,
+        experience,
+        technology,
+        resume,
+        portfolio,
+        gitHubUrl,
+        linkedInLink,
+        employment_type,
+        rate,
+      } = data.developer;
 
-        const updatedPortfolioInput =
-          document.getElementById("updatePortfolio");
+      const updatedDeveloperNameInput = document.getElementById("updateDeveloperName");
+      const updatedExperienceInput = document.getElementById("updateExperience");
+      const updatedTechnologyInput = document.getElementById("updateTechnology");
+      const updatedResumeInput = document.getElementById("updateResume");
+      const updatedResumePathInput = document.getElementById("updateResumePath");
+      const updatedPortfolioInput = document.getElementById("updatePortfolio");
+      const updatedGitHubUrlInput = document.getElementById("updateGitHubUrl");
+      const updatedLinkedInLinkInput = document.getElementById("updateLinkedInLink");
+      const updatedPartTimeInput = document.getElementById("updatePartTime");
+      const updatedFullTimeInput = document.getElementById("updateFullTime");
+      const updatedRateInput = document.getElementById("updateRate");
 
-        const updatedGitHubUrlInput =
-          document.getElementById("updateGitHubUrl");
-        console.log("updatedGitHubUrlInput", updatedGitHubUrlInput);
-        const updatedLinkedInLinkInput =
-          document.getElementById("updateLinkedInLink");
-        console.log("updatedLinkedInLinkInput", updatedLinkedInLinkInput);
-        const updatedPartTimeInput = document.getElementById("updatePartTime");
-        const updatedFullTimeInput = document.getElementById("updateFullTime");
-        const updatedRateInput = document.getElementById("updateRate");
+      updatedDeveloperNameInput.value = name;
+      updatedExperienceInput.value = experience;
+      updatedTechnologyInput.value = data.technology?.map(tech => tech.name).join(", ") || "";
+      updatedResumeInput.value = updatedResumePathInput.value;
+      updatedResumePathInput.value = data.developer.resume;
+      updatedPortfolioInput.value = portfolio;
+      updatedGitHubUrlInput.value = gitHubUrl;
+      updatedLinkedInLinkInput.value = linkedInLink;
+      updatedPartTimeInput.checked = employment_type === "parttime";
+      updatedFullTimeInput.checked = employment_type === "fulltime";
+      updatedRateInput.value = rate;
 
-        updatedDeveloperNameInput.value = data.developer.name;
-        console.log(
-          "updatedDeveloperNameInput::",
-          updatedDeveloperNameInput.value
-        );
-        updatedExperienceInput.value = data.developer.experience;
-        updatedTechnologyInput.value = data.developer.technology.join(", ");
-        updatedResumeInput.value = updatedResumePathInput.value;
+      $("#updateDeveloperModal").modal("show");
+    })
+    .catch(handleError);
 
-        updatedResumePathInput.value = data.developer.resume;
-        console.log("updatedResumeInput:::", updatedResumePathInput);
-        updatedPortfolioInput.value = data.developer.portfolio;
-        updatedGitHubUrlInput.value = data.developer.gitHubUrl;
-        updatedLinkedInLinkInput.value = data.developer.linkedInLink;
-        updatedPartTimeInput.checked =
-          data.developer.employment_type === "parttime";
-        updatedFullTimeInput.checked =
-          data.developer.employment_type === "fulltime";
-        updatedRateInput.value = data.developer.rate;
 
-        $("#updateDeveloperModal").modal("show");
-      })
-      .catch(handleError);
+document.getElementById("updateDeveloperForm").addEventListener("submit", function (event) {
+  event.preventDefault();
 
-    document
-      .getElementById("updateDeveloperForm")
-      .addEventListener("submit", function (event) {
-        // $('#updateDeveloperModal').modal('hide');
-        event.preventDefault();
+  const updatedDeveloperName = document.getElementById("updateDeveloperName").value;
+  const updatedExperience = document.getElementById("updateExperience").value;
+  const updatedTechnology = document.getElementById("updateTechnology").value.split(",").map(item => item.trim());
+  const updatedResumeInput = document.getElementById("updateResume");
+    const updatedResumePathInput =
+      document.getElementById("updateResumePath");
+    const updatedResume = updatedResumeInput.files[0];
+  const updatedPortfolio = document.getElementById("updatePortfolio").value;
+  const updatedGitHubUrl = document.getElementById("updateGitHubUrl").value;
+  const updatedLinkedInLink = document.getElementById("updateLinkedInLink").value;
+  const updatedPartTime = document.getElementById("updatePartTime").checked;
+  const updatedFullTime = document.getElementById("updateFullTime").checked;
+  const updatedRate = document.getElementById("updateRate").value;
 
-        const updatedDeveloperName = document.getElementById(
-          "updateDeveloperName"
-        ).value;
-        console.log("updatedDeveloperName", updatedDeveloperName);
-        const updatedExperience =
-          document.getElementById("updateExperience").value;
-        const updatedTechnology = document
-          .getElementById("updateTechnology")
-          .value.split(",")
-          .map((item) => item.trim());
-        const updatedResumeInput = document.getElementById("updateResume");
-        const updatedResumePathInput =
-          document.getElementById("updateResumePath");
-        const updatedResume = updatedResumeInput.files[0];
-        const updatedPortfolio =
-          document.getElementById("updatePortfolio").value;
-        const updatedGitHubUrl =
-          document.getElementById("updateGitHubUrl").value;
-        const updatedLinkedInLink =
-          document.getElementById("updateLinkedInLink").value;
-        const updatedPartTime =
-          document.getElementById("updatePartTime").checked;
-        const updatedFullTime =
-          document.getElementById("updateFullTime").checked;
-        const updatedRate = document.getElementById("updateRate").value;
+  const formData = new FormData();
+  formData.append("name", updatedDeveloperName);
+  formData.append("experience", updatedExperience);
+  formData.append("technology", updatedTechnology);
+  formData.append("resume", updatedResume || updatedResumePathInput.value);
+  formData.append("portfolio", updatedPortfolio);
+  formData.append("gitHubUrl", updatedGitHubUrl);
+  formData.append("linkedInLink", updatedLinkedInLink);
+  formData.append("employment_type", updatedPartTime ? "parttime" : updatedFullTime ? "fulltime" : "");
+  formData.append("rate", updatedRate);
 
-        const formData = new FormData();
-        formData.append("name", updatedDeveloperName);
-        formData.append("experience", updatedExperience);
-        formData.append("technology", updatedTechnology);
-        formData.append(
-          "resume",
-          updatedResume || updatedResumePathInput.value
-        );
-        formData.append("portfolio", updatedPortfolio);
-        formData.append("gitHubUrl", updatedGitHubUrl);
-        formData.append("linkedInLink", updatedLinkedInLink);
-        formData.append(
-          "employment_type",
-          updatedPartTime ? "parttime" : updatedFullTime ? "fulltime" : ""
-        );
-        formData.append("rate", updatedRate);
-
-        console.log("formDta", formData);
-
-        fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        })
-          .then((response) => {
-            console.log(response.status);
-            if (!response.ok) {
-              throw new Error("API request failed");
-            }
-            return response.json();
-          })
-          .then((parsedData) => {
-            handleApiResponse(parsedData);
-            document
-              .getElementById("update")
-              .addEventListener("click", function () {
-                console.log("developerIdttttt:::::", developerId);
-                $("#updateDeveloperModal").modal("hide");
-                 window.location.reload(); 
-              });
-          })
-          .catch((error) => {
-            console.error("API request error:", error);
-            handleApiError(error);
-          });
-
-        // event.preventDefault();
-      });
+  fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to update developer");
+      }
+      return response.json();
+    })
+    .then((parsedData) => {
+      handleApiResponse(parsedData);
+      $("#updateDeveloperModal").modal("hide");
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.error("Update developer error:", error);
+      handleApiError(error);
+    });
+});
+}
+function handleApiResponse(data) {
+  if (data.success) {
+    console.log("Developer updated successfully:", data);
+    console.log("Updated Developer Data:", data.updatedDeveloper);
+  } else {
+    console.error("API response indicates failure:", data.message);
   }
+}
 
-  function handleApiResponse(data) {
-    if (data.success) {
-      console.log("Developer updated successfully:", data);
-      console.log("Updated Developer Data:", data.updatedDeveloper);
-    } else {
-      console.error("API response indicates failure:", data.message);
-    }
-  }
+function handleApiError(error) {
+  console.error("API Request Error:", error);
+}
 
-  function handleApiError(error) {
-    console.error("API Request Error:", error);
-  }
 
   function deleteDeveloper(developerId) {
     fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
@@ -705,11 +641,11 @@
       })
       .then((data) => {
         handleApiResponse(data);
-        window.location.reload(); // Reload the page after deletion
+        window.location.reload(); 
       })
       .catch((error) => {
         handleError(error);
-        // Handle any additional error handling here
+       
       });
   }
 

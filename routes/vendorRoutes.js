@@ -6,6 +6,9 @@ const vendorController = require('../controllers/vendorController');
 const auth = require('../middlewares/vendorMiddleware')
 const authentication = require('../middlewares/adminMiddleware')
 const multerMiddleware = require('../middlewares/multerMiddleware');
+const passport = require("passport");
+
+
 
   // Vendor request OTP route
 router.post('/request-otp', vendorController.requestOTP);

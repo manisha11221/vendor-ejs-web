@@ -2,11 +2,49 @@
 //add authentication here 
 
 //admin Dashboard
-
+const Vendor = require("../models/vendorModel")
   
 // const adminDashboard = (req, res, next) => {
 //     res.render('admin-dashboard');
 // }
+
+const loadAuth = (req, res) => {
+    res.render('auth');
+}
+
+const successGoogleLogin = async (req, res) => {
+    try {
+        if (!req.user)
+            return res.redirect('/failure');
+
+        const userData = {
+            email: req.user.email,
+        };
+
+        // Check if the user already exists in the database
+        const existingUser = await Vendor.findOne({ email: userData.email });
+
+        if (existingUser) {
+            // If user already exists, redirect to the dashboard
+            return res.redirect('/vendor-dashboard');
+        }
+
+        // If user does not exist, create a new user
+        const newUser = new Vendor(userData);
+        await newUser.save();
+
+        console.log('User data saved successfully:', newUser);
+        res.redirect('/vendor-dashboard'); // Redirect to the dashboard after saving user data
+    } catch (error) {
+        console.error('Error saving user data:', error);
+        res.redirect('/failure');
+    }
+};
+
+
+const failureGoogleLogin = (req, res) => {
+    res.send("Error");
+}
 
 
 const adminDash = (req, res) => {
@@ -76,6 +114,9 @@ const viewProfile=(req,res)=>{
 
 
 module.exports = {
+    loadAuth,
+    successGoogleLogin,
+    failureGoogleLogin,
     adminLogin,
     otpSend,
     otpVerify,
@@ -89,3 +130,5 @@ module.exports = {
     vendorTechnology,
     viewProfile
 }
+
+

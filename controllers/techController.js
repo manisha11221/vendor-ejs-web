@@ -2,10 +2,9 @@ const Technology = require("../models/techModel");
 const mongoose = require("mongoose");
 
 exports.addTechnology = async (req, res) => {
-  console.log("reqqqqqqqqqqqqqqqqqqqqqq",req);
   try {
     const { name, status } = req.body;
-    
+  
     const technology = new Technology({ name, status });
     await technology.save();
     res.json({
@@ -23,7 +22,7 @@ exports.getTechnology = async (req, res) => {
   // console.log("TechIn co0nroller.......");
   try {
     const technology = await Technology.find();
-    console.log("tech", technology);
+    
     res.status(200).json({
       success: true,
       technology,

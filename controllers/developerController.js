@@ -4,7 +4,7 @@ const vendor = require("../models/vendorModel");
 const upload = require('../middlewares/multerMiddleware');
 
 exports.addDeveloper = async (req, res) => {
-  console.log("req",req);
+  // console.log("req",req);
   try {
     const {
       name,
@@ -18,7 +18,7 @@ exports.addDeveloper = async (req, res) => {
       linkedInLink,
     } = req.body;
 
-    console.log("reqqqqq", req.body);
+    // console.log("reqqqqq", req.body);
 
     if (!name || !experience || !rate) {
       return res
@@ -41,7 +41,7 @@ exports.addDeveloper = async (req, res) => {
       if (req.file) {
         developer.resume = `http://localhost:3000/uploads/${req.file.filename}`;
       }
-      console.log("req.file.path:", req.file);
+      // console.log("req.file.path:", req.file);
 
 
       await developer.save();
@@ -52,7 +52,7 @@ exports.addDeveloper = async (req, res) => {
         { new: true }
       );
 
-      console.log("Developer id in vendor table:", developer._id);
+      // console.log("Developer id in vendor table:", developer._id);
 
       res.json({
         message: "Developer created successfully",
@@ -76,7 +76,7 @@ exports.getDeveloperById = async (req, res) => {
     if (!developer) {
       return res.status(404).json({ message: "Developer not found" });
     }
-    console.log("devvvvId",developerId);
+    // console.log("devvvvId",developerId);
 
     res.json({ developer });
   } catch (error) {
@@ -88,7 +88,7 @@ exports.getDeveloperById = async (req, res) => {
 //get all dev In vendor pannel
 exports.getDeveloperAllWithVednor = async (req, res) => {
   try {
-    console.log("calling from js");
+    // console.log("calling from js");
     const developers = await Developer.find();
     let dataArr = [];
 
@@ -105,7 +105,7 @@ exports.getDeveloperAllWithVednor = async (req, res) => {
           vendor: findVendorData.toObject(),
         };
         
-        console.log("findVendorDataByTheFrontENd", findVendorData);
+        // console.log("findVendorDataByTheFrontENd", findVendorData);
         dataArr.push(combinedData);
       } else {
         // If no vendor data is found, include only developer details
@@ -125,7 +125,7 @@ exports.getDeveloperAll = async (req, res) => {
   try {
     const developers = await Developer.find();
 
-    console.log("mmmm", developers);
+    // console.log("mmmm", developers);
     res.json({ success: true, developers });
   } catch (error) {
     console.error("Get All Developers Error:", error);
@@ -136,16 +136,16 @@ exports.getDeveloperAll = async (req, res) => {
 
 exports.getByVendor = async (req, res) => {
   try {
-    console.log("hsssssssssssss");
+    // console.log("hsssssssssssss");
     
     // Extract vendorId from the URL parameter
     const vendorId = req.params.id;
-    console.log('Vendor ID:', vendorId);
+    // console.log('Vendor ID:', vendorId);
 
     // Use async/await with try-catch for better error handling
     const developers = await Developer.find({ vendorId });
 
-    console.log('Developer data:', developers);
+    // console.log('Developer data:', developers);
     res.json({ developers });
   } catch (error) {
     console.error('Get Developers by Vendor Error:', error.message);
@@ -160,7 +160,8 @@ exports.updateDeveloper = async (req, res) => {
   
   try {
     const developerId = req.params.id;
-    const { name, experience, technology, resume, available, rate ,portfolio,gitHubUrl,linkedInLink } = req.body;
+    const { name, experience, technology, available, rate ,portfolio,gitHubUrl,linkedInLink } = req.body;
+    const resume = req.file ? req.file.path : req.body.resume;
     
     console.log("reqqqqqqqqqqq",req.body);
 
@@ -169,11 +170,11 @@ exports.updateDeveloper = async (req, res) => {
       return res.status(400).json({ message: "Invalid developerId" });
     }
     const validDeveloperId = new mongoose.Types.ObjectId(developerId);
-    console.log("dddddddddddddddd",developerId);
+    // console.log("dddddddddddddddd",developerId);
 
     const updatedDeveloper = await Developer.findByIdAndUpdate(
       developerId,
-      { name, experience, technology, resume, available, rate },
+      { name, experience, technology, resume, available, rate ,portfolio,gitHubUrl,linkedInLink},
       { new: true }
     );
 

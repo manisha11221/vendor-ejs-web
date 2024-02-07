@@ -5,13 +5,22 @@
   <div class="container-fluid page-body-wrapper full-page-wrapper">
     <div class="content-wrapper d-flex align-items-center auth">
       <div class="row flex-grow">
-        <div class="col-lg-4 mx-auto d-flex align-items-center justify-content-between">
+        <div
+          class="col-lg-4 mx-auto d-flex align-items-center justify-content-between"
+        >
           <div class="auth-form-light text-left p-5" id="loginnn">
             <div class="brand-logo">
-              <img src="<%= BASE_URL %>/assets/images/takedevbg.png" alt="logo" />
+              <img
+                src="<%= BASE_URL %>/assets/images/takedevbg.png"
+                alt="logo"
+              />
             </div>
             <h6 class="font-weight-light">Sign Up in to continue.</h6>
             <div id="errorMessage" class="alert alert-danger mt-3 d-none"></div>
+            <div
+              id="successMessage"
+              class="alert alert-success mt-3 d-none"
+            ></div>
             <form id="loginForm" class="pt-3">
               <div class="form-group">
                 <input
@@ -66,6 +75,21 @@
     errorMessageElement.classList.remove("d-none");
   }
 
+  function displaySuccessMessage(message) {
+    var successMessageElement = document.getElementById("successMessage");
+
+    // If the element doesn't exist, create it
+    if (!successMessageElement) {
+      successMessageElement = document.createElement("div");
+      successMessageElement.id = "successMessage";
+      successMessageElement.className = "alert alert-success mt-3";
+      document.getElementById("loginForm").prepend(successMessageElement);
+    }
+
+    successMessageElement.textContent = message;
+    successMessageElement.classList.remove("d-none");
+  }
+
   function hideErrorMessage() {
     var errorMessageElement = document.getElementById("errorMessage");
     if (errorMessageElement) {
@@ -73,15 +97,20 @@
     }
   }
 
+
+
   function submitForm() {
     var email = document.getElementById("InputEmail1").value;
 
     // Validate email
     if (!email.trim() || !validateEmail(email)) {
-      hideErrorMessage(); 
+      hideErrorMessage();
       displayErrorMessage("Please enter a valid email.");
       return;
     }
+
+    // Disable the submit button to prevent multiple submissions
+    document.querySelector(".auth-form-btn").setAttribute("disabled", true);
 
     // Continue with fetch request
     fetch("<%= BASE_URL %>/vendor/request-otp", {
@@ -95,17 +124,31 @@
       .then((data) => {
         console.log("Success:", data);
 
-        // Assuming data.success is a flag indicating success
         if (data.message === "OTP sent successfully" && data.redirectUrl) {
-          // Redirect to the specified URL
-          window.location.href = "/vendor-otpVerify";
+          // Display success message
+          displaySuccessMessage(
+            "OTP sent successfully. Please check your email for the OTP."
+          );
+
+          // Redirect to the specified URL after a delay (adjust the delay as needed)
+          setTimeout(() => {
+            window.location.href = data.redirectUrl;
+          }, 3000); // Redirect after 3 seconds
         } else {
           // Handle other cases if needed
+          displayErrorMessage("Failed to send OTP. Please try again.");
         }
       })
       .catch((error) => {
         console.error("Error:", error);
         // Handle error as needed
+        displayErrorMessage("Failed to send OTP. Please try again.");
+      })
+      .finally(() => {
+        
+        document.querySelector(".auth-form-btn").removeAttribute("disabled");
       });
   }
+
+
 </script>

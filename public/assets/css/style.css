@@ -16487,6 +16487,17 @@ address p {
   font-size: 12rem;
 }
 
+
+.error-message {
+  background-color: #f8d7da;
+  padding: 10px; /* Increase padding for a larger box */
+  margin-top: 5px; /* Add some margin for separation */
+  border: 1px solid #e0a3a2; /* Add a border for a clear boundary */
+  border-radius: 5px; /* Optional: Add rounded corners */
+  display: none;
+}
+
+
 @media (max-width: 991px) {
 
   .error-page h1,

@@ -9,6 +9,14 @@ const ejsRoute = require("./routes/homeEjsRoute");
 const multer = require("multer");
 const cors = require("cors");
 const config = require('./config');
+require("dotenv").config();
+const passport = require("passport");
+const cookieSession = require("cookie-session");
+const passportStrategy = require("./passport");
+const session = require('express-session');
+
+
+
 
 const app = express();
 const port = 3000;
@@ -31,8 +39,22 @@ app.use(express.static("public"));
 // app.get('/admin-login', (req, res) => {
 //   res.render('admin-login', { title: 'Node.js EJS Template' });
 // });
+app.use(session({
+	resave: false,
+	saveUninitialized: true,
+	secret: process.env.SESSION_SECRET
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
+app.set('view engine', 'ejs');
+
 
 app.use(ejsRoute.routes);
+
 
 // Connect to MongoDB
 const connectDB = require("./db/conn");

@@ -1,6 +1,7 @@
-<%- include('../../layouts/header.ejs') %> 
-<%- include('../../layouts/admin.ejs') %>
-<% const BASE_URL = process.env.BASE_URL %>
+<%- include('../../layouts/header.ejs') %> <%-
+include('../../layouts/admin.ejs') %> <% const BASE_URL = process.env.BASE_URL
+%>
+
 <div class="container-scroller">
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
@@ -8,7 +9,11 @@
         <div class="page-header">
           <h3 class="page-title">Technology Dashboard</h3>
         </div>
-
+        <div
+          id="successMessage"
+          class="alert alert-success"
+          style="display: none"
+        ></div>
         <!-- Add button to toggle technology form -->
         <div class="mb-3">
           <button id="toggleTechnologyForm" class="btn btn-primary">
@@ -20,6 +25,11 @@
         <div id="technologyFormContainer" style="display: none">
           <div class="card col-md-6">
             <div class="card-body">
+              <div
+                id="technologyNameError"
+                class="text-danger error-message"
+                style="display: none"
+              ></div>
               <h4 class="card-title">Add Technology</h4>
               <form id="addTechnologyForm">
                 <div class="form-group">
@@ -68,6 +78,11 @@
 <div class="modal mt-4" id="updateTechnologyModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
+      <div
+        id="updatedTechnologyNameError"
+        class="text-danger error-message"
+        style="display: none"
+      ></div>
       <div class="modal-header">
         <h5 class="modal-title">Update Technology</h5>
         <button
@@ -105,7 +120,39 @@
 <!-- Add your other scripts here -->
 
 <script>
-  // Initialize DataTable
+  //error message
+  function displayErrorMessage(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    if (message) {
+      errorElement.textContent = message;
+      errorElement.style.display = "block";
+    } else {
+      errorElement.textContent = "";
+      errorElement.style.display = "none";
+    }
+  }
+
+  //success message
+  function showSuccessMessage(message) {
+    const successMessageContainer = document.getElementById("successMessage");
+    successMessageContainer.textContent = message;
+    successMessageContainer.style.display = "block";
+
+    // Hide the success message after a few seconds
+    setTimeout(() => {
+      successMessageContainer.style.display = "none";
+    }, 5000); // Adjust the time (in milliseconds) as needed
+  }
+
+  //close model with * button
+  $(document).ready(function () {
+    // Add an event listener to the close button
+    $("#closeUpdateModalButton").on("click", function () {
+      // Programmatically close the modal
+      $("#updateTechnologyModal").modal("hide");
+    });
+  });
+
   $(document).ready(function () {
     const dataTable = $("#technologyTable").DataTable();
 
@@ -152,35 +199,71 @@
       }
     }
 
-    // Function to add a new technology
-    async function addTechnology() {
-      try {
-        const technologyName = document.getElementById("technologyName").value;
-        const response = await fetch("/api/technology", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: technologyName,
-            status: "Active",
-          }),
-        });
-        const data = await response.json();
+    document
+      .getElementById("addTechnologyForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+        addTechnology();
 
-        if (data.technology) {
-          // Clear the input field
-          document.getElementById("technologyName").value = "";
-          // Fetch and display updated technologies
-          fetchTechnologies();
-        } else {
-          console.error("Failed to add technology:", data.message);
+        // Function to add a new technology
+        async function addTechnology() {
+          try {
+            console.log("submitting");
+            const technologyName =
+              document.getElementById("technologyName").value;
+
+            // Validate that technologyName contains only characters
+            if (!/^[a-zA-Z\s]+$/.test(technologyName)) {
+              displayErrorMessage(
+                "technologyNameError",
+                "Technology name should only contain characters."
+              );
+              return;
+            }
+
+            // Clear any previous error messages
+            displayErrorMessage("technologyNameError", "");
+
+            // Clear any previous error messages
+            technologyNameError.textContent = "";
+            const response = await fetch(
+              "<%= BASE_URL %>/technology/add-technology",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  name: technologyName,
+                  status: "Active",
+                }),
+              }
+            );
+            const data = await response.json();
+
+            if (data.technology) {
+              // Clear the input field
+              document.getElementById("technologyName").value = "";
+
+              // Show success message
+              showSuccessMessage("Technology added successfully!");
+              console.log("showSuccessMessage", showSuccessMessage);
+              // Fetch and display updated technologies
+              fetchTechnologies();
+
+              // Hide the form after successful submission
+              toggleTechnologyForm();
+            } else {
+              // Show error message if adding technology fails
+              showErrorMessage("Failed to add technology.");
+            }
+          } catch (error) {
+            console.error("Add Technology Error:", error);
+            // Show error message if an unexpected error occurs
+            showErrorMessage("An unexpected error occurred.");
+          }
         }
-      } catch (error) {
-        console.error("Add Technology Error:", error);
-      }
-    }
-
+      });
     async function editTechnology(technologyId) {
       // Example logic to fetch existing data and open the modal
       try {
@@ -212,16 +295,32 @@
             const updatedTechnologyName = document.getElementById(
               "updatedTechnologyName"
             ).value;
-            const response = await fetch(`<%= BASE_URL %>/technology/edit-technology/${technologyId}`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                name: updatedTechnologyName,
-                // Add other fields if needed
-              }),
-            });
+
+            // Validate that updatedTechnologyName contains only characters
+            if (!/^[a-zA-Z\s]+$/.test(updatedTechnologyName)) {
+              displayErrorMessage(
+                "updatedTechnologyNameError",
+                "Updated technology name should only contain characters."
+              );
+              return;
+            }
+
+            // Clear any previous error messages
+            displayErrorMessage("updatedTechnologyNameError", "");
+
+            const response = await fetch(
+              `<%= BASE_URL %>/technology/edit-technology/${technologyId}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  name: updatedTechnologyName,
+                  // Add other fields if needed
+                }),
+              }
+            );
             const data = await response.json();
 
             if (data.technology) {
@@ -230,6 +329,16 @@
 
               // Fetch and display updated technologies
               fetchTechnologies();
+              if (data.technology) {
+                // Close the modal
+                $("#updateTechnologyModal").modal("hide");
+
+                // Show success message
+                showSuccessMessage("Technology updated successfully!");
+
+                // Fetch and display updated technologies
+                fetchTechnologies();
+              }
             } else {
               console.error("Failed to update technology:", data.message);
             }
@@ -242,14 +351,27 @@
     // Function to delete a technology
     async function deleteTechnology(technologyId) {
       try {
-        const response = await fetch(`<%= BASE_URL %>/technology/delete-technology/${technologyId}`, {
-          method: "DELETE",
-        });
+        const response = await fetch(
+          `<%= BASE_URL %>/technology/delete-technology/${technologyId}`,
+          {
+            method: "DELETE",
+          }
+        );
         const data = await response.json();
 
         if (data.deletedTechnology) {
           // Fetch and display updated technologies
           fetchTechnologies();
+          if (data.deletedTechnology) {
+            // Fetch and display updated technologies
+            fetchTechnologies();
+
+            // Show success message
+            showSuccessMessage("Technology deleted successfully!");
+          } else {
+            // Show error message if deleting technology fails
+            showErrorMessage("Failed to delete technology.");
+          }
         } else {
           console.error("Failed to delete technology:", data.message);
         }
@@ -277,6 +399,3 @@
     fetchTechnologies();
   });
 </script>
-
-
-
