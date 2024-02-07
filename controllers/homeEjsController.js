@@ -71,6 +71,9 @@ const viewProfile=(req,res)=>{
     res.render('vendor/viewProfile')
 }
 
+const requirements=(req,res)=>{
+    res.render('vendor/requirement')
+}
 
 
 
@@ -87,5 +90,6 @@ module.exports = {
     technologyDash,
     vendorDeveloper,
     vendorTechnology,
-    viewProfile
+    viewProfile,
+    requirements
 }

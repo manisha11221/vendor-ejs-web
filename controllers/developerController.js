@@ -2,6 +2,7 @@ const { default: mongoose } = require("mongoose");
 const Developer = require("../models/developerModel");
 const vendor = require("../models/vendorModel");
 const upload = require('../middlewares/multerMiddleware');
+const BASE_URL = process.env.BASE_URL;
 
 exports.addDeveloper = async (req, res) => {
   console.log("req",req);
@@ -18,7 +19,6 @@ exports.addDeveloper = async (req, res) => {
       linkedInLink,
     } = req.body;
 
-    console.log("reqqqqq", req.body);
 
     if (!name || !experience || !rate) {
       return res
@@ -39,9 +39,8 @@ exports.addDeveloper = async (req, res) => {
     });
 
       if (req.file) {
-        developer.resume = `http://localhost:3000/uploads/${req.file.filename}`;
+        developer.resume = `${BASE_URL}/uploads/${req.file.filename}`;
       }
-      console.log("req.file.path:", req.file);
 
 
       await developer.save();
@@ -76,7 +75,6 @@ exports.getDeveloperById = async (req, res) => {
     if (!developer) {
       return res.status(404).json({ message: "Developer not found" });
     }
-    console.log("devvvvId",developerId);
 
     res.json({ developer });
   } catch (error) {
@@ -105,7 +103,6 @@ exports.getDeveloperAllWithVednor = async (req, res) => {
           vendor: findVendorData.toObject(),
         };
         
-        console.log("findVendorDataByTheFrontENd", findVendorData);
         dataArr.push(combinedData);
       } else {
         // If no vendor data is found, include only developer details
@@ -136,7 +133,6 @@ exports.getDeveloperAll = async (req, res) => {
 
 exports.getByVendor = async (req, res) => {
   try {
-    console.log("hsssssssssssss");
     
     // Extract vendorId from the URL parameter
     const vendorId = req.params.id;
@@ -145,7 +141,6 @@ exports.getByVendor = async (req, res) => {
     // Use async/await with try-catch for better error handling
     const developers = await Developer.find({ vendorId });
 
-    console.log('Developer data:', developers);
     res.json({ developers });
   } catch (error) {
     console.error('Get Developers by Vendor Error:', error.message);
@@ -169,7 +164,6 @@ exports.updateDeveloper = async (req, res) => {
       return res.status(400).json({ message: "Invalid developerId" });
     }
     const validDeveloperId = new mongoose.Types.ObjectId(developerId);
-    console.log("dddddddddddddddd",developerId);
 
     const updatedDeveloper = await Developer.findByIdAndUpdate(
       developerId,

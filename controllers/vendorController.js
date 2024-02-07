@@ -37,7 +37,7 @@ exports.requestOTP = async (req, res) => {
 
     // Format the expiration date to use in OTP or store it in the database
     const formattedExpirationDate = expirationDate.toISOString();
-
+  
     // Generate the OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -67,7 +67,7 @@ exports.requestOTP = async (req, res) => {
     await transporter.sendMail(mailOptions);
 
     // Specify the redirect URL in the response
-    const redirectUrl = "http://yourdomain.com/vendor-otpVerify";
+    const redirectUrl = "https://takedevs.abhimilega.com/vendor-otpVerify";
     res.json({ message: "OTP sent successfully", redirectUrl });
   } catch (error) {
     console.error("Request OTP Error:", error);
@@ -107,7 +107,7 @@ exports.verifyOTP = async (req, res) => {
 //set-password
 exports.setPassword = async (req, res) => {
   try {
-    // console.log("backend------------------");
+   
     const { password, confirmPassword } = req.body;
 
     // Check if passwords match
@@ -121,12 +121,8 @@ exports.setPassword = async (req, res) => {
     // Get the user ID from the route parameter
     const userId = req.params.id;
 
-    console.log("User ID:", userId);
-
     // Find the user document in the database based on the user ID
     const vendor = await Vendor.findById(userId);
-
-    console.log("vendor_id", vendor.id);
 
     if (vendor) {
       // Update the user's password and mark as verified
@@ -160,8 +156,6 @@ exports.resetPassword = async (req, res) => {
     }
 
     const isPasswordValid = await bcrypt.compare(old_psw, vendor.password);
-
-    console.log("data", isPasswordValid);
 
     if (!isPasswordValid) {
       return res
@@ -240,7 +234,7 @@ exports.loginVendor = async (req, res) => {
 
     
     if (!vendor) {
-      console.log("after vendor......");
+   
       return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
 
@@ -276,11 +270,6 @@ exports.loginVendor = async (req, res) => {
     });
 
 
-    // res.render('vendor/editProfile.ejs', { vendor, redirectTo: "/vendor-dashboard" });
-
-    // res.render('vendor/editProfile.ejs', { vendor });
-    console.log("-----------Vendorrr",vendor);
-
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -289,7 +278,6 @@ exports.loginVendor = async (req, res) => {
 
 
 exports.editProfile = async (req, res) => {
-  console.log("........",req);
   try {
     const { email, company_name, website_link, contact, gst_number, address ,team_size,profileImage} = req.body;
     const { authorization } = req.headers;
@@ -311,7 +299,7 @@ exports.editProfile = async (req, res) => {
 
     if (req.file) {
       const filePath = path.join('public/uploads', req.file.filename);
-      console.log("filePath" , req.file.filename);
+      
 
         vendor.profileImage = `${BASE_URL}/uploads/${req.file.filename}`;
     }
@@ -472,7 +460,7 @@ exports.logoutVendor = async (req, res, next) => {
 //developer count and admi count api
 exports.countTech = async (req, res) => {
 
-  // console.log("===Techhhhhhhhhhhhhh");
+
   try {
       const count = await Tech.countDocuments();
       res.send(count.toString());
@@ -485,7 +473,7 @@ exports.countTech = async (req, res) => {
 
 exports.developerCount = async (req, res) => {
 
-  // console.log("================apideveloper");
+
   try {
       const developer = await Developer.countDocuments();
       res.send(developer.toString());

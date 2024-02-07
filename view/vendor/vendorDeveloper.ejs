@@ -1,11 +1,10 @@
-<%- include('../layouts/header.ejs') %> 
-<%- include('../layouts/vendor.ejs') %>
+s<%- include('../layouts/header.ejs') %> <%- include('../layouts/vendor.ejs') %>
 <% const BASE_URL = process.env.BASE_URL %>
 
 <style>
   .action-buttons {
     display: flex;
-    gap: 10px; /* Adjust the gap between buttons as needed */
+    gap: 10px; / Adjust the gap between buttons as needed /
   }
 </style>
 <div class="container-scroller">
@@ -178,123 +177,42 @@
                 <button type="submit" class="btn btn-primary">
                   Create Developer
                 </button>
-              </div>
+              </form>
+            </div>
+          </div>
+        </div>
 
-              <!-- Developer form initially hidden -->
-              <div id="developerFormContainer" style="display: none">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Create Developer</h4>
-                    <form id="createDeveloperForm">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="developerName">Name</label>
-                            <input type="text" class="form-control" id="developerName" placeholder="Enter name"
-                              required />
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="experience">Experience</label>
-                            <input type="number" class="form-control" id="experience" placeholder="Enter experience"
-                              required />
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="simpleDropdown">Select a Fruit:</label>
-                            <select id="technology">
-
-                            </select>
-
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="resume">Upload Resume</label>
-                            <input type="file" class="form-control" id="resume" placeholder="upload resume" />
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="resume">Portfolio Link</label>
-                            <input type="url" class="form-control" id="portfolio" placeholder="portfolio Url" />
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="resume">GitHubUrl Link</label>
-                            <input type="url" class="form-control" id="gitHubUrl" placeholder="GitHub Url" />
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="resume">linkedIn Link</label>
-                            <input type="url" class="form-control" id="linkedInLink" placeholder="linkedIn Url" />
-                          </div>
-                        </div>
-
-                        <div class="col-md-6">
-                          <div class="form-check">
-                            <input type="radio" class="form-check-input" id="parttime" name="employment_type"
-                              value="parttime" />
-                            <label class="form-check-label" for="parttime">Part Time</label>
-                          </div>
-                          <div class="form-check">
-                            <input type="radio" class="form-check-input" id="fulltime" name="employment_type"
-                              value="fulltime" />
-                            <label class="form-check-label" for="fulltime">Full Time</label>
-                          </div>
-                        </div>
-
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="rate">Rate</label>
-                            <input type="number" class="form-control" id="rate" placeholder="Enter hourly rate" />
-                          </div>
-                        </div>
-
-                      </div>
-                      <button type="submit" class="btn btn-primary">
-                        Create Developer
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card mt-3 mb-5">
-                <div class="card-body">
-                  <h4 class="card-title">All Developers</h4>
-                  <div class="table-responsive">
-                    <table id="developerTableBody" class="display">
-                      <thead>
-                        <tr>
-                          <th>Sr. No.</th>
-                          <th>Name</th>
-                          <th>Technology</th>
-                          <th>Experience</th>
-                          <th>Rate</th>
-                          <th>Resume</th>
-                          <th>Available</th>
-                          <th>Portfolio Link</th>
-                          <th>GitHub Link</th>
-                          <th>LinkedIn Link</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+        <div class="card mt-3 mb-5">
+          <div class="card-body">
+            <h4 class="card-title">All Developers</h4>
+            <div class="table-responsive">
+              <table id="developerTableBody" class="display">
+                <thead>
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th>Name</th>
+                    <th>Technology</th>
+                    <th>Experience</th>
+                    <th>Rate</th>
+                    <th>Resume</th>
+                    <th>Available</th>
+                    <th>Portfolio Link</th>
+                    <th>GitHub Link</th>
+                    <th>LinkedIn Link</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Table rows will be added dynamically by DataTables -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
 <!-- update table -->
 <div class="modal" id="updateDeveloperModal" tabindex="-1" role="dialog">
@@ -443,8 +361,17 @@
               </div>
             </div>
           </div>
-        </div>
+          <input type="hidden" id="updateDeveloperId" />
+          <button type="submit" id="update" class="btn btn-primary">
+            Update Developer
+          </button>
+        </form>
       </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../layouts/footer.ejs') %>
 
 
 <script>
@@ -459,7 +386,7 @@
       $("#developerFormContainer").toggle();
     });
 
-    fetch("http://localhost:3000/developer/get-devAll")
+    fetch("<%= BASE_URL %>/developer/get-devAll")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -478,8 +405,10 @@
 
           data.developers.forEach(function (developer, index) {
             const actionButtons = `<div class="action-buttons">
-                                  <button class="Edit-button btn btn-info" onclick="updateDeveloper('${developer._id}')">Edit</button>
-                                  <button class="Delete-button btn btn-danger" onclick="deleteDeveloper('${developer._id}')">Delete</button>
+                                  <button class="Edit-button btn" onclick="updateDeveloper('${developer._id}')">
+                                    <i class="mdi mdi-update menu-icon"style="font-size: 30px; color:#b66dff;"></i></button>
+                                  <button class="Delete-button btn" onclick="deleteDeveloper('${developer._id}')">
+                                    <i class="mdi mdi-delete menu-icon" style="font-size: 30px;color:#b66dff"></i></button>
                                 </div>`;
 
             developerTable.row
@@ -539,7 +468,7 @@
       formData.append("employmentType", employmentType);
       formData.append("rate", rate);
 
-      fetch("http://localhost:3000/developer/add-dev", {
+      fetch("<%= BASE_URL %>/developer/add-dev", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("vendorToken")}`,
@@ -566,7 +495,7 @@
         });
     });
 
-    fetch("http://localhost:3000/technology/get-technology")
+    fetch("<%= BASE_URL %>/technology/get-technology")
       .then((response) => response.json())
       .then((data) => {
         const technologyDropdown = $("#choices-multiple-remove-button");
@@ -610,7 +539,7 @@
   function updateDeveloper(developerId) {
     console.log("developerId", developerId);
 
-    fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
+    fetch(`<%= BASE_URL %>/developer/get-dev/${developerId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -717,7 +646,7 @@
 
         console.log("formDta", formData);
 
-        fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
+        fetch(`<%= BASE_URL %>/developer/update-dev/${developerId}`, {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -764,7 +693,7 @@
   }
 
   function deleteDeveloper(developerId) {
-    fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
+    fetch(`<%= BASE_URL %>/developer/delete-dev/${developerId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
