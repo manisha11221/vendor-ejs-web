@@ -10,7 +10,7 @@ include('../../layouts/admin.ejs') %>
         <div class="row">
           <div class="col-md-12">
             <div class="page-header">
-              <h3 class="page-title">Vendor Dashboard</h3>
+              <h3 class="page-title">Vendor</h3>
             </div>
 
             <div class="card mb-5">
@@ -116,7 +116,8 @@ include('../../layouts/admin.ejs') %>
             const developerCount = vendor.developers.length;
 
             // Create a button element for the "View" action
-            const viewButton = `<button class="view-button btn btn-info" data-index="${index}" data-toggle="modal" data-target="#exampleModalCenter">View</button>`;
+            const viewButton = `<button class="view-button btn " data-index="${index}" data-toggle="modal" data-target="#exampleModalCenter">
+              <i class="mdi mdi-eye menu-icon"style="font-size: 30px; color:#b66dff;"></i></button>`;
 
             vendorTable.row
               .add([

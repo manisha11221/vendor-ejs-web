@@ -3158,8 +3158,8 @@ progress {
 .container-xl,
 .container-xxl {
   width: 100%;
-  padding-right: var(--bs-gutter-x, 0.75rem);
-  padding-left: var(--bs-gutter-x, 0.75rem);
+  /* padding-right: var(--bs-gutter-x, 0.75rem);
+  padding-left: var(--bs-gutter-x, 0.75rem); */
   margin-right: auto;
   margin-left: auto;
 }
@@ -20102,6 +20102,7 @@ dl li {
 .table> :not(:last-child)> :last-child>*,
 .jsgrid .jsgrid-table> :not(:last-child)> :last-child>* {
   border-bottom-color: #ebedf2;
+  width: 32.68799999999999px;
 }
 
 .table> :not(:first-child),

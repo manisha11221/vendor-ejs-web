@@ -2,6 +2,7 @@ const Technology = require("../models/techModel");
 const mongoose = require("mongoose");
 
 exports.addTechnology = async (req, res) => {
+ 
   try {
     const { name, status } = req.body;
   
@@ -19,10 +20,10 @@ exports.addTechnology = async (req, res) => {
 
 //get all technology
 exports.getTechnology = async (req, res) => {
-  // console.log("TechIn co0nroller.......");
+ 
   try {
     const technology = await Technology.find();
-    
+  
     res.status(200).json({
       success: true,
       technology,
@@ -65,9 +66,6 @@ exports.editTechnology = async (req, res) => {
       return res.status(400).json({ message: "Invalid technologyId" });
     }
     const validTechnologyId = new mongoose.Types.ObjectId(technologyId);
-    console.log("TECXHiD",technologyId);
-
-    console.log("afterInObject.......",validTechnologyId);
 
     const technology = await Technology.findByIdAndUpdate(
       {_id:validTechnologyId},
@@ -92,7 +90,7 @@ exports.deleteTechnology = async (req, res) => {
     // const deletedTechnology = await Technology.findByIdAndDelete(req.params.id);
 
     const technologyId = req.params.id;
-    console.log(technologyId);
+  
     const deletedTechnology = await Technology.findByIdAndDelete(technologyId);
 
     if (!deletedTechnology) {

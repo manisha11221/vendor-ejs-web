@@ -35,7 +35,6 @@ exports.requestOTP = async (req, res) => {
 
  
     const formattedExpirationDate = expirationDate.toISOString();
-
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     const mailOptions = {
@@ -224,7 +223,7 @@ exports.loginVendor = async (req, res) => {
 
     
     if (!vendor) {
-      // console.log("after vendor......");
+   
       return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
 
@@ -258,11 +257,6 @@ exports.loginVendor = async (req, res) => {
     });
 
 
-    // res.render('vendor/editProfile.ejs', { vendor, redirectTo: "/vendor-dashboard" });
-
-    // res.render('vendor/editProfile.ejs', { vendor });
-    // console.log("-----------Vendorrr",vendor);
-
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -271,7 +265,6 @@ exports.loginVendor = async (req, res) => {
 
 
 exports.editProfile = async (req, res) => {
-  // console.log("........",req);
   try {
     const { email, company_name, website_link, contact, gst_number, address ,team_size,profileImage} = req.body;
     const { authorization } = req.headers;
@@ -293,7 +286,7 @@ exports.editProfile = async (req, res) => {
 
     if (req.file) {
       const filePath = path.join('public/uploads', req.file.filename);
-      // console.log("filePath" , req.file.filename);
+      
 
         vendor.profileImage = `${BASE_URL}/uploads/${req.file.filename}`;
     }
@@ -324,34 +317,37 @@ exports.viewProfile = async (req, res) => {
   }
 };
 
-// exports.viewProfile = async (req, res) => {
-//   try {
-//     const { email } = req.params; 
+exports.viewProfile = async (req, res) => {
+  try {
+    const { email } = req.params; 
 
-//     const vendor = await Vendor.findOne({ email });
+    const vendor = await Vendor.findOne({ email });
 
-//     if (!vendor) {
-//       return res.status(404).json({ message: "Vendor not found" });
-//     }
+    if (!vendor) {
+      return res.status(404).json({ message: "Vendor not found" });
+    }
 
-//     // You can customize the response structure based on your requirements
-//     const profileData = {
-//       email: vendor.email,
-//       company_name: vendor.company_name,
-//       website_link: vendor.website_link,
-//       contact: vendor.contact,
-//       gst_number: vendor.gst_number,
-//       address: vendor.address,
-//       resume: vendor.resume,
-//       // profileImage: vendor.profileImage || './assets/images/blank-profile-picture.webp',
-//     };
+    // You can customize the response structure based on your requirements
+    const profileData = {
+      email: vendor.email,
+      company_name: vendor.company_name,
+      website_link: vendor.website_link,
+      contact: vendor.contact,
+      gst_number: vendor.gst_number,
+      address: vendor.address,
+      resume: vendor.resume,
+      // profileImage: vendor.profileImage || './assets/images/blank-profile-picture.webp',
+    };
 
-//     res.json({ message: "Profile retrieved successfully", data: profileData });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
+    res.json({ message: "Profile retrieved successfully", data: profileData });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
 
 //get-all-vendor
 exports.getAllVendors = async (req, res) => {
@@ -454,7 +450,7 @@ exports.logoutVendor = async (req, res, next) => {
 //developer count and admi count api
 exports.countTech = async (req, res) => {
 
-  // console.log("===Techhhhhhhhhhhhhh");
+
   try {
       const count = await Tech.countDocuments();
       res.send(count.toString());
@@ -467,7 +463,7 @@ exports.countTech = async (req, res) => {
 
 exports.developerCount = async (req, res) => {
 
-  // console.log("================apideveloper");
+
   try {
       const developer = await Developer.countDocuments();
       res.send(developer.toString());

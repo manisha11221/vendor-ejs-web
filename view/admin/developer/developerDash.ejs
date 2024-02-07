@@ -1,4 +1,5 @@
 <!-- developerDash.ejs -->
+<<<<<<< HEAD
 <%- include('../../layouts/header.ejs') %> \ <%-
 include('../../layouts/admin.ejs') %> <% const BASE_URL = process.env.BASE_URL
 %>
@@ -30,12 +31,51 @@ include('../../layouts/admin.ejs') %> <% const BASE_URL = process.env.BASE_URL
                     </thead>
                     <tbody></tbody>
                   </table>
+=======
+<%- include('../../layouts/header.ejs') %> 
+  <%- include('../../layouts/admin.ejs') %>
+    <% const BASE_URL=process.env.BASE_URL %>
+      <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper">
+          <div class="main-panel">
+            <div class="content-wrapper">
+              <!-- Developer data table -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="page-header">
+                    <h3 class="page-title">Developer</h3>
+                  </div>
+                  <div class="card mb-5">
+                    <div class="card-body">
+                      <h4 class="card-title">All Developers</h4>
+                      <div class="table-responsive">
+                        <table class="table table-striped" id="developerTable">
+                          <thead>
+                            <tr>
+                              <th>Sr.No</th>
+                              <th>Name</th>
+                              <th>Technology</th>
+                              <th>Experience</th>
+                              <th>Resume</th>
+                              <th>vendor_Email</th>
+                              <th>vendor_Company</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+>>>>>>> 611bab22f1add6c3dcea2f3275213229911d4cb7
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <%- include('../../layouts/footer.ejs') %>
 
+<<<<<<< HEAD
         <!-- Inline script to fetch and populate data -->
       </div>
     </div>
@@ -97,3 +137,57 @@ include('../../layouts/admin.ejs') %> <% const BASE_URL = process.env.BASE_URL
     }
   });
 </script>
+=======
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const tokens = localStorage.getItem("adminToken");
+
+            if (!tokens) {
+              // Redirect to the login page if the token is not present
+              window.location.href = "/login";
+              return; // Add this line to prevent further execution if not logged in
+            }
+
+            fetch("<%= BASE_URL %>/developer/getDeveloperall-with-vednor")
+              .then((response) => response.json())
+              .then((data) => {
+                displayDevelopers(data.dataArr);
+
+                // Initialize DataTable after data is fetched and displayed
+                const table = $("#developerTable").DataTable();
+
+                // Use event delegation to handle clicks on resume links
+                $("#developerTable").on("click", ".resume-link", function (e) {
+                  e.preventDefault();
+                  const resumeUrl = $(this).data("resume");
+                  window.open(resumeUrl, "_blank");
+                });
+              })
+              .catch((error) => {
+                console.error("Error fetching data:", error);
+              });
+
+            function displayDevelopers(dataArr) {
+              const table = $("#developerTable").DataTable();
+              dataArr.forEach((data, index) => {
+                const developer = data.developer;
+                const vendor = data.vendor;
+
+                table.row
+                  .add([
+                    index + 1,
+                    developer.name,
+                    developer.technology,
+                    developer.experience,
+                    developer.resume
+                      ? `<a href="#" class="resume-link" data-resume="${developer.resume}">Resume</a>`
+                      : "N/A",
+                    vendor ? vendor.email : "N/A",
+                    vendor ? vendor.company_name : "N/A",
+                  ])
+                  .draw();
+              });
+            }
+          });
+        </script>
+>>>>>>> 611bab22f1add6c3dcea2f3275213229911d4cb7

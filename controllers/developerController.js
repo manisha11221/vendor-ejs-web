@@ -2,6 +2,7 @@ const { default: mongoose } = require("mongoose");
 const Developer = require("../models/developerModel");
 const vendor = require("../models/vendorModel");
 const upload = require('../middlewares/multerMiddleware');
+const BASE_URL = process.env.BASE_URL;
 
 exports.addDeveloper = async (req, res) => {
   // console.log("req",req);
@@ -39,7 +40,7 @@ exports.addDeveloper = async (req, res) => {
     });
 
       if (req.file) {
-        developer.resume = `http://localhost:3000/uploads/${req.file.filename}`;
+        developer.resume = `${BASE_URL}/uploads/${req.file.filename}`;
       }
       // console.log("req.file.path:", req.file);
 

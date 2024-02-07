@@ -1,7 +1,7 @@
 const express = require('express');
 const auth = require('../middlewares/adminMiddleware');
 
-const {loadAuth,successGoogleLogin,failureGoogleLogin,adminLogin, otpSend, otpVerify,vendorPassword,vendorDashboard,adminDash,vendorDash,developerDash,technologyDash,vendorDeveloper,vendorTechnology,editProfile,viewProfile} = require('../controllers/homeEjsController');
+const {loadAuth,successGoogleLogin,failureGoogleLogin,requirements,adminLogin, otpSend, otpVerify,vendorPassword,vendorDashboard,adminDash,vendorDash,developerDash,technologyDash,vendorDeveloper,vendorTechnology,editProfile,viewProfile} = require('../controllers/homeEjsController');
 const router = express.Router();
 
 
@@ -26,7 +26,7 @@ router.get('/vendor-dashboard',vendorDashboard);
 router.get('/vendor-developer', vendorDeveloper);
 router.get('/vendor-technology', vendorTechnology);
 router.get('/view-profile', viewProfile);
-
+router.get('/requirements', requirements);
 
 const passport = require('passport');
 require('../passport');

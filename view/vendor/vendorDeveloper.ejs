@@ -1,10 +1,10 @@
-<%- include('../layouts/header.ejs') %> <%- include('../layouts/vendor.ejs') %>
+s<%- include('../layouts/header.ejs') %> <%- include('../layouts/vendor.ejs') %>
 <% const BASE_URL = process.env.BASE_URL %>
 
 <style>
   .action-buttons {
     display: flex;
-    gap: 10px; /* Adjust the gap between buttons as needed */
+    gap: 10px; / Adjust the gap between buttons as needed /
   }
 </style>
 <div class="container-scroller">
@@ -346,6 +346,7 @@
 
 <%- include('../layouts/footer.ejs') %>
 
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const token = localStorage.getItem("vendorToken");
@@ -358,7 +359,7 @@
       $("#developerFormContainer").toggle();
     });
 
-    fetch("http://localhost:3000/developer/get-devAll")
+    fetch("<%= BASE_URL %>/developer/get-devAll")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -373,8 +374,10 @@
           var developerTable = $("#developerTableBody").DataTable();
           data.developers.forEach(function (developer, index) {
             const actionButtons = `<div class="action-buttons">
-                                  <button class="Edit-button btn btn-info" onclick="updateDeveloper('${developer._id}')">Edit</button>
-                                  <button class="Delete-button btn btn-danger" onclick="deleteDeveloper('${developer._id}')">Delete</button>
+                                  <button class="Edit-button btn" onclick="updateDeveloper('${developer._id}')">
+                                    <i class="mdi mdi-update menu-icon"style="font-size: 30px; color:#b66dff;"></i></button>
+                                  <button class="Delete-button btn" onclick="deleteDeveloper('${developer._id}')">
+                                    <i class="mdi mdi-delete menu-icon" style="font-size: 30px;color:#b66dff"></i></button>
                                 </div>`;
             developerTable.row
               .add([
@@ -434,7 +437,7 @@
       formData.append("employmentType", employmentType);
       formData.append("rate", rate);
 
-      fetch("http://localhost:3000/developer/add-dev", {
+      fetch("<%= BASE_URL %>/developer/add-dev", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("vendorToken")}`,
@@ -461,7 +464,7 @@
         });
     });
 
-    fetch("http://localhost:3000/technology/get-technology")
+    fetch("<%= BASE_URL %>/technology/get-technology")
       .then((response) => response.json())
       .then((data) => {
         const technologyDropdown = $("#choices-multiple-remove-button");
@@ -505,6 +508,7 @@
 
 
   function updateDeveloper(developerId) {
+<<<<<<< HEAD
     console.log("Updating developer with ID:", developerId);
   fetch(`http://localhost:3000/developer/get-dev/${developerId}`, {
     headers: {
@@ -516,6 +520,14 @@
         throw new Error("Failed to fetch developer data");
       }
       return response.json();
+=======
+    console.log("developerId", developerId);
+
+    fetch(`<%= BASE_URL %>/developer/get-dev/${developerId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+>>>>>>> 611bab22f1add6c3dcea2f3275213229911d4cb7
     })
     .then((data) => {
       const {
@@ -587,6 +599,7 @@ document.getElementById("updateDeveloperForm").addEventListener("submit", functi
   formData.append("employment_type", updatedPartTime ? "parttime" : updatedFullTime ? "fulltime" : "");
   formData.append("rate", updatedRate);
 
+<<<<<<< HEAD
   fetch(`http://localhost:3000/developer/update-dev/${developerId}`, {
     method: "PUT",
     headers: {
@@ -617,6 +630,58 @@ function handleApiResponse(data) {
     console.log("Updated Developer Data:", data.updatedDeveloper);
   } else {
     console.error("API response indicates failure:", data.message);
+=======
+        const formData = new FormData();
+        formData.append("name", updatedDeveloperName);
+        formData.append("experience", updatedExperience);
+        formData.append("technology", updatedTechnology);
+        formData.append(
+          "resume",
+          updatedResume || updatedResumePathInput.value
+        );
+        formData.append("portfolio", updatedPortfolio);
+        formData.append("gitHubUrl", updatedGitHubUrl);
+        formData.append("linkedInLink", updatedLinkedInLink);
+        formData.append(
+          "employment_type",
+          updatedPartTime ? "parttime" : updatedFullTime ? "fulltime" : ""
+        );
+        formData.append("rate", updatedRate);
+
+        console.log("formDta", formData);
+
+        fetch(`<%= BASE_URL %>/developer/update-dev/${developerId}`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        })
+          .then((response) => {
+            console.log(response.status);
+            if (!response.ok) {
+              throw new Error("API request failed");
+            }
+            return response.json();
+          })
+          .then((parsedData) => {
+            handleApiResponse(parsedData);
+            document
+              .getElementById("update")
+              .addEventListener("click", function () {
+                console.log("developerIdttttt:::::", developerId);
+                $("#updateDeveloperModal").modal("hide");
+                 window.location.reload(); 
+              });
+          })
+          .catch((error) => {
+            console.error("API request error:", error);
+            handleApiError(error);
+          });
+
+        // event.preventDefault();
+      });
+>>>>>>> 611bab22f1add6c3dcea2f3275213229911d4cb7
   }
 }
 
@@ -626,7 +691,7 @@ function handleApiError(error) {
 
 
   function deleteDeveloper(developerId) {
-    fetch(`http://localhost:3000/developer/delete-dev/${developerId}`, {
+    fetch(`<%= BASE_URL %>/developer/delete-dev/${developerId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

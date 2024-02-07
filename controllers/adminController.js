@@ -53,7 +53,6 @@ exports.adminLogin = async (req, res) => {
       adminUser: adminUser,
     });
     
-    console.log("adminUser", adminUser);
     
   } catch (error) {
     console.error("Error during admin login:", error);
@@ -68,7 +67,6 @@ exports.logoutAdmin = async (req, res, next) => {
     // Get the token from the request headers
     const tokenFromRequest = req.header("Authorization");
 
-    // console.log("---",tokenFromRequest);
     // Handle missing or undefined token
     if (!tokenFromRequest) {
       return res.status(401).json({ success: false, message: "Token missing" });

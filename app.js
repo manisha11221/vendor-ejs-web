@@ -8,7 +8,7 @@ const devroutes = require("./routes/developerRoutes");
 const ejsRoute = require("./routes/homeEjsRoute");
 const multer = require("multer");
 const cors = require("cors");
-const config = require('./config');
+// const config = require('./config');
 require("dotenv").config();
 const passport = require("passport");
 const cookieSession = require("cookie-session");
